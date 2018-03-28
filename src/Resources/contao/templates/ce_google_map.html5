@@ -2,6 +2,6 @@
 
 <?php $this->block('content'); ?>
 
-<?= $this->map ?>
+<?= $this->renderedMap ?>
 
 <?php $this->endblock(); ?>

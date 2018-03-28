@@ -5,6 +5,7 @@ namespace HeimrichHannot\GoogleMapsBundle\Element;
 use Contao\ContentElement;
 use Contao\ContentModel;
 use Contao\System;
+use HeimrichHannot\UtilsBundle\Arrays\ArrayUtil;
 use Ivory\GoogleMap\Map;
 use Patchwork\Utf8;
 
@@ -20,21 +21,28 @@ class ContentGoogleMap extends ContentElement
      */
     protected $twig;
 
-    public function __construct(ContentModel $objElement, $strColumn = 'main') {
+    /**
+     * @var ArrayUtil
+     */
+    protected $arrayUtil;
+
+    public function __construct(ContentModel $objElement, $strColumn = 'main')
+    {
 
         parent::__construct($objElement, $strColumn);
 
         $this->twig = System::getContainer()->get('twig');
+        $this->arrayUtil = System::getContainer()->get('huh.utils.array');
     }
 
     public function generate()
     {
-        if(TL_MODE == 'BE')
+        if (TL_MODE == 'BE')
         {
             $objTemplate = new \BackendTemplate('be_wildcard');
 
             $objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['CTE'][$this->type][0]) . ' ###';
-            $objTemplate->title = $this->headline;
+            $objTemplate->title    = $this->headline;
 
             // TODO add map here
 //            $objTemplate->id = $this->id;
@@ -50,10 +58,11 @@ class ContentGoogleMap extends ContentElement
     protected function compile()
     {
         $map = new Map();
+        $templateData = $this->arrayUtil->removePrefix('googlemaps_', $this->arrData);
 
+        $templateData['map'] = $map;
         $this->Template->map = $map;
-        $this->Template->renderedMap   = $this->twig->render('@HeimrichHannotContaoGoogleMaps/map.html.twig', [
-            'map' => $map
-        ]);
+
+        $this->Template->renderedMap = $this->twig->render('@HeimrichHannotContaoGoogleMaps/google_map.html.twig', $templateData);
     }
 }

@@ -26,6 +26,7 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface
     public function getBundles(ParserInterface $parser)
     {
         return [
+            BundleConfig::create(IvoryGoogleMapBundle::class)->setLoadAfter([ContaoCoreBundle::class]),
             BundleConfig::create(HeimrichHannotContaoGoogleMapsBundle::class)->setLoadAfter([ContaoCoreBundle::class, IvoryGoogleMapBundle::class]),
         ];
     }

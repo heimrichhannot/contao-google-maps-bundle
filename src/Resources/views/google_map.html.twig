@@ -1,0 +1,13 @@
+{% if addHtml|default() %}
+    {{ ivory_google_map_container(map) }}
+{% endif %}
+
+{% if addCss|default() %}
+    {{ ivory_google_map_css(map) }}
+{% endif %}
+
+{% if addJs|default() %}
+    {{ ivory_google_map_js(map) }}
+{% endif %}
+
+{{ ivory_google_api([map]) }}
