@@ -16,6 +16,7 @@ use Contao\ManagerPlugin\Config\ContainerBuilder;
 use Contao\ManagerPlugin\Config\ExtensionPluginInterface;
 use HeimrichHannot\GoogleMapsBundle\HeimrichHannotContaoGoogleMapsBundle;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
+use Ivory\GoogleMapBundle\IvoryGoogleMapBundle;
 
 class Plugin implements BundlePluginInterface, ExtensionPluginInterface
 {
@@ -25,7 +26,7 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface
     public function getBundles(ParserInterface $parser)
     {
         return [
-            BundleConfig::create(HeimrichHannotContaoGoogleMapsBundle::class)->setLoadAfter([ContaoCoreBundle::class]),
+            BundleConfig::create(HeimrichHannotContaoGoogleMapsBundle::class)->setLoadAfter([ContaoCoreBundle::class, IvoryGoogleMapBundle::class]),
         ];
     }
 
