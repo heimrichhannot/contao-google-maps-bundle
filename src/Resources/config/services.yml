@@ -1,1 +1,8 @@
 services:
+    huh.google_maps.manager:
+        class: HeimrichHannot\GoogleMapsBundle\Manager\MapManager
+        arguments:
+            - "@contao.framework"
+            - "@huh.utils.model"
+            - "@huh.utils.location"
+            - "@huh.utils.cache.database"

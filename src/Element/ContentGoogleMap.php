@@ -44,10 +44,12 @@ class ContentGoogleMap extends ContentElement
             $objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['CTE'][$this->type][0]) . ' ###';
             $objTemplate->title    = $this->headline;
 
-            // TODO add map here
-//            $objTemplate->id = $this->id;
-//            $objTemplate->link = $this->name;
-//            $objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->id;
+            if (null !== ($map = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk('tl_google_map', $this->googlemaps_map)))
+            {
+                $objTemplate->id = $map->id;
+                $objTemplate->link = $map->title;
+                $objTemplate->href = 'contao/main.php?do=google_maps&amp;table=tl_google_map&amp;act=edit&amp;id=' . $map->id;
+            }
 
             return $objTemplate->parse();
         }
@@ -57,11 +59,10 @@ class ContentGoogleMap extends ContentElement
 
     protected function compile()
     {
-        $map = new Map();
         $templateData = $this->arrayUtil->removePrefix('googlemaps_', $this->arrData);
 
-        $templateData['map'] = $map;
-        $this->Template->map = $map;
+        $templateData['map'] = System::getContainer()->get('huh.google_maps.manager')->prepareMap($this->arrData);
+        $this->Template->map = $templateData['map'];
 
         $this->Template->renderedMap = $this->twig->render('@HeimrichHannotContaoGoogleMaps/google_map.html.twig', $templateData);
     }

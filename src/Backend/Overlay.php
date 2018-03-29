@@ -2,7 +2,9 @@
 
 namespace HeimrichHannot\GoogleMapsBundle\Backend;
 
-class Overlay
+use Contao\Backend;
+
+class Overlay extends Backend
 {
     public function listChildren($arrRow)
     {
@@ -137,7 +139,7 @@ class Overlay
             $icon = 'invisible.svg';
         }
 
-        return '<a href="'.\Controller::addToUrl($href).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label, 'data-state="' . ($row['published'] ? 1 : 0) . '"').'</a> ';
+        return '<a href="'.$this->addToUrl($href).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label, 'data-state="' . ($row['published'] ? 1 : 0) . '"').'</a> ';
     }
 
     public function toggleVisibility($intId, $blnVisible, \DataContainer $dc=null)

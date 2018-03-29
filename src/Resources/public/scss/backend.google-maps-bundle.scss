@@ -1,0 +1,13 @@
+@each $field in mapTypeControlPos, zoomControlPos, rotateControlPos, panControlPos, scaleControlPos, streetViewControlPos {
+  .google-maps-bundle {
+    ##{$field}_1_4, ##{$field}_2_7, ##{$field}_3_10 {
+      display: none;
+    }
+
+    #ctrl_#{$field} td {
+      border:1px solid #ffffff;
+      background-color: #99B3CC;
+      padding:5px 40px 5px 40px;
+    }
+  }
+}

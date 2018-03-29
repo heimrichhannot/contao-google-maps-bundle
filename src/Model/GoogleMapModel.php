@@ -1,6 +1,6 @@
 <?php
 
-namespace HeimrichHannot\GoogleMapsBundle;
+namespace HeimrichHannot\GoogleMapsBundle\Model;
 
 class GoogleMapModel extends \Model
 {

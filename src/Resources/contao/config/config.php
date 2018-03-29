@@ -4,7 +4,8 @@
  * Backend modules
  */
 $GLOBALS['BE_MOD']['content']['google_maps'] = [
-    'tables' => ['tl_google_map', 'tl_google_map_overlay']
+    'tables' => ['tl_google_map', 'tl_google_map_overlay'],
+    'stylesheet' => 'bundles/heimrichhannotcontaogooglemaps/css/backend.google-maps-bundle.css',
 ];
 
 /**
@@ -13,6 +14,12 @@ $GLOBALS['BE_MOD']['content']['google_maps'] = [
 $GLOBALS['TL_CTE']['maps'] = [
     'google_map' => 'HeimrichHannot\GoogleMapsBundle\Element\ContentGoogleMap',
 ];
+
+/**
+ * Models
+ */
+$GLOBALS['TL_MODELS']['tl_google_map']         = 'HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel';
+$GLOBALS['TL_MODELS']['tl_google_map_overlay'] = 'HeimrichHannot\GoogleMapsBundle\Model\OverlayModel';
 
 /**
  * Permissions
