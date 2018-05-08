@@ -3,6 +3,9 @@
 namespace HeimrichHannot\GoogleMapsBundle\Backend;
 
 use Contao\Backend;
+use Ivory\GoogleMap\Control\ControlPosition;
+use Ivory\GoogleMap\Control\MapTypeControlStyle;
+use Ivory\GoogleMap\Control\ZoomControlStyle;
 
 class GoogleMap extends Backend
 {
@@ -14,6 +17,13 @@ class GoogleMap extends Backend
         self::SIZE_MODE_ASPECT_RATIO,
         self::SIZE_MODE_STATIC,
         self::SIZE_MODE_CSS
+    ];
+
+    const TYPES = [
+        \Ivory\GoogleMap\MapTypeId::ROADMAP,
+        \Ivory\GoogleMap\MapTypeId::SATELLITE,
+        \Ivory\GoogleMap\MapTypeId::TERRAIN,
+        \Ivory\GoogleMap\MapTypeId::HYBRID
     ];
 
     const POSITIONING_MODE_STANDARD = 'standard';
@@ -40,6 +50,30 @@ class GoogleMap extends Backend
         self::CENTER_MODE_STATIC_ADDRESS
     ];
 
+    const POSITIONS = [
+        ControlPosition::TOP_LEFT,
+        ControlPosition::TOP_CENTER,
+        ControlPosition::TOP_RIGHT,
+        ControlPosition::LEFT_TOP,
+        'c1',
+        ControlPosition::RIGHT_TOP,
+        ControlPosition::LEFT_CENTER,
+        'c2',
+        ControlPosition::RIGHT_CENTER,
+        ControlPosition::LEFT_BOTTOM,
+        'c3',
+        ControlPosition::RIGHT_BOTTOM,
+        ControlPosition::BOTTOM_LEFT,
+        ControlPosition::BOTTOM_CENTER,
+        ControlPosition::BOTTOM_RIGHT
+    ];
+
+    const MAP_CONTROL_STYLES = [
+        MapTypeControlStyle::DEFAULT_,
+        MapTypeControlStyle::DROPDOWN_MENU,
+        MapTypeControlStyle::HORIZONTAL_BAR
+    ];
+
     public static function getMapChoices()
     {
         return \Contao\System::getContainer()->get('huh.utils.choice.model_instance')->getCachedChoices(
@@ -54,26 +88,21 @@ class GoogleMap extends Backend
         $user     = \Contao\BackendUser::getInstance();
         $database = \Contao\Database::getInstance();
 
-        if ($user->isAdmin)
-        {
+        if ($user->isAdmin) {
             return;
         }
 
         // Set root IDs
-        if (!is_array($user->contao_google_maps_bundles) || empty($user->contao_google_maps_bundles))
-        {
+        if (!is_array($user->contao_google_maps_bundles) || empty($user->contao_google_maps_bundles)) {
             $root = [0];
-        }
-        else
-        {
+        } else {
             $root = $user->contao_google_maps_bundles;
         }
 
         $GLOBALS['TL_DCA']['tl_google_map']['list']['sorting']['root'] = $root;
 
         // Check permissions to add archives
-        if (!$user->hasAccess('create', 'contao_google_maps_bundlep'))
-        {
+        if (!$user->hasAccess('create', 'contao_google_maps_bundlep')) {
             $GLOBALS['TL_DCA']['tl_google_map']['config']['closed'] = true;
         }
 
@@ -81,8 +110,7 @@ class GoogleMap extends Backend
         $objSession = \Contao\System::getContainer()->get('session');
 
         // Check current action
-        switch (\Contao\Input::get('act'))
-        {
+        switch (\Contao\Input::get('act')) {
             case 'create':
             case 'select':
                 // Allow
@@ -90,18 +118,15 @@ class GoogleMap extends Backend
 
             case 'edit':
                 // Dynamically add the record to the user profile
-                if (!in_array(\Contao\Input::get('id'), $root))
-                {
+                if (!in_array(\Contao\Input::get('id'), $root)) {
                     /** @var \Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface $sessionBag */
                     $sessionBag = $objSession->getBag('contao_backend');
 
                     $arrNew = $sessionBag->get('new_records');
 
-                    if (is_array($arrNew['tl_google_map']) && in_array(\Contao\Input::get('id'), $arrNew['tl_google_map']))
-                    {
+                    if (is_array($arrNew['tl_google_map']) && in_array(\Contao\Input::get('id'), $arrNew['tl_google_map'])) {
                         // Add the permissions on group level
-                        if ($user->inherit != 'custom')
-                        {
+                        if ($user->inherit != 'custom') {
                             $objGroup = $database->execute(
                                 "SELECT id, contao_google_maps_bundles, contao_google_maps_bundlep FROM tl_user_group WHERE id IN(" . implode(
                                     ',',
@@ -112,12 +137,10 @@ class GoogleMap extends Backend
                                 ) . ")"
                             );
 
-                            while ($objGroup->next())
-                            {
+                            while ($objGroup->next()) {
                                 $arrModulep = \StringUtil::deserialize($objGroup->contao_google_maps_bundlep);
 
-                                if (is_array($arrModulep) && in_array('create', $arrModulep))
-                                {
+                                if (is_array($arrModulep) && in_array('create', $arrModulep)) {
                                     $arrModules   = \StringUtil::deserialize($objGroup->contao_google_maps_bundles, true);
                                     $arrModules[] = \Contao\Input::get('id');
 
@@ -130,16 +153,14 @@ class GoogleMap extends Backend
                         }
 
                         // Add the permissions on user level
-                        if ($user->inherit != 'group')
-                        {
+                        if ($user->inherit != 'group') {
                             $user = $database->prepare("SELECT contao_google_maps_bundles, contao_google_maps_bundlep FROM tl_user WHERE id=?")
                                 ->limit(1)
                                 ->execute($user->id);
 
                             $arrModulep = \StringUtil::deserialize($user->contao_google_maps_bundlep);
 
-                            if (is_array($arrModulep) && in_array('create', $arrModulep))
-                            {
+                            if (is_array($arrModulep) && in_array('create', $arrModulep)) {
                                 $arrModules   = \StringUtil::deserialize($user->contao_google_maps_bundles, true);
                                 $arrModules[] = \Contao\Input::get('id');
 
@@ -166,8 +187,7 @@ class GoogleMap extends Backend
                             'delete',
                             'contao_google_maps_bundlep'
                         ))
-                )
-                {
+                ) {
                     throw new \Contao\CoreBundle\Exception\AccessDeniedException(
                         'Not enough permissions to ' . \Contao\Input::get('act') . ' google_map ID ' . \Contao\Input::get('id') . '.'
                     );
@@ -178,20 +198,16 @@ class GoogleMap extends Backend
             case 'deleteAll':
             case 'overrideAll':
                 $session = $objSession->all();
-                if (\Contao\Input::get('act') == 'deleteAll' && !$user->hasAccess('delete', 'contao_google_maps_bundlep'))
-                {
+                if (\Contao\Input::get('act') == 'deleteAll' && !$user->hasAccess('delete', 'contao_google_maps_bundlep')) {
                     $session['CURRENT']['IDS'] = [];
-                }
-                else
-                {
+                } else {
                     $session['CURRENT']['IDS'] = array_intersect($session['CURRENT']['IDS'], $root);
                 }
                 $objSession->replace($session);
                 break;
 
             default:
-                if (strlen(\Contao\Input::get('act')))
-                {
+                if (strlen(\Contao\Input::get('act'))) {
                     throw new \Contao\CoreBundle\Exception\AccessDeniedException(
                         'Not enough permissions to ' . \Contao\Input::get('act') . ' google_maps.'
                     );

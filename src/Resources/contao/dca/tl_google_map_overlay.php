@@ -1,11 +1,11 @@
 <?php
 
 $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
-    'config'   => [
+    'config'      => [
         'dataContainer'     => 'Table',
         'ptable'            => 'tl_google_map',
         'enableVersioning'  => true,
-        'onload_callback' => [
+        'onload_callback'   => [
             ['HeimrichHannot\GoogleMapsBundle\Backend\Overlay', 'checkPermission'],
         ],
         'onsubmit_callback' => [
@@ -14,15 +14,16 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
         'oncopy_callback'   => [
             ['huh.utils.dca', 'setDateAddedOnCopy'],
         ],
-        'sql' => [
+        'sql'               => [
             'keys' => [
-                'id' => 'primary',
-                'pid,start,stop,published' => 'index'            ]
+                'id'                       => 'primary',
+                'pid,start,stop,published' => 'index'
+            ]
         ]
     ],
-    'list'     => [
-        'label' => [
-            'fields' => ['id'],
+    'list'        => [
+        'label'             => [
+            'fields' => ['title'],
             'format' => '%s'
         ],
         'sorting'           => [
@@ -33,14 +34,14 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
             'child_record_callback' => ['HeimrichHannot\GoogleMapsBundle\Backend\Overlay', 'listChildren']
         ],
         'global_operations' => [
-            'all'    => [
+            'all' => [
                 'label'      => &$GLOBALS['TL_LANG']['MSC']['all'],
                 'href'       => 'act=select',
                 'class'      => 'header_edit_all',
                 'attributes' => 'onclick="Backend.getScrollOffset();"'
             ],
         ],
-        'operations' => [
+        'operations'        => [
             'edit'   => [
                 'label' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['edit'],
                 'href'  => 'act=edit',
@@ -70,64 +71,312 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
             ],
         ]
     ],
-    'palettes' => [
-        '__selector__' => ['published'],
-        'default' => '{general_legend},title;{publish_legend},published;'
+    'palettes'    => [
+        '__selector__'                                                => [
+            'titleMode',
+            'positioningMode',
+            'markerType',
+            'clickEvent',
+            'addRouting',
+            // CAUTION: type must be at this position, else a Contao palette error takes places!
+            'type',
+            'published'
+        ],
+        'default'                                                     => '{general_legend},type,title;{publish_legend},published;',
+        \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::TYPE_MARKER =>
+            '{general_legend},type,title;{config_legend},titleMode,positioningMode,animation,markerType,clickEvent,zIndex;{publish_legend},published;',
+
     ],
     'subpalettes' => [
-        'published'    => 'start,stop'
+        'titleMode_' . \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::TITLE_MODE_CUSTOM_TEXT                => 'titleText',
+        'positioningMode_' . \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::POSITIONING_MODE_COORDINATE     => 'positioningLat,positioningLng',
+        'positioningMode_' . \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::POSITIONING_MODE_STATIC_ADDRESS => 'positioningAddress',
+        'markerType_' . \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::MARKER_TYPE_ICON                     => 'iconSrc,iconWidth,iconHeight,iconAnchorX,iconAnchorY',
+        'clickEvent_' . \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::CLICK_EVENT_LINK                     => 'url,target',
+        'clickEvent_' . \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::CLICK_EVENT_INFO_WINDOW              => 'infoWindowWidth,infoWindowHeight,infoWindowAnchorX,infoWindowAnchorY,popupInfoWindow,infoWindowText,addRouting',
+        'addRouting'                                                                                           => 'routingAddress',
+        'published'                                                                                            => 'start,stop'
     ],
-    'fields'   => [
-        'id' => [
-            'sql'                     => "int(10) unsigned NOT NULL auto_increment"
+    'fields'      => [
+        'id'                 => [
+            'sql' => "int(10) unsigned NOT NULL auto_increment"
         ],
-        'pid' => [
-            'foreignKey'              => 'tl_google_map.title',
-            'sql'                     => "int(10) unsigned NOT NULL default '0'",
-            'relation'                => ['type'=>'belongsTo', 'load'=>'eager']
+        'pid'                => [
+            'foreignKey' => 'tl_google_map.title',
+            'sql'        => "int(10) unsigned NOT NULL default '0'",
+            'relation'   => ['type' => 'belongsTo', 'load' => 'eager']
         ],
-        'tstamp' => [
-            'label'                   => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['tstamp'],
-            'sql'                     => "int(10) unsigned NOT NULL default '0'"
+        'tstamp'             => [
+            'label' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['tstamp'],
+            'sql'   => "int(10) unsigned NOT NULL default '0'"
         ],
-        'dateAdded' => [
-            'label'                   => &$GLOBALS['TL_LANG']['MSC']['dateAdded'],
-            'sorting'                 => true,
-            'flag'                    => 6,
-            'eval'                    => ['rgxp'=>'datim', 'doNotCopy' => true],
-            'sql'                     => "int(10) unsigned NOT NULL default '0'"
+        'dateAdded'          => [
+            'label'   => &$GLOBALS['TL_LANG']['MSC']['dateAdded'],
+            'sorting' => true,
+            'flag'    => 6,
+            'eval'    => ['rgxp' => 'datim', 'doNotCopy' => true],
+            'sql'     => "int(10) unsigned NOT NULL default '0'"
         ],
-        'title' => [
-            'label'                   => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['title'],
-            'exclude'                 => true,
-            'search'                  => true,
-            'sorting'                 => true,
-            'flag'                    => 1,
-            'inputType'               => 'text',
-            'eval'                    => ['mandatory' => true, 'tl_class'=>'w50'],
-            'sql'                     => "varchar(255) NOT NULL default ''"
+        // general
+        'title'              => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['title'],
+            'exclude'   => true,
+            'search'    => true,
+            'sorting'   => true,
+            'flag'      => 1,
+            'inputType' => 'text',
+            'eval'      => ['mandatory' => true, 'tl_class' => 'w50'],
+            'sql'       => "varchar(255) NOT NULL default ''"
         ],
-        'published' => [
-            'label'                   => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['published'],
-            'exclude'                 => true,
-            'filter'                  => true,
-            'inputType'               => 'checkbox',
-            'eval'                    => ['doNotCopy'=>true, 'submitOnChange' => true],
-            'sql'                     => "char(1) NOT NULL default ''"
+        'type'               => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['type'],
+            'exclude'   => true,
+            'filter'    => true,
+            'inputType' => 'select',
+            'options'   => \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::TYPES,
+            'reference' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['reference'],
+            'eval'      => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
+            'sql'       => "varchar(64) NOT NULL default ''"
         ],
-        'start' => [
-            'label'                   => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['start'],
-            'exclude'                 => true,
-            'inputType'               => 'text',
-            'eval'                    => ['rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard'],
-            'sql'                     => "varchar(10) NOT NULL default ''"
+        // config
+        'titleMode'          => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['titleMode'],
+            'exclude'   => true,
+            'filter'    => true,
+            'inputType' => 'select',
+            'options'   => \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::TITLE_MODES,
+            'reference' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['reference'],
+            'eval'      => ['tl_class' => 'w50', 'includeBlankOption' => true, 'submitOnChange' => true],
+            'sql'       => "varchar(64) NOT NULL default ''"
         ],
-        'stop' => [
-            'label'                   => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['stop'],
-            'exclude'                 => true,
-            'inputType'               => 'text',
-            'eval'                    => ['rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard'],
-            'sql'                     => "varchar(10) NOT NULL default ''"
+        'titleText'          => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['titleText'],
+            'exclude'   => true,
+            'search'    => true,
+            'inputType' => 'text',
+            'eval'      => ['maxlength' => 255, 'tl_class' => 'w50', 'mandatory' => true],
+            'sql'       => "varchar(255) NOT NULL default ''"
+        ],
+        'positioningMode'    => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['positioningMode'],
+            'exclude'   => true,
+            'filter'    => true,
+            'inputType' => 'select',
+            'options'   => \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::POSITIONING_MODES,
+            'reference' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['reference'],
+            'eval'      => ['tl_class' => 'w50 clr', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
+            'sql'       => "varchar(64) NOT NULL default ''"
+        ],
+        'positioningLat'     => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['positioningLat'],
+            'exclude'   => true,
+            'search'    => true,
+            'inputType' => 'text',
+            'eval'      => ['rgxp' => 'digit', 'maxlength' => 16, 'tl_class' => 'w50', 'mandatory' => true],
+            'sql'       => "float(10,6) unsigned NOT NULL default '0.0'"
+        ],
+        'positioningLng'     => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['positioningLng'],
+            'exclude'   => true,
+            'search'    => true,
+            'inputType' => 'text',
+            'eval'      => ['rgxp' => 'digit', 'maxlength' => 16, 'tl_class' => 'w50', 'mandatory' => true],
+            'sql'       => "float(10,6) unsigned NOT NULL default '0.0'"
+        ],
+        'positioningAddress' => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['positioningAddress'],
+            'exclude'   => true,
+            'search'    => true,
+            'inputType' => 'text',
+            'eval'      => ['maxlength' => 255, 'tl_class' => 'w50', 'mandatory' => true],
+            'sql'       => "varchar(255) NOT NULL default ''"
+        ],
+        'animation'          => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['animation'],
+            'exclude'   => true,
+            'filter'    => true,
+            'inputType' => 'select',
+            'options'   => \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::ANIMATIONS,
+            'reference' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['reference'],
+            'eval'      => ['tl_class' => 'w50', 'includeBlankOption' => true],
+            'sql'       => "varchar(64) NOT NULL default ''"
+        ],
+        'markerType'         => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['markerType'],
+            'exclude'   => true,
+            'filter'    => true,
+            'inputType' => 'select',
+            'options'   => \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::MARKER_TYPES,
+            'reference' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['reference'],
+            'eval'      => ['tl_class' => 'w50 clr', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
+            'sql'       => "varchar(64) NOT NULL default 'default'"
+        ],
+        'fillColor'          => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['fillColor'],
+            'inputType' => 'text',
+            'eval'      => ['maxlength' => 6, 'isHexColor' => true, 'colorpicker' => true, 'decodeEntities' => true, 'tl_class' => 'w50 wizard'],
+            'sql'       => "varchar(6) NOT NULL default ''",
+        ],
+        'iconSrc'            => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['iconSrc'],
+            'exclude'   => true,
+            'inputType' => 'fileTree',
+            'eval'      => ['fieldType' => 'radio', 'filesOnly' => true, 'extensions' => 'gif,jpg,jpeg,png', 'mandatory' => true, 'tl_class' => 'clr'],
+            'sql'       => "binary(16) NULL",
+        ],
+        'iconWidth'          => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['iconWidth'],
+            'inputType' => 'inputUnit',
+            'options'   => $GLOBALS['TL_CSS_UNITS'],
+            'eval'      => ['rgxp' => 'digit', 'maxlength' => 10, 'tl_class' => 'w50', 'mandatory' => true],
+            'sql'       => "int(10) unsigned NOT NULL default '0'"
+        ],
+        'iconHeight'         => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['iconHeight'],
+            'inputType' => 'inputUnit',
+            'options'   => $GLOBALS['TL_CSS_UNITS'],
+            'eval'      => ['rgxp' => 'digit', 'maxlength' => 10, 'tl_class' => 'w50', 'mandatory' => true],
+            'sql'       => "int(10) unsigned NOT NULL default '0'"
+        ],
+        'iconAnchorX'        => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['iconAnchorX'],
+            'exclude'   => true,
+            'search'    => true,
+            'inputType' => 'text',
+            'eval'      => ['rgxp' => 'digit', 'maxlength' => 5, 'tl_class' => 'w50', 'mandatory' => true],
+            'sql'       => "int(5) unsigned NOT NULL default '0'"
+        ],
+        'iconAnchorY'        => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['iconAnchorY'],
+            'exclude'   => true,
+            'search'    => true,
+            'inputType' => 'text',
+            'eval'      => ['rgxp' => 'digit', 'maxlength' => 5, 'tl_class' => 'w50', 'mandatory' => true],
+            'sql'       => "int(5) unsigned NOT NULL default '0'"
+        ],
+        'clickEvent'         => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['clickEvent'],
+            'exclude'   => true,
+            'filter'    => true,
+            'inputType' => 'select',
+            'options'   => \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::CLICK_EVENTS,
+            'reference' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['reference'],
+            'eval'      => ['includeBlankOption' => true, 'submitOnChange' => true, 'tl_class' => 'w50 clr'],
+            'sql'       => "varchar(64) NOT NULL default ''",
+        ],
+        'popupInfoWindow'    => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['popupInfoWindow'],
+            'exclude'   => true,
+            'filter'    => true,
+            'default'   => false,
+            'inputType' => 'checkbox',
+            'eval' => [
+                'tl_class' => 'w50'
+            ],
+            'sql'       => "char(1) NOT NULL default ''",
+        ],
+        'infoWindowText'         => [
+            'label'       => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['infoWindowText'],
+            'exclude'     => true,
+            'search'      => true,
+            'inputType'   => 'textarea',
+            'eval'        => ['rte' => 'tinyMCE', 'helpwizard' => true, 'tl_class' => 'long clr'],
+            'explanation' => 'insertTags',
+            'sql'         => "text NULL",
+        ],
+        'addRouting'         => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['addRouting'],
+            'exclude'   => true,
+            'inputType' => 'checkbox',
+            'eval'      => ['tl_class' => 'w50', 'submitOnChange' => true],
+            'sql'       => "char(1) NOT NULL default ''"
+        ],
+        'routingAddress'     => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['routingAddress'],
+            'exclude'   => true,
+            'search'    => true,
+            'inputType' => 'text',
+            'eval'      => ['maxlength' => 255, 'tl_class' => 'long clr'],
+            'sql'       => "varchar(255) NOT NULL default ''",
+        ],
+        'infoWindowWidth'          => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['infoWindowWidth'],
+            'inputType' => 'inputUnit',
+            'options'   => $GLOBALS['TL_CSS_UNITS'],
+            'eval'      => ['tl_class' => 'w50', 'mandatory' => true],
+            'sql'       => "varchar(64) NOT NULL default ''"
+        ],
+        'infoWindowHeight'         => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['infoWindowHeight'],
+            'inputType' => 'inputUnit',
+            'options'   => $GLOBALS['TL_CSS_UNITS'],
+            'eval'      => ['tl_class' => 'w50', 'mandatory' => true],
+            'sql'       => "varchar(64) NOT NULL default ''"
+        ],
+        'infoWindowAnchorX'  => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['infoWindowAnchorX'],
+            'exclude'   => true,
+            'search'    => true,
+            'inputType' => 'text',
+            'eval'      => ['rgxp' => 'digit', 'maxlength' => 10, 'tl_class' => 'w50'],
+            'sql'       => "int(10) unsigned NOT NULL default '0'"
+        ],
+        'infoWindowAnchorY'  => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['infoWindowAnchorY'],
+            'exclude'   => true,
+            'search'    => true,
+            'inputType' => 'text',
+            'eval'      => ['rgxp' => 'digit', 'maxlength' => 10, 'tl_class' => 'w50'],
+            'sql'       => "int(10) unsigned NOT NULL default '0'"
+        ],
+        'url'                => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['url'],
+            'exclude'   => true,
+            'search'    => true,
+            'inputType' => 'text',
+            'eval'      => ['rgxp' => 'url', 'decodeEntities' => true, 'maxlength' => 255, 'tl_class' => 'w50 wizard', 'mandatory' => true],
+            'sql'       => "varchar(255) NOT NULL default ''",
+            'wizard'    => [
+                ['HeimrichHannot\GoogleMapsBundle\Backend\Overlay', 'pagePicker'],
+            ],
+        ],
+        'target'             => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['target'],
+            'exclude'   => true,
+            'inputType' => 'checkbox',
+            'eval'      => ['tl_class' => 'w50 m12'],
+            'sql'       => "char(1) NOT NULL default ''",
+        ],
+        'zIndex'             => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['zIndex'],
+            'exclude'   => true,
+            'search'    => true,
+            'inputType' => 'text',
+            'eval'      => ['rgxp' => 'digit', 'maxlength' => 10, 'tl_class' => 'w50', 'mandatory' => true],
+            'sql'       => "int(10) unsigned NOT NULL default '0'"
+        ],
+        // publish
+        'published'          => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['published'],
+            'exclude'   => true,
+            'filter'    => true,
+            'inputType' => 'checkbox',
+            'eval'      => ['doNotCopy' => true, 'submitOnChange' => true],
+            'sql'       => "char(1) NOT NULL default ''"
+        ],
+        'start'              => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['start'],
+            'exclude'   => true,
+            'inputType' => 'text',
+            'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
+            'sql'       => "varchar(10) NOT NULL default ''"
+        ],
+        'stop'               => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['stop'],
+            'exclude'   => true,
+            'inputType' => 'text',
+            'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
+            'sql'       => "varchar(10) NOT NULL default ''"
         ]
     ]
 ];

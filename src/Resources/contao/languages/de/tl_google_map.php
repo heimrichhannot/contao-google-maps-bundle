@@ -6,8 +6,10 @@ $lang = &$GLOBALS['TL_LANG']['tl_google_map'];
  * Fields
  */
 // general
-$lang['title'][0] = 'Titel';
-$lang['title'][1] = 'Geben Sie hier bitte den Titel ein.';
+$lang['title'][0]  = 'Titel';
+$lang['title'][1]  = 'Geben Sie hier bitte den Titel ein.';
+$lang['htmlId'][0] = 'Abweichende HTML-ID';
+$lang['htmlId'][1] = 'Geben Sie hier bei Bedarf eine vom Standard anweichende HTML-ID ein.';
 
 // visualization
 $lang['mapType'][0]      = 'Stil';
@@ -24,6 +26,8 @@ $lang['height'][0]       = 'Höhe';
 $lang['height'][1]       = 'Geben Sie hier die gewünschte Höhe ein.';
 $lang['addClusterer'][0] = 'Clustering aktivieren';
 $lang['addClusterer'][1] = 'Wählen Sie diese Option, um Clustering für die Karte zu verwenden.';
+$lang['clustererImg'][0] = 'Bild';
+$lang['clustererImg'][1] = 'Wählen Sie hier ein Bild für das Clustering aus.';
 $lang['styles'][0]       = 'Styles';
 $lang['styles'][1]       = 'Geben Sie hier ein Array von JSON-Objekten für das Styles-Attribut ein.';
 
@@ -36,15 +40,44 @@ $lang['scrollwheel'][0]            = 'Mausrad-Zoom';
 $lang['scrollwheel'][1]            = 'Wählen Sie diese Option, das Zoomen per Scrollrad zu erlauben.';
 $lang['staticMapNoscript'][0]      = 'Statische Karte als Fallback';
 $lang['staticMapNoscript'][1]      = 'Falls kein Javascript verfügbar ist, soll eine (eingeschränkte) statische Ansicht der Karte gezeigt werden.';
+$lang['staticMapWidth'][0]         = 'Breite';
+$lang['staticMapWidth'][1]         = 'Geben Sie hier die Breite der zu beziehenden statischen Karte in Pixel an.';
+$lang['staticMapHeight'][0]        = 'Höhe';
+$lang['staticMapHeight'][1]        = 'Geben Sie hier die Höhe der zu beziehenden statischen Karte in Pixel an.';
 
 // positioning
-$lang['zoom'][0] = 'Zoom';
-$lang['zoom'][1] = 'Geben Sie hier eine Zoomstufe ein (1: Welt, 5: Landmasse/Kontinent, 10: Stadt, 15: Straßen, 20: Gebäude).';
+$lang['zoom'][0]            = 'Zoom';
+$lang['zoom'][1]            = 'Geben Sie hier eine Zoomstufe ein (1: Welt, 5: Landmasse/Kontinent, 10: Stadt, 15: Straßen, 20: Gebäude).';
+$lang['positioningMode'][0] = 'Positionierungsmodus';
+$lang['positioningMode'][1] = 'Wählen Sie hier einen Positionierungsmodus aus.';
+$lang['centerMode'][0]      = 'Zentrierungsmodus';
+$lang['centerMode'][1]      = 'Wählen Sie hier einen Zentrierungsmodus aus.';
+$lang['centerLat'][0]       = 'Latitude';
+$lang['centerLat'][1]       = 'Geben Sie hier eine Latitude ein (Beispiel: 13.733525).';
+$lang['centerLng'][0]       = 'Longitude';
+$lang['centerLng'][1]       = 'Geben Sie hier eine Longitude ein (Beispiel: 13.733525).';
+$lang['centerAddress'][0]   = 'Adresse';
+$lang['centerAddress'][1]   = 'Geben Sie hier eine Adresse ein.';
 
 // controls
-$lang['mapTypesAvailable'][0] = 'Verfügbare Kartenansichten';
-$lang['mapTypesAvailable'][1] = 'Legen Sie fest, welche Ansichten verfügbar sein sollen.';
-
+$lang['mapTypesAvailable'][0]    = 'Verfügbare Kartenansichten';
+$lang['mapTypesAvailable'][1]    = 'Legen Sie fest, welche Ansichten verfügbar sein sollen.';
+$lang['addMapTypeControl'][0]    = 'Bedienelement "Kartentyp" hinzufügen';
+$lang['addMapTypeControl'][1]    = 'Wählen Sie diese Option, um das entsprechende Bedienelement einzubinden.';
+$lang['controlStyle'][0]         = 'Stil';
+$lang['controlStyle'][1]         = 'Wählen Sie hier einen Stil für das Bedienelement aus.';
+$lang['controlPos'][0]           = 'Position';
+$lang['controlPos'][1]           = 'Wählen Sie hier eine Position für das Bedienelement aus.';
+$lang['addZoomControl'][0]       = 'Bedienelement "Zoom" hinzufügen';
+$lang['addZoomControl'][1]       = 'Wählen Sie diese Option, um das entsprechende Bedienelement einzubinden.';
+$lang['addRotateControl'][0]     = 'Bedienelement "Rotation" hinzufügen (nur bei verfügbaren 45°-Bildern)';
+$lang['addRotateControl'][1]     = 'Wählen Sie diese Option, um das entsprechende Bedienelement einzubinden.';
+$lang['addFullscreenControl'][0] = 'Bedienelement "Vollbild" hinzufügen';
+$lang['addFullscreenControl'][1] = 'Wählen Sie diese Option, um das entsprechende Bedienelement einzubinden.';
+$lang['addScaleControl'][0]      = 'Bedienelement "Maßstab" hinzufügen';
+$lang['addScaleControl'][1]      = 'Wählen Sie diese Option, um das entsprechende Bedienelement einzubinden.';
+$lang['addStreetViewControl'][0] = 'Bedienelement "StreetView" hinzufügen';
+$lang['addStreetViewControl'][1] = 'Wählen Sie diese Option, um das entsprechende Bedienelement einzubinden.';
 
 // publish
 $lang['published'][0] = 'Veröffentlichen';
@@ -53,9 +86,20 @@ $lang['start']        = ['Anzeigen ab', 'Google Map erst ab diesem Tag auf der W
 $lang['stop']         = ['Anzeigen bis', 'Google Map nur bis zu diesem Tag auf der Webseite anzeigen.'];
 
 $lang['reference'] = [
-    \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::SIZE_MODE_ASPECT_RATIO => 'Seitenverhältnis',
-    \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::SIZE_MODE_STATIC       => 'Statisch',
-    \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::SIZE_MODE_CSS          => 'Selbst durch CSS festlegen'
+    \Ivory\GoogleMap\MapTypeId::ROADMAP                                            => 'Roadmap',
+    \Ivory\GoogleMap\MapTypeId::SATELLITE                                          => 'Satellit',
+    \Ivory\GoogleMap\MapTypeId::TERRAIN                                            => 'Terrain',
+    \Ivory\GoogleMap\MapTypeId::HYBRID                                             => 'Hybrid',
+    \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::SIZE_MODE_ASPECT_RATIO     => 'Seitenverhältnis',
+    \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::SIZE_MODE_STATIC           => 'Statisch',
+    \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::SIZE_MODE_CSS              => 'CSS',
+    \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::POSITIONING_MODE_STANDARD  => 'Standard',
+    \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::POSITIONING_MODE_BOUND     => 'Rahmen (Bounding)',
+    \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::CENTER_MODE_COORDINATE     => 'Koordinate',
+    \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::CENTER_MODE_STATIC_ADDRESS => 'Adresse',
+    \Ivory\GoogleMap\Control\MapTypeControlStyle::DEFAULT_                         => 'Standard',
+    \Ivory\GoogleMap\Control\MapTypeControlStyle::DROPDOWN_MENU                    => 'Dropdown-Menü',
+    \Ivory\GoogleMap\Control\MapTypeControlStyle::HORIZONTAL_BAR                   => 'Horizontale Bar'
 ];
 
 /**
@@ -65,6 +109,7 @@ $lang['general_legend']       = 'Allgemeine Einstellungen';
 $lang['visualization_legend'] = 'Darstellung';
 $lang['behavior_legend']      = 'Verhalten';
 $lang['positioning_legend']   = 'Positionierung';
+$lang['control_legend']       = 'Bedienelemente';
 $lang['publish_legend']       = 'Veröffentlichung';
 
 /**

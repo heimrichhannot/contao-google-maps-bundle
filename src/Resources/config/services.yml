@@ -1,8 +1,17 @@
 services:
-    huh.google_maps.manager:
+    huh.google_maps.map_manager:
         class: HeimrichHannot\GoogleMapsBundle\Manager\MapManager
+        arguments:
+            - "@contao.framework"
+            - "@huh.google_maps.overlay_manager"
+            - "@huh.utils.model"
+            - "@huh.utils.location"
+            - "@huh.utils.cache.database"
+    huh.google_maps.overlay_manager:
+        class: HeimrichHannot\GoogleMapsBundle\Manager\OverlayManager
         arguments:
             - "@contao.framework"
             - "@huh.utils.model"
             - "@huh.utils.location"
+            - "@huh.utils.file"
             - "@huh.utils.cache.database"

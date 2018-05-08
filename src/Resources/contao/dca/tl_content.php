@@ -25,22 +25,22 @@ $fields = [
         'label'     => &$GLOBALS['TL_LANG']['tl_content']['googlemaps_addHtml'],
         'exclude'   => true,
         'inputType' => 'checkbox',
-        'eval'      => ['tl_class' => 'w50'],
-        'sql'       => "char(1) NOT NULL default ''"
+        'eval'      => ['tl_class' => 'w50 clr'],
+        'sql'       => "char(1) NOT NULL default '1'"
     ],
     'googlemaps_addCss'  => [
         'label'     => &$GLOBALS['TL_LANG']['tl_content']['googlemaps_addCss'],
         'exclude'   => true,
         'inputType' => 'checkbox',
         'eval'      => ['tl_class' => 'w50'],
-        'sql'       => "char(1) NOT NULL default ''"
+        'sql'       => "char(1) NOT NULL default '1'"
     ],
     'googlemaps_addJs'   => [
         'label'     => &$GLOBALS['TL_LANG']['tl_content']['googlemaps_addJs'],
         'exclude'   => true,
         'inputType' => 'checkbox',
         'eval'      => ['tl_class' => 'w50'],
-        'sql'       => "char(1) NOT NULL default ''"
+        'sql'       => "char(1) NOT NULL default '1'"
     ],
 ];
 

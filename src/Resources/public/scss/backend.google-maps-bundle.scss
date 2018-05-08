@@ -1,4 +1,4 @@
-@each $field in mapTypeControlPos, zoomControlPos, rotateControlPos, panControlPos, scaleControlPos, streetViewControlPos {
+@each $field in mapTypeControlPos, zoomControlPos, rotateControlPos, fullscreenControlPos, streetViewControlPos {
   .google-maps-bundle {
     ##{$field}_1_4, ##{$field}_2_7, ##{$field}_3_10 {
       display: none;
