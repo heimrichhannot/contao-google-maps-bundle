@@ -72,6 +72,9 @@ class ContentGoogleMap extends ContentElement
         $templateData = System::getContainer()->get('huh.google_maps.map_manager')->prepareMap($templateData);
         $this->Template->map = $templateData['mapObject'];
 
-        $this->Template->renderedMap = $this->twig->render('@HeimrichHannotContaoGoogleMaps/google_map.html.twig', $templateData);
+        $template = $templateData['mapConfig']['template'] ?: 'gmap_map_default';
+        $template = System::getContainer()->get('huh.utils.template')->getTemplate($template);
+
+        $this->Template->renderedMap = $this->twig->render($template, $templateData);
     }
 }

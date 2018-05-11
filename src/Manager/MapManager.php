@@ -15,6 +15,7 @@ use Contao\System;
 use HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap;
 use HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel;
 use HeimrichHannot\UtilsBundle\Cache\DatabaseCacheUtil;
+use HeimrichHannot\UtilsBundle\File\FileUtil;
 use HeimrichHannot\UtilsBundle\Location\LocationUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use Ivory\GoogleMap\Base\Bound;
@@ -31,6 +32,7 @@ use Ivory\GoogleMap\Helper\Builder\ApiHelperBuilder;
 use Ivory\GoogleMap\Helper\Builder\MapHelperBuilder;
 use Ivory\GoogleMap\Map;
 use Ivory\GoogleMap\MapTypeId;
+use Ivory\GoogleMap\Overlay\MarkerClusterType;
 
 class MapManager
 {
@@ -72,12 +74,14 @@ class MapManager
         OverlayManager $overlayManager,
         ModelUtil $modelUtil,
         LocationUtil $locationUtil,
+        FileUtil $fileUtil,
         DatabaseCacheUtil $databaseCacheUtil
     ) {
         $this->framework         = $framework;
         $this->overlayManager    = $overlayManager;
         $this->modelUtil         = $modelUtil;
         $this->locationUtil      = $locationUtil;
+        $this->fileUtil          = $fileUtil;
         $this->databaseCacheUtil = $databaseCacheUtil;
     }
 
@@ -105,10 +109,8 @@ class MapManager
         $this->addStaticMap($map, $mapConfig, $templateData);
 
         // add overlays
-        if (null !== ($overlays = $this->modelUtil->findModelInstancesBy('tl_google_map_overlay', ['tl_google_map_overlay.pid=?', 'tl_google_map_overlay.published=?'], [$mapConfig->id, true])))
-        {
-            foreach ($overlays as $overlay)
-            {
+        if (null !== ($overlays = $this->modelUtil->findModelInstancesBy('tl_google_map_overlay', ['tl_google_map_overlay.pid=?', 'tl_google_map_overlay.published=?'], [$mapConfig->id, true]))) {
+            foreach ($overlays as $overlay) {
                 $this->overlayManager->addOverlayToMap($map, $overlay);
             }
         }
@@ -188,6 +190,20 @@ class MapManager
                 break;
         }
 
+        // clustering
+        if ($mapConfig->addClusterer)
+        {
+            $clusterer = $map->getOverlayManager()->getMarkerCluster();
+            $clusterer->setType(MarkerClusterType::MARKER_CLUSTERER);
+
+            if ($mapConfig->clustererImg)
+            {
+                $imagePath = $this->fileUtil->getPathFromUuid($mapConfig->clustererImg);
+                $clusterer->setOption('imagePath', $imagePath);
+            }
+        }
+
+        // styles
         $map->setMapOption('styles', json_decode($mapConfig->styles, true));
     }
 

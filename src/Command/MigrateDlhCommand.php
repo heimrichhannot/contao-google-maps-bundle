@@ -82,6 +82,7 @@ class MigrateDlhCommand extends AbstractLockedCommand
         // positioning
         // markerShowTitle -> ja -> titlemode = title field, titlemode=customtext wenn linktitle
         // infoWindow -> infoWindowText
+        // popupInfoWindow -> infoWindowAutoOpen
 
         return 0;
     }

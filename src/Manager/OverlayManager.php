@@ -11,6 +11,7 @@ namespace HeimrichHannot\GoogleMapsBundle\Manager;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\StringUtil;
+use Contao\System;
 use HeimrichHannot\GoogleMapsBundle\Backend\Overlay;
 use HeimrichHannot\GoogleMapsBundle\Model\OverlayModel;
 use HeimrichHannot\UtilsBundle\Cache\DatabaseCacheUtil;
@@ -49,6 +50,11 @@ class OverlayManager
      */
     protected $databaseCacheUtil;
 
+    /**
+     * @var \Twig_Environment
+     */
+    protected $twig;
+
     const CACHE_KEY_PREFIX = 'googleMaps_overlay';
 
     public function __construct(
@@ -56,13 +62,15 @@ class OverlayManager
         ModelUtil $modelUtil,
         LocationUtil $locationUtil,
         FileUtil $fileUtil,
-        DatabaseCacheUtil $databaseCacheUtil
+        DatabaseCacheUtil $databaseCacheUtil,
+        \Twig_Environment $twig
     ) {
         $this->framework         = $framework;
         $this->modelUtil         = $modelUtil;
         $this->locationUtil      = $locationUtil;
         $this->fileUtil          = $fileUtil;
         $this->databaseCacheUtil = $databaseCacheUtil;
+        $this->twig              = $twig;
     }
 
     public function addOverlayToMap(Map $map, OverlayModel $overlayConfig): void
@@ -76,6 +84,12 @@ class OverlayManager
                 foreach ($events as $event) {
                     $map->getEventManager()->addDomEvent($event);
                 }
+                break;
+            case Overlay::TYPE_INFO_WINDOW:
+                $infoWindow = $this->prepareInfoWindow($overlayConfig);
+                $infoWindow->setOpen(true);
+
+                $map->getOverlayManager()->addInfoWindow($infoWindow);
                 break;
             default:
                 // TODO allow event subscribers
@@ -98,8 +112,7 @@ class OverlayManager
                 // image file
                 $filePath = $this->fileUtil->getPathFromUuid($overlayConfig->iconSrc);
 
-                if ($filePath)
-                {
+                if ($filePath) {
                     $icon->setUrl($filePath);
                 }
 
@@ -115,19 +128,16 @@ class OverlayManager
                 break;
         }
 
-        if ($overlayConfig->animation)
-        {
+        if ($overlayConfig->animation) {
             $marker->setAnimation($overlayConfig->animation);
         }
 
-        if ($overlayConfig->zIndex)
-        {
-            $marker->setOption('zIndex', (int) $overlayConfig->zIndex);
+        if ($overlayConfig->zIndex) {
+            $marker->setOption('zIndex', (int)$overlayConfig->zIndex);
         }
 
         // title
-        switch ($overlayConfig->titleMode)
-        {
+        switch ($overlayConfig->titleMode) {
             case Overlay::TITLE_MODE_TITLE_FIELD:
                 $marker->setOption('title', $overlayConfig->title);
                 break;
@@ -137,16 +147,14 @@ class OverlayManager
         }
 
         // events
-        if ($overlayConfig->clickEvent)
-        {
+        if ($overlayConfig->clickEvent) {
             $marker->addOptions(['clickable' => true]);
 
-            switch ($overlayConfig->clickEvent)
-            {
+            switch ($overlayConfig->clickEvent) {
                 case Overlay::CLICK_EVENT_LINK:
                     /** @var Controller $controller */
                     $controller = $this->framework->getAdapter(Controller::class);
-                    $url = $controller->replaceInsertTags($overlayConfig->url);
+                    $url        = $controller->replaceInsertTags($overlayConfig->url);
 
                     $event = new Event(
                         $marker->getVariable(),
@@ -159,9 +167,11 @@ class OverlayManager
                     $events[] = $event;
                     break;
                 case Overlay::CLICK_EVENT_INFO_WINDOW:
-                    $infoWindow = new InfoWindow($overlayConfig->infoWindowText);
+                    $infoWindow = $this->prepareInfoWindow($overlayConfig);
                     $infoWindow->setPixelOffset(new Size($overlayConfig->infoWindowAnchorX, $overlayConfig->infoWindowAnchorY));
                     $infoWindow->setOpenEvent(MouseEvent::CLICK);
+                    $infoWindow->setAutoOpen($overlayConfig->infoWindowAutoOpen ? true : false);
+
                     $marker->setInfoWindow($infoWindow);
 
                     break;
@@ -169,6 +179,58 @@ class OverlayManager
         }
 
         return [$marker, $events];
+    }
+
+    protected function prepareInfoWindow(OverlayModel $overlayConfig)
+    {
+        $infoWindow = new InfoWindow($overlayConfig->infoWindowText);
+        $this->setPositioning($infoWindow, $overlayConfig);
+        $this->addRoutingToInfoWindow($infoWindow, $overlayConfig);
+
+        // size
+        $width  = StringUtil::deserialize($overlayConfig->infoWindowWidth, true);
+        $height = StringUtil::deserialize($overlayConfig->infoWindowHeight, true);
+        $sizing = [];
+
+        if (isset($width['value']) && $width['value'])
+        {
+            $sizing[] = 'width: ' . $width['value'] . $width['unit'] . ';';
+        }
+
+        if (isset($height['value']) && $height['value'])
+        {
+            $sizing[] = 'height: ' . $height['value'] . $height['unit'] . ';';
+        }
+
+        if (!empty($sizing))
+        {
+            $infoWindow->setContent(
+                '<div class="wrapper" style="' . implode(' ', $sizing) . '">' . $infoWindow->getContent() . '</div>'
+            );
+        }
+
+        if ($overlayConfig->zIndex) {
+            $infoWindow->setOption('zIndex', (int)$overlayConfig->zIndex);
+        }
+
+        return $infoWindow;
+    }
+
+    public function addRoutingToInfoWindow(InfoWindow $infoWindow, OverlayModel $overlayConfig)
+    {
+        $position = $infoWindow->getPosition();
+
+        if ($overlayConfig->addRouting && $position) {
+            $template = $overlayConfig->routingTemplate ?: 'gmap_routing_default';
+            $template = System::getContainer()->get('huh.utils.template')->getTemplate($template);
+
+            $routing = $this->twig->render($template, [
+                'lat' => $position->getLatitude(),
+                'lng' => $position->getLongitude()
+            ]);
+
+            $infoWindow->setContent($infoWindow->getContent() . $routing);
+        }
     }
 
     /**

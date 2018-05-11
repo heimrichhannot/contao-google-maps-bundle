@@ -6,6 +6,7 @@ services:
             - "@huh.google_maps.overlay_manager"
             - "@huh.utils.model"
             - "@huh.utils.location"
+            - "@huh.utils.file"
             - "@huh.utils.cache.database"
     huh.google_maps.overlay_manager:
         class: HeimrichHannot\GoogleMapsBundle\Manager\OverlayManager
@@ -15,3 +16,4 @@ services:
             - "@huh.utils.location"
             - "@huh.utils.file"
             - "@huh.utils.cache.database"
+            - "@twig"

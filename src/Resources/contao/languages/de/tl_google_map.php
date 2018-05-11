@@ -79,6 +79,10 @@ $lang['addScaleControl'][1]      = 'Wählen Sie diese Option, um das entsprechen
 $lang['addStreetViewControl'][0] = 'Bedienelement "StreetView" hinzufügen';
 $lang['addStreetViewControl'][1] = 'Wählen Sie diese Option, um das entsprechende Bedienelement einzubinden.';
 
+// template
+$lang['template'][0] = 'Template';
+$lang['template'][1] = 'Wählen Sie hier bei Bedarf ein alternatives Template für die Karte aus.';
+
 // publish
 $lang['published'][0] = 'Veröffentlichen';
 $lang['published'][1] = 'Wählen Sie diese Option zum Veröffentlichen.';
@@ -110,6 +114,7 @@ $lang['visualization_legend'] = 'Darstellung';
 $lang['behavior_legend']      = 'Verhalten';
 $lang['positioning_legend']   = 'Positionierung';
 $lang['control_legend']       = 'Bedienelemente';
+$lang['template_legend']      = 'Template';
 $lang['publish_legend']       = 'Veröffentlichung';
 
 /**

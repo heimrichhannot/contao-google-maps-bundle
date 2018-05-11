@@ -27,8 +27,8 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
             'format' => '%s'
         ],
         'sorting'           => [
-            'mode'                  => 1,
-            'fields'                => ['title'],
+            'mode'                  => 4,
+            'fields'                => ['type', 'title'],
             'headerFields'          => ['title'],
             'panelLayout'           => 'filter;sort,search,limit',
             'child_record_callback' => ['HeimrichHannot\GoogleMapsBundle\Backend\Overlay', 'listChildren']
@@ -82,9 +82,11 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
             'type',
             'published'
         ],
-        'default'                                                     => '{general_legend},type,title;{publish_legend},published;',
+        'default'                                                     => '{general_legend},title,type;{publish_legend},published;',
         \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::TYPE_MARKER =>
-            '{general_legend},type,title;{config_legend},titleMode,positioningMode,animation,markerType,clickEvent,zIndex;{publish_legend},published;',
+            '{general_legend},title,type;{config_legend},titleMode,positioningMode,animation,markerType,clickEvent,zIndex;{publish_legend},published;',
+        \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::TYPE_INFO_WINDOW =>
+            '{general_legend},title,type;{config_legend},positioningMode,infoWindowWidth,infoWindowHeight,infoWindowText,addRouting,zIndex;{publish_legend},published;',
 
     ],
     'subpalettes' => [
@@ -93,8 +95,8 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
         'positioningMode_' . \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::POSITIONING_MODE_STATIC_ADDRESS => 'positioningAddress',
         'markerType_' . \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::MARKER_TYPE_ICON                     => 'iconSrc,iconWidth,iconHeight,iconAnchorX,iconAnchorY',
         'clickEvent_' . \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::CLICK_EVENT_LINK                     => 'url,target',
-        'clickEvent_' . \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::CLICK_EVENT_INFO_WINDOW              => 'infoWindowWidth,infoWindowHeight,infoWindowAnchorX,infoWindowAnchorY,popupInfoWindow,infoWindowText,addRouting',
-        'addRouting'                                                                                           => 'routingAddress',
+        'clickEvent_' . \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::CLICK_EVENT_INFO_WINDOW              => 'infoWindowWidth,infoWindowHeight,infoWindowAnchorX,infoWindowAnchorY,infoWindowAutoOpen,infoWindowText,addRouting',
+        'addRouting'                                                                                           => 'routingAddress,routingTemplate',
         'published'                                                                                            => 'start,stop'
     ],
     'fields'      => [
@@ -264,8 +266,8 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
             'eval'      => ['includeBlankOption' => true, 'submitOnChange' => true, 'tl_class' => 'w50 clr'],
             'sql'       => "varchar(64) NOT NULL default ''",
         ],
-        'popupInfoWindow'    => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['popupInfoWindow'],
+        'infoWindowAutoOpen'    => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['infoWindowAutoOpen'],
             'exclude'   => true,
             'filter'    => true,
             'default'   => false,
@@ -299,18 +301,29 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
             'eval'      => ['maxlength' => 255, 'tl_class' => 'long clr'],
             'sql'       => "varchar(255) NOT NULL default ''",
         ],
+        'routingTemplate' => [
+            'label'                   => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['routingTemplate'],
+            'exclude'                 => true,
+            'filter'                  => true,
+            'inputType'               => 'select',
+            'options_callback' => function() {
+                return System::getContainer()->get('huh.utils.choice.twig_template')->getCachedChoices(['gmap_routing_']);
+            },
+            'eval'                    => ['tl_class' => 'w50', 'includeBlankOption' => true],
+            'sql'                     => "varchar(64) NOT NULL default ''"
+        ],
         'infoWindowWidth'          => [
             'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['infoWindowWidth'],
             'inputType' => 'inputUnit',
             'options'   => $GLOBALS['TL_CSS_UNITS'],
-            'eval'      => ['tl_class' => 'w50', 'mandatory' => true],
+            'eval'      => ['tl_class' => 'w50'],
             'sql'       => "varchar(64) NOT NULL default ''"
         ],
         'infoWindowHeight'         => [
             'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['infoWindowHeight'],
             'inputType' => 'inputUnit',
             'options'   => $GLOBALS['TL_CSS_UNITS'],
-            'eval'      => ['tl_class' => 'w50', 'mandatory' => true],
+            'eval'      => ['tl_class' => 'w50'],
             'sql'       => "varchar(64) NOT NULL default ''"
         ],
         'infoWindowAnchorX'  => [

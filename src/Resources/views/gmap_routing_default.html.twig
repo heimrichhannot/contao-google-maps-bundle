@@ -1,0 +1,13 @@
+<div class="routinglink">
+    {{ 'huh.google_maps.label.routing'|trans }}<br>
+    <br>
+
+    <form action="https://maps.google.com/maps" method="get" target="_new">
+        <input type="hidden" name="daddr" value="{{ lat }},{{ lng }}">
+        <input type="hidden" name="ie" value="UTF8">
+        <input type="hidden" name="hl" value="de">
+
+        <input type="text" class="text" id="saddr" name="saddr">
+        <input type="submit" class="submit" value="OK">
+    </form>
+</div>

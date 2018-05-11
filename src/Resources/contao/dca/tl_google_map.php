@@ -104,6 +104,7 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             . '{behavior_legend},disableDoubleClickZoom,draggable,scrollwheel,staticMapNoscript;'
             . '{positioning_legend},positioningMode;'
             . '{control_legend},mapTypesAvailable,addMapTypeControl,addZoomControl,addRotateControl,addPanControl,addFullscreenControl,addStreetViewControl,addScaleControl;'
+            . '{template_legend},template;'
             . '{publish_legend},published;'
     ],
     'subpalettes' => [
@@ -156,13 +157,13 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'eval'      => ['maxlength' => 128, 'mandatory' => true, 'tl_class' => 'w50'],
             'sql'       => "varchar(128) NOT NULL default ''"
         ],
-        'htmlId' => [
-            'label'                   => &$GLOBALS['TL_LANG']['tl_google_map']['htmlId'],
-            'exclude'                 => true,
-            'search'                  => true,
-            'inputType'               => 'text',
-            'eval'                    => ['maxlength' => 64, 'tl_class' => 'w50'],
-            'sql'                     => "varchar(64) NOT NULL default ''"
+        'htmlId'                 => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map']['htmlId'],
+            'exclude'   => true,
+            'search'    => true,
+            'inputType' => 'text',
+            'eval'      => ['maxlength' => 64, 'tl_class' => 'w50'],
+            'sql'       => "varchar(64) NOT NULL default ''"
         ],
         // visualization
         'mapType'                => [
@@ -489,6 +490,18 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'inputType' => 'checkbox',
             'eval'      => ['tl_class' => 'w50 clr'],
             'sql'       => "char(1) NOT NULL default '1'",
+        ],
+        // template
+        'template'               => [
+            'label'            => &$GLOBALS['TL_LANG']['tl_google_map']['template'],
+            'exclude'          => true,
+            'filter'           => true,
+            'inputType'        => 'select',
+            'options_callback' => function () {
+                return System::getContainer()->get('huh.utils.choice.twig_template')->getCachedChoices(['gmap_map_']);
+            },
+            'eval'             => ['tl_class' => 'w50', 'includeBlankOption' => true],
+            'sql'              => "varchar(64) NOT NULL default ''"
         ],
         // published
         'published'              => [

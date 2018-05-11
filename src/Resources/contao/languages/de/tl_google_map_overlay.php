@@ -42,10 +42,6 @@ $lang['target'][0]             = 'Weiterleitungsseite in neuem Fenster öffnen';
 $lang['target'][1]             = 'Wählen Sie diese Option, um die Weiterleitungsseite in einem neuen Fenster zu öffnen.';
 $lang['linkTitle'][0]          = 'Link-Titel überschreiben';
 $lang['linkTitle'][1]          = 'Geben Sie hier einen Link-Titel ein.';
-$lang['popupInfoWindow'][0]    = '';
-$lang['popupInfoWindow'][1]    = '';
-$lang['infoWindow'][0]         = '';
-$lang['infoWindow'][1]         = '';
 $lang['infoWindowWidth'][0]    = 'Breite';
 $lang['infoWindowWidth'][1]    = 'Bitte geben Sie hier die Breite der Infoblase ein.';
 $lang['infoWindowHeight'][0]   = 'Höhe';
@@ -54,6 +50,16 @@ $lang['infoWindowAnchorX'][0]  = 'Versatz (X-Achse)';
 $lang['infoWindowAnchorX'][1]  = 'Geben Sie hier einen Versatz in X-Richtung ein.';
 $lang['infoWindowAnchorY'][0]  = 'Versatz (Y-Achse)';
 $lang['infoWindowAnchorY'][1]  = 'Geben Sie hier einen Versatz in Y-Richtung ein.';
+$lang['infoWindowAutoOpen'][0] = 'Infoblase automatisch öffnen';
+$lang['infoWindowAutoOpen'][1] = 'Wählen Sie diese Option, wenn die Infoblase automatisch geöffnet werden soll.';
+$lang['infoWindowText'][0]     = 'Text';
+$lang['infoWindowText'][1]     = 'Geben Sie hier den Text der Infoblase ein.';
+$lang['addRouting'][0]         = 'Routenplaner hinzufügen';
+$lang['addRouting'][1]         = 'Wählen Sie diese Option, um der Infoblase einen Routenplaner hinzuzufügen.';
+$lang['routingAddress'][0]     = 'Ziel für den Routenplaner';
+$lang['routingAddress'][1]     = 'Geben Sie hier die gewünschte Zieladresse rein.';
+$lang['routingTemplate'][0]    = 'Template';
+$lang['routingTemplate'][1]    = 'Wählen Sie hier bei Bedarf ein alternatives Routenplaner-Template aus.';
 $lang['zIndex'][0]             = 'z-Index (CSS)';
 $lang['zIndex'][1]             = 'Geben Sie hier bei Bedarf den gewünschten z-Index ein.';
 
@@ -80,12 +86,12 @@ $lang['reference'] = [
     \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::TYPE_POLYLINE                   => 'Polyline',
     \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::TYPE_POLYGON                    => 'Polygon',
     \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::TYPE_CIRCLE                     => 'Kreis',
-    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::TYPE_RECTANGLE          => 'Rechteck',
-    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::TYPE_GROUND_OVERLAY     => 'Ground-Overlay',
-    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::MARKER_TYPE_SIMPLE      => 'Standard',
-    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::MARKER_TYPE_ICON        => 'Individuelles Bild',
-    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::CLICK_EVENT_LINK        => 'Link',
-    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::CLICK_EVENT_INFO_WINDOW => 'Infoblase'
+    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::TYPE_RECTANGLE                  => 'Rechteck',
+    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::TYPE_GROUND_OVERLAY             => 'Ground-Overlay',
+    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::MARKER_TYPE_SIMPLE              => 'Standard',
+    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::MARKER_TYPE_ICON                => 'Individuelles Bild',
+    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::CLICK_EVENT_LINK                => 'Link',
+    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::CLICK_EVENT_INFO_WINDOW         => 'Infoblase'
 ];
 
 /**
