@@ -1,4 +1,11 @@
 services:
+  _defaults:
+    autoconfigure: true
+
+  _instanceof:
+    Contao\CoreBundle\Framework\FrameworkAwareInterface:
+      calls:
+        - ["setFramework", ["@contao.framework"]]
   huh.google_maps.twig.extension:
     class: HeimrichHannot\GoogleMapsBundle\Twig\Extension
     tags:

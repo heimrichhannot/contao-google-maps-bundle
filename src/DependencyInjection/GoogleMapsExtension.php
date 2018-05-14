@@ -8,13 +8,17 @@
 
 namespace HeimrichHannot\GoogleMapsBundle\DependencyInjection;
 
+use Contao\CoreBundle\Framework\FrameworkAwareInterface;
+use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
-class GoogleMapsExtension extends Extension
+class GoogleMapsExtension extends Extension implements FrameworkAwareInterface
 {
+    use FrameworkAwareTrait;
+
     public function getAlias()
     {
         return 'huh_google_maps';

@@ -46,11 +46,6 @@ class OverlayManager
     protected $locationUtil;
 
     /**
-     * @var DatabaseCacheUtil
-     */
-    protected $databaseCacheUtil;
-
-    /**
      * @var \Twig_Environment
      */
     protected $twig;
@@ -62,14 +57,12 @@ class OverlayManager
         ModelUtil $modelUtil,
         LocationUtil $locationUtil,
         FileUtil $fileUtil,
-        DatabaseCacheUtil $databaseCacheUtil,
         \Twig_Environment $twig
     ) {
         $this->framework         = $framework;
         $this->modelUtil         = $modelUtil;
         $this->locationUtil      = $locationUtil;
         $this->fileUtil          = $fileUtil;
-        $this->databaseCacheUtil = $databaseCacheUtil;
         $this->twig              = $twig;
     }
 
@@ -245,12 +238,12 @@ class OverlayManager
                 $overlay->setPosition(new Coordinate($overlayConfig->positioningLat, $overlayConfig->positioningLng));
                 break;
             case Overlay::POSITIONING_MODE_STATIC_ADDRESS:
-                if (!($coordinates = $this->databaseCacheUtil->getValue(static::CACHE_KEY_PREFIX . $overlayConfig->positioningAddress))) {
+                if (!($coordinates = System::getContainer()->get('huh.utils.cache.database')->getValue(static::CACHE_KEY_PREFIX . $overlayConfig->positioningAddress))) {
                     $coordinates = $this->locationUtil->computeCoordinatesByString($overlayConfig->positioningAddress);
 
                     if (is_array($coordinates)) {
                         $coordinates = serialize($coordinates);
-                        $this->databaseCacheUtil->cacheValue($overlayConfig->positioningAddress, $coordinates);
+                        System::getContainer()->get('huh.utils.cache.database')->cacheValue($overlayConfig->positioningAddress, $coordinates);
                     }
                 }
 

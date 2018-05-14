@@ -57,11 +57,6 @@ class MapManager
     protected $locationUtil;
 
     /**
-     * @var DatabaseCacheUtil
-     */
-    protected $databaseCacheUtil;
-
-    /**
      * @var \Twig_Environment
      */
     protected $twig;
@@ -80,7 +75,6 @@ class MapManager
         ModelUtil $modelUtil,
         LocationUtil $locationUtil,
         FileUtil $fileUtil,
-        DatabaseCacheUtil $databaseCacheUtil,
         \Twig_Environment $twig
     ) {
         $this->framework         = $framework;
@@ -88,7 +82,6 @@ class MapManager
         $this->modelUtil         = $modelUtil;
         $this->locationUtil      = $locationUtil;
         $this->fileUtil          = $fileUtil;
-        $this->databaseCacheUtil = $databaseCacheUtil;
         $this->twig              = $twig;
     }
 
@@ -317,12 +310,12 @@ class MapManager
                 $map->setCenter(new Coordinate($mapConfig->centerLat, $mapConfig->centerLng));
                 break;
             case GoogleMap::CENTER_MODE_STATIC_ADDRESS:
-                if (!($coordinates = $this->databaseCacheUtil->getValue(static::CACHE_KEY_PREFIX . $mapConfig->centerAddress))) {
+                if (!($coordinates = System::getContainer()->get('huh.utils.cache.database')->getValue(static::CACHE_KEY_PREFIX . $mapConfig->centerAddress))) {
                     $coordinates = $this->locationUtil->computeCoordinatesByString($mapConfig->centerAddress);
 
                     if (is_array($coordinates)) {
                         $coordinates = serialize($coordinates);
-                        $this->databaseCacheUtil->cacheValue($mapConfig->centerAddress, $coordinates);
+                        System::getContainer()->get('huh.utils.cache.database')->cacheValue($mapConfig->centerAddress, $coordinates);
                     }
                 }
 
