@@ -16,6 +16,11 @@ $GLOBALS['TL_CTE']['maps'] = [
 ];
 
 /**
+ * Hooks
+ */
+$GLOBALS['TL_HOOKS']['replaceInsertTags']['googleMapsBundle'] = ['huh.google_maps.listener.hooks', 'addInsertTags'];
+
+/**
  * Models
  */
 $GLOBALS['TL_MODELS']['tl_google_map']         = 'HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel';

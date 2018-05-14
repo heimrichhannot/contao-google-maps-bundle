@@ -1,0 +1,7 @@
+services:
+  huh.google_maps.twig.extension:
+    class: HeimrichHannot\GoogleMapsBundle\Twig\Extension
+    tags:
+      - { name: twig.extension }
+    arguments:
+    - "@huh.google_maps.map_manager"

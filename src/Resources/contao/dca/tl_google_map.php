@@ -92,7 +92,6 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             // controls
             'addMapTypeControl',
             'addZoomControl',
-            'addPanControl',
             'addRotateControl',
             'addFullscreenControl',
             'addStreetViewControl',
@@ -103,7 +102,7 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             . '{visualization_legend},mapType,sizeMode,addClusterer,styles;'
             . '{behavior_legend},disableDoubleClickZoom,draggable,scrollwheel,staticMapNoscript;'
             . '{positioning_legend},positioningMode;'
-            . '{control_legend},mapTypesAvailable,addMapTypeControl,addZoomControl,addRotateControl,addPanControl,addFullscreenControl,addStreetViewControl,addScaleControl;'
+            . '{control_legend},mapTypesAvailable,addMapTypeControl,addZoomControl,addRotateControl,addFullscreenControl,addStreetViewControl,addScaleControl;'
             . '{template_legend},template;'
             . '{publish_legend},published;'
     ],
@@ -126,7 +125,6 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
         'addMapTypeControl'                                                                                => 'mapTypeControlPos,mapTypeControlStyle',
         'addZoomControl'                                                                                   => 'zoomControlPos',
         'addRotateControl'                                                                                 => 'rotateControlPos',
-        'addPanControl'                                                                                    => 'panControlPos',
         'addFullscreenControl'                                                                             => 'fullscreenControlPos',
         'addStreetViewControl'                                                                             => 'streetViewControlPos',
         // published
@@ -224,17 +222,13 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'eval'      => ['submitOnChange' => true, 'tl_class' => 'clr m12'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
-        'clustererImg'           => [
+        'clustererImg'             => [
             'label'     => &$GLOBALS['TL_LANG']['tl_google_map']['clustererImg'],
             'exclude'   => true,
-            'inputType' => 'fileTree',
-            'eval'      => [
-                'filesOnly'  => true,
-                'extensions' => \Contao\Config::get('validImageTypes'),
-                'fieldType'  => 'radio',
-                'tl_class'   => 'w50 autoheight'
-            ],
-            'sql'       => "binary(16) NULL"
+            'search'    => true,
+            'inputType' => 'text',
+            'eval'      => ['mandatory' => false, 'maxlength' => 255],
+            'sql'       => "varchar(255) NOT NULL default ''",
         ],
         'styles'                 => [
             'label'       => &$GLOBALS['TL_LANG']['tl_google_map']['styles'],

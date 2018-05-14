@@ -6,7 +6,7 @@ $dca = &$GLOBALS['TL_DCA']['tl_content'];
  * Palettes
  */
 $dca['palettes'][\HeimrichHannot\GoogleMapsBundle\Backend\Content::ELEMENT_GOOGLE_MAP] =
-    '{type_legend},type,headline;{config_legend},googlemaps_map,googlemaps_addHtml,googlemaps_addCss,googlemaps_addJs;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{invisible_legend:hide},invisible,start,stop';
+    '{type_legend},type,headline;{config_legend},googlemaps_map,googlemaps_skipHtml,googlemaps_skipCss,googlemaps_skipJs;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{invisible_legend:hide},invisible,start,stop';
 
 /**
  * Fields
@@ -21,26 +21,26 @@ $fields = [
         'eval'             => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true, 'chosen' => true],
         'sql'              => "int(10) unsigned NOT NULL default '0'"
     ],
-    'googlemaps_addHtml' => [
-        'label'     => &$GLOBALS['TL_LANG']['tl_content']['googlemaps_addHtml'],
+    'googlemaps_skipHtml' => [
+        'label'     => &$GLOBALS['TL_LANG']['tl_content']['googlemaps_skipHtml'],
         'exclude'   => true,
         'inputType' => 'checkbox',
         'eval'      => ['tl_class' => 'w50 clr'],
-        'sql'       => "char(1) NOT NULL default '1'"
+        'sql'       => "char(1) NOT NULL default ''"
     ],
-    'googlemaps_addCss'  => [
-        'label'     => &$GLOBALS['TL_LANG']['tl_content']['googlemaps_addCss'],
+    'googlemaps_skipCss'  => [
+        'label'     => &$GLOBALS['TL_LANG']['tl_content']['googlemaps_skipCss'],
         'exclude'   => true,
         'inputType' => 'checkbox',
         'eval'      => ['tl_class' => 'w50'],
-        'sql'       => "char(1) NOT NULL default '1'"
+        'sql'       => "char(1) NOT NULL default ''"
     ],
-    'googlemaps_addJs'   => [
-        'label'     => &$GLOBALS['TL_LANG']['tl_content']['googlemaps_addJs'],
+    'googlemaps_skipJs'   => [
+        'label'     => &$GLOBALS['TL_LANG']['tl_content']['googlemaps_skipJs'],
         'exclude'   => true,
         'inputType' => 'checkbox',
         'eval'      => ['tl_class' => 'w50'],
-        'sql'       => "char(1) NOT NULL default '1'"
+        'sql'       => "char(1) NOT NULL default ''"
     ],
 ];
 

@@ -1,0 +1,7 @@
+services:
+  huh.google_maps.listener.hooks:
+    class: HeimrichHannot\GoogleMapsBundle\EventListener\HookListener
+    public: true
+    arguments:
+      - "@contao.framework"
+      - "@huh.google_maps.map_manager"

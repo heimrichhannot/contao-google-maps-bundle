@@ -6,6 +6,7 @@ use Contao\Config;
 use Contao\ContentElement;
 use Contao\ContentModel;
 use Contao\System;
+use HeimrichHannot\GoogleMapsBundle\Manager\MapManager;
 use HeimrichHannot\UtilsBundle\Arrays\ArrayUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use Ivory\GoogleMap\Helper\Builder\ApiHelperBuilder;
@@ -21,9 +22,9 @@ class ContentGoogleMap extends ContentElement
     protected $strTemplate = 'ce_google_map';
 
     /**
-     * @var \Twig_Environment
+     * @var MapManager
      */
-    protected $twig;
+    protected $mapManager;
 
     /**
      * @var ArrayUtil
@@ -35,14 +36,20 @@ class ContentGoogleMap extends ContentElement
      */
     protected $modelUtil;
 
+    /**
+     * @var \Twig_Environment
+     */
+    protected $twig;
+
     public function __construct(ContentModel $objElement, $strColumn = 'main')
     {
 
         parent::__construct($objElement, $strColumn);
 
-        $this->twig      = System::getContainer()->get('twig');
+        $this->mapManager = System::getContainer()->get('huh.google_maps.map_manager');
         $this->arrayUtil = System::getContainer()->get('huh.utils.array');
         $this->modelUtil = System::getContainer()->get('huh.utils.model');
+        $this->twig      = System::getContainer()->get('twig');
     }
 
     public function generate()
@@ -67,14 +74,8 @@ class ContentGoogleMap extends ContentElement
 
     protected function compile()
     {
-        $templateData = $this->arrayUtil->removePrefix('googlemaps_', $this->arrData);
+        $elementData = $this->arrayUtil->removePrefix('googlemaps_', $this->arrData);
 
-        $templateData = System::getContainer()->get('huh.google_maps.map_manager')->prepareMap($templateData);
-        $this->Template->map = $templateData['mapObject'];
-
-        $template = $templateData['mapConfig']['template'] ?: 'gmap_map_default';
-        $template = System::getContainer()->get('huh.utils.template')->getTemplate($template);
-
-        $this->Template->renderedMap = $this->twig->render($template, $templateData);
+        $this->Template->renderedMap = $this->mapManager->render($elementData['map']);
     }
 }

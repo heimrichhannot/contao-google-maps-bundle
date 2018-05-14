@@ -62,6 +62,11 @@ class MapManager
     protected $databaseCacheUtil;
 
     /**
+     * @var \Twig_Environment
+     */
+    protected $twig;
+
+    /**
      * @var string
      */
     protected $apiKey;
@@ -75,7 +80,8 @@ class MapManager
         ModelUtil $modelUtil,
         LocationUtil $locationUtil,
         FileUtil $fileUtil,
-        DatabaseCacheUtil $databaseCacheUtil
+        DatabaseCacheUtil $databaseCacheUtil,
+        \Twig_Environment $twig
     ) {
         $this->framework         = $framework;
         $this->overlayManager    = $overlayManager;
@@ -83,19 +89,21 @@ class MapManager
         $this->locationUtil      = $locationUtil;
         $this->fileUtil          = $fileUtil;
         $this->databaseCacheUtil = $databaseCacheUtil;
+        $this->twig              = $twig;
     }
 
-    public function prepareMap(array $templateData): array
+    public function prepareMap(int $mapId, array $config = []): array
     {
-        if (!isset($templateData['map'])) {
+        if (!$mapId) {
             return null;
         }
 
-        if (null === ($mapConfig = $this->modelUtil->findModelInstanceByPk('tl_google_map', $templateData['map']))) {
+        if (null === ($mapConfig = $this->modelUtil->findModelInstanceByPk('tl_google_map', $mapId))) {
             return null;
         }
 
-        $map = new Map();
+        $templateData = $config;
+        $map          = new Map();
 
         // apply map config
         if ($mapConfig->htmlId) {
@@ -115,16 +123,25 @@ class MapManager
             }
         }
 
-        $templateData['mapObject'] = $map;
+        $templateData['mapModel'] = $map;
         $templateData['mapConfig'] = $mapConfig->row();
-
-        $this->render($map, $mapConfig, $templateData);
+        $templateData['mapConfigModel'] = $mapConfig;
 
         return $templateData;
     }
 
-    protected function render(Map $map, GoogleMapModel $mapConfig, array &$templateData)
+    public function render(int $mapId, array $config = [])
     {
+        $templateData = $this->prepareMap($mapId, $config);
+
+        if (null === $templateData)
+        {
+            return null;
+        }
+
+        $map          = $templateData['mapModel'];
+        $mapConfig    = $templateData['mapConfigModel'];
+
         // compute API key
         global $objPage;
 
@@ -144,6 +161,35 @@ class MapManager
         $templateData['mapCss']  = $mapHelper->renderStylesheet($map);
         $templateData['mapJs']   = $mapHelper->renderJavascript($map);
         $templateData['mapApi']  = $apiHelper->render([$map]);
+
+        $template = $templateData['mapConfig']['template'] ?: 'gmap_map_default';
+        $template = System::getContainer()->get('huh.utils.template')->getTemplate($template);
+
+        return $this->twig->render($template, $templateData);
+    }
+
+    public function renderHtml(int $mapId, array $config = [])
+    {
+        $config['skipCss'] = true;
+        $config['skipJs'] = true;
+
+        return $this->render($mapId, $config);
+    }
+
+    public function renderCss(int $mapId, array $config = [])
+    {
+        $config['skipHtml'] = true;
+        $config['skipJs'] = true;
+
+        return $this->render($mapId, $config);
+    }
+
+    public function renderJs(int $mapId, array $config = [])
+    {
+        $config['skipHtml'] = true;
+        $config['skipCss'] = true;
+
+        return $this->render($mapId, $config);
     }
 
     /**
@@ -191,13 +237,11 @@ class MapManager
         }
 
         // clustering
-        if ($mapConfig->addClusterer)
-        {
+        if ($mapConfig->addClusterer) {
             $clusterer = $map->getOverlayManager()->getMarkerCluster();
             $clusterer->setType(MarkerClusterType::MARKER_CLUSTERER);
 
-            if ($mapConfig->clustererImg)
-            {
+            if ($mapConfig->clustererImg) {
                 $imagePath = $this->fileUtil->getPathFromUuid($mapConfig->clustererImg);
                 $clusterer->setOption('imagePath', $imagePath);
             }

@@ -211,7 +211,7 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
             'options'   => \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::MARKER_TYPES,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['reference'],
             'eval'      => ['tl_class' => 'w50 clr', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
-            'sql'       => "varchar(64) NOT NULL default 'default'"
+            'sql'       => "varchar(64) NOT NULL default ''"
         ],
         'fillColor'          => [
             'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['fillColor'],

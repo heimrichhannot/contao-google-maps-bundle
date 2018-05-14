@@ -1,12 +1,12 @@
-{% if addHtml|default() %}
+{% if not skipHtml|default(false) %}
     {{ mapHtml|raw }}
 {% endif %}
 
-{% if addCss|default() %}
+{% if not skipCss|default(false) %}
     {{ mapCss|raw }}
 {% endif %}
 
-{% if addJs|default() %}
+{% if not skipJs|default(false) %}
     {{ mapJs|raw }}
 {% endif %}
 

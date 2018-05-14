@@ -26,8 +26,8 @@ $lang['height'][0]       = 'Höhe';
 $lang['height'][1]       = 'Geben Sie hier die gewünschte Höhe ein.';
 $lang['addClusterer'][0] = 'Clustering aktivieren';
 $lang['addClusterer'][1] = 'Wählen Sie diese Option, um Clustering für die Karte zu verwenden.';
-$lang['clustererImg'][0] = 'Bild';
-$lang['clustererImg'][1] = 'Wählen Sie hier ein Bild für das Clustering aus.';
+$lang['clustererImg'][0] = 'Bilderverzeichnis';
+$lang['clustererImg'][1] = 'Geben Sie hier bei Bedarf ein Verzeichnis, in dem sich die individuellen Bilder für das Clustering befinden (-> siehe <a href="https://github.com/googlemaps/js-marker-clusterer#usage">https://github.com/googlemaps/js-marker-clusterer#usage</a>).';
 $lang['styles'][0]       = 'Styles';
 $lang['styles'][1]       = 'Geben Sie hier ein Array von JSON-Objekten für das Styles-Attribut ein.';
 
