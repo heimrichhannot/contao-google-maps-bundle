@@ -77,12 +77,12 @@ class MapManager
         FileUtil $fileUtil,
         \Twig_Environment $twig
     ) {
-        $this->framework         = $framework;
-        $this->overlayManager    = $overlayManager;
-        $this->modelUtil         = $modelUtil;
-        $this->locationUtil      = $locationUtil;
-        $this->fileUtil          = $fileUtil;
-        $this->twig              = $twig;
+        $this->framework      = $framework;
+        $this->overlayManager = $overlayManager;
+        $this->modelUtil      = $modelUtil;
+        $this->locationUtil   = $locationUtil;
+        $this->fileUtil       = $fileUtil;
+        $this->twig           = $twig;
     }
 
     public function prepareMap(int $mapId, array $config = []): array
@@ -116,8 +116,8 @@ class MapManager
             }
         }
 
-        $templateData['mapModel'] = $map;
-        $templateData['mapConfig'] = $mapConfig->row();
+        $templateData['mapModel']       = $map;
+        $templateData['mapConfig']      = $mapConfig->row();
         $templateData['mapConfigModel'] = $mapConfig;
 
         return $templateData;
@@ -127,13 +127,12 @@ class MapManager
     {
         $templateData = $this->prepareMap($mapId, $config);
 
-        if (null === $templateData)
-        {
+        if (null === $templateData) {
             return null;
         }
 
-        $map          = $templateData['mapModel'];
-        $mapConfig    = $templateData['mapConfigModel'];
+        $map       = $templateData['mapModel'];
+        $mapConfig = $templateData['mapConfigModel'];
 
         // compute API key
         global $objPage;
@@ -150,10 +149,10 @@ class MapManager
         $mapHelper = MapHelperBuilder::create()->build();
         $apiHelper = ApiHelperBuilder::create()->setKey($this->apiKey)->build();
 
-        $templateData['mapHtml'] = $mapHelper->renderHtml($map);
-        $templateData['mapCss']  = $mapHelper->renderStylesheet($map);
-        $templateData['mapJs']   = $mapHelper->renderJavascript($map);
-        $templateData['mapApi']  = $apiHelper->render([$map]);
+        $templateData['mapHtml']     = $mapHelper->renderHtml($map);
+        $templateData['mapCss']      = $mapHelper->renderStylesheet($map);
+        $templateData['mapJs']       = $mapHelper->renderJavascript($map);
+        $templateData['mapGoogleJs'] = $apiHelper->render([$map]);
 
         $template = $templateData['mapConfig']['template'] ?: 'gmap_map_default';
         $template = System::getContainer()->get('huh.utils.template')->getTemplate($template);
@@ -164,7 +163,7 @@ class MapManager
     public function renderHtml(int $mapId, array $config = [])
     {
         $config['skipCss'] = true;
-        $config['skipJs'] = true;
+        $config['skipJs']  = true;
 
         return $this->render($mapId, $config);
     }
@@ -172,7 +171,7 @@ class MapManager
     public function renderCss(int $mapId, array $config = [])
     {
         $config['skipHtml'] = true;
-        $config['skipJs'] = true;
+        $config['skipJs']   = true;
 
         return $this->render($mapId, $config);
     }
@@ -180,7 +179,7 @@ class MapManager
     public function renderJs(int $mapId, array $config = [])
     {
         $config['skipHtml'] = true;
-        $config['skipCss'] = true;
+        $config['skipCss']  = true;
 
         return $this->render($mapId, $config);
     }

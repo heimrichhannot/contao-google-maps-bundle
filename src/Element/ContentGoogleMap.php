@@ -76,6 +76,6 @@ class ContentGoogleMap extends ContentElement
     {
         $elementData = $this->arrayUtil->removePrefix('googlemaps_', $this->arrData);
 
-        $this->Template->renderedMap = $this->mapManager->render($elementData['map']);
+        $this->Template->renderedMap = $this->mapManager->render($elementData['map'], $elementData);
     }
 }

@@ -7,8 +7,6 @@ use Contao\CoreBundle\Command\AbstractLockedCommand;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\Database;
-use Contao\Dbafs;
-use Contao\File;
 use Contao\Model;
 use Contao\StringUtil;
 use Contao\System;

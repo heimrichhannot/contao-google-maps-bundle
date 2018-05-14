@@ -8,9 +8,9 @@
 
 {% if not skipJs|default(false) %}
     {{ mapJs|raw }}
-{% endif %}
 
-{{ mapApi|raw }}
+    {{ mapGoogleJs|raw }}
+{% endif %}
 
 {% if mapConfig.staticMapNoscript|default() %}
     <noscript>
