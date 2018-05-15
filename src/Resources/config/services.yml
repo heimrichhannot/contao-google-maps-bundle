@@ -1,6 +1,8 @@
 services:
   huh.google_maps.map_manager:
     class: HeimrichHannot\GoogleMapsBundle\Manager\MapManager
+    public: true
+    shared: false
     arguments:
       - "@contao.framework"
       - "@huh.google_maps.overlay_manager"
@@ -10,6 +12,8 @@ services:
       - "@twig"
   huh.google_maps.overlay_manager:
     class: HeimrichHannot\GoogleMapsBundle\Manager\OverlayManager
+    public: true
+    shared: false
     arguments:
       - "@contao.framework"
       - "@huh.utils.model"
