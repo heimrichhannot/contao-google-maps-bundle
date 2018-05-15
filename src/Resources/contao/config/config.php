@@ -16,6 +16,13 @@ $GLOBALS['TL_CTE']['maps'] = [
 ];
 
 /**
+ * Frontend modules
+ */
+$GLOBALS['FE_MOD']['maps'] = [
+    'google_map' => 'HeimrichHannot\GoogleMapsBundle\Module\ModuleGoogleMap',
+];
+
+/**
  * Hooks
  */
 $GLOBALS['TL_HOOKS']['replaceInsertTags']['googleMapsBundle'] = ['huh.google_maps.listener.hooks', 'addInsertTags'];

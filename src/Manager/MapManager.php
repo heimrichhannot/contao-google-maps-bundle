@@ -99,9 +99,8 @@ class MapManager
         $map          = new Map();
 
         // apply map config
-        if ($mapConfig->htmlId) {
-            $map->setHtmlId($mapConfig->htmlId);
-        }
+        $htmlId = $mapConfig->htmlId ?: 'map_canvas_' . uniqid();
+        $map->setHtmlId($htmlId);
 
         $this->setVisualization($map, $mapConfig);
         $this->setBehavior($map, $mapConfig);

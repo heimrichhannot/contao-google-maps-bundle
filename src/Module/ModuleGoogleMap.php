@@ -1,21 +1,21 @@
 <?php
 
-namespace HeimrichHannot\GoogleMapsBundle\Element;
+namespace HeimrichHannot\GoogleMapsBundle\Module;
 
-use Contao\ContentElement;
-use Contao\ContentModel;
+use Contao\BackendTemplate;
+use Contao\Module;
 use Contao\System;
 use HeimrichHannot\GoogleMapsBundle\Manager\MapManager;
 use HeimrichHannot\UtilsBundle\Arrays\ArrayUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use Patchwork\Utf8;
 
-class ContentGoogleMap extends ContentElement
+class ModuleGoogleMap extends Module
 {
     /**
      * @var string
      */
-    protected $strTemplate = 'ce_google_map';
+    protected $strTemplate = 'mod_google_map';
 
     /**
      * @var MapManager
@@ -37,24 +37,15 @@ class ContentGoogleMap extends ContentElement
      */
     protected $twig;
 
-    public function __construct(ContentModel $objElement, $strColumn = 'main')
-    {
-
-        parent::__construct($objElement, $strColumn);
-
-        $this->mapManager = System::getContainer()->get('huh.google_maps.map_manager');
-        $this->arrayUtil = System::getContainer()->get('huh.utils.array');
-        $this->modelUtil = System::getContainer()->get('huh.utils.model');
-        $this->twig      = System::getContainer()->get('twig');
-    }
-
     public function generate()
     {
-        if (TL_MODE == 'BE') {
+        if (TL_MODE == 'BE')
+        {
+            /** @var BackendTemplate|object $objTemplate */
             $objTemplate = new \BackendTemplate('be_wildcard');
 
-            $objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['CTE'][$this->type][0]) . ' ###';
-            $objTemplate->title    = $this->headline;
+            $objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD'][$this->type][0]) . ' ###';
+            $objTemplate->title = $this->headline;
 
             if (null !== ($map = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk('tl_google_map', $this->googlemaps_map))) {
                 $objTemplate->id   = $map->id;
@@ -64,6 +55,11 @@ class ContentGoogleMap extends ContentElement
 
             return $objTemplate->parse();
         }
+
+        $this->mapManager = System::getContainer()->get('huh.google_maps.map_manager');
+        $this->arrayUtil = System::getContainer()->get('huh.utils.array');
+        $this->modelUtil = System::getContainer()->get('huh.utils.model');
+        $this->twig      = System::getContainer()->get('twig');
 
         return parent::generate();
     }
