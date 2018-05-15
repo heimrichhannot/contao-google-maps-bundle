@@ -18,6 +18,8 @@ This bundle offers functionality concerning the Google Maps v3 API. It acts as a
    - global Contao settings (tl_settings)
    - page root (tl_page)
    - Google Maps config (tl_google_map)
+2. Create a Google Map using the corresponding menu entry in Contao on the left.
+3. If necessary, create also overlays like markers, info windows, ... in the Google Map defined in 2. Think of a Google Map as an archive of overlays.
 
 ## Migrating from dlh_googlemaps
 
@@ -51,4 +53,3 @@ google_map_js | ID of the tl_google_map instance | {{ google_map_js(1) }}
     - circle
     - rectangle
     - ground_overlay
-- webpack?
