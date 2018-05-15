@@ -15,12 +15,16 @@ This bundle offers functionality concerning the Google Maps v3 API. It acts as a
 
 0. Optional: If you have already google maps created with [delahaye/dlh_googlemaps](https://github.com/delahaye/dlh_googlemaps) refer to the section "Migrating from dlh_googlemaps".
 1. Set your Google API key (capable of Google Maps and Google Static Maps) if not already done in one of the following places (ascending priority):
-   - global Contao settings (`tl_settings`)
-   - page root (`tl_page`)
-   - Google Maps config (`tl_google_map`)
+    - global Contao settings (`tl_settings`)
+    - page root (`tl_page`)
+    - Google Maps config (`tl_google_map`)
 2. Create a Google Map using the corresponding menu entry in Contao on the left.
 3. If necessary, create also overlays like markers, info windows, ... in the Google Map defined in 2. Think of a Google Map as an archive of overlays.
-4. Create a content element or module for integrating the map in your article.
+4. Now you can integrate the map in your website using one of the following bukt-in ways:
+    - Content element
+    - Module
+    - Insert tag (see below)
+    - Twig function (see below)
 
 ## Migrating from dlh_googlemaps
 
