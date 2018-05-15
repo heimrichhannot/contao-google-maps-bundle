@@ -25,7 +25,7 @@
   "autoload": {
     "psr-4": {
       "HeimrichHannot\\GoogleMapsBundle\\": "src/",
-      "Ivory\\GoogleMap\\Helper\\Renderer\\ApiRenderer": "src/Helper/Renderer/"
+      "Ivory\\GoogleMap\\Helper\\Renderer\\ApiRenderer\\": "src/Helper/Renderer/"
     },
     "classmap": [
       "src/"
