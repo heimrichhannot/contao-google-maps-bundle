@@ -252,7 +252,7 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'exclude'   => true,
             'inputType' => 'checkbox',
             'eval'      => ['tl_class' => 'w50'],
-            'sql'       => "char(1) NOT NULL default '1'",
+            'sql'       => "char(1) NOT NULL default ''",
         ],
         'draggable'              => [
             'label'     => &$GLOBALS['TL_LANG']['tl_google_map']['draggable'],
