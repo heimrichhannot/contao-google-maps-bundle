@@ -124,7 +124,7 @@ class MapManager
         // add overlays
         if (null !== ($overlays = $this->modelUtil->findModelInstancesBy('tl_google_map_overlay', ['tl_google_map_overlay.pid=?', 'tl_google_map_overlay.published=?'], [$mapConfig->id, true]))) {
             foreach ($overlays as $overlay) {
-                $this->overlayManager->addOverlayToMap($map, $overlay);
+                $this->overlayManager->addOverlayToMap($map, $overlay, $this->apiKey);
             }
         }
 

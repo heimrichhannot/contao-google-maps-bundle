@@ -66,8 +66,10 @@ class OverlayManager
         $this->twig              = $twig;
     }
 
-    public function addOverlayToMap(Map $map, OverlayModel $overlayConfig): void
+    public function addOverlayToMap(Map $map, OverlayModel $overlayConfig, string $apiKey): void
     {
+        $this->apiKey = $apiKey;
+
         switch ($overlayConfig->type) {
             case Overlay::TYPE_MARKER:
                 list($marker, $events) = $this->prepareMarker($overlayConfig);
@@ -247,11 +249,11 @@ class OverlayManager
                 break;
             case Overlay::POSITIONING_MODE_STATIC_ADDRESS:
                 if (!($coordinates = System::getContainer()->get('huh.utils.cache.database')->getValue(static::CACHE_KEY_PREFIX . $overlayConfig->positioningAddress))) {
-                    $coordinates = $this->locationUtil->computeCoordinatesByString($overlayConfig->positioningAddress);
+                    $coordinates = $this->locationUtil->computeCoordinatesByString($overlayConfig->positioningAddress, $this->apiKey);
 
                     if (is_array($coordinates)) {
                         $coordinates = serialize($coordinates);
-                        System::getContainer()->get('huh.utils.cache.database')->cacheValue($overlayConfig->positioningAddress, $coordinates);
+                        System::getContainer()->get('huh.utils.cache.database')->cacheValue(static::CACHE_KEY_PREFIX . $overlayConfig->positioningAddress, $coordinates);
                     }
                 }
 
