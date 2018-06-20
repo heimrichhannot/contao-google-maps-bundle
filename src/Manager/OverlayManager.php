@@ -115,7 +115,15 @@ class OverlayManager
                 // size
                 $width  = StringUtil::deserialize($overlayConfig->iconWidth, true);
                 $height = StringUtil::deserialize($overlayConfig->iconHeight, true);
-                $icon->setScaledSize(new Size($width['value'], $height['value'], $width['unit'], $height['unit']));
+
+                if ($width['value'] && $height['value'])
+                {
+                    $icon->setScaledSize(new Size($width['value'], $height['value'], $width['unit'], $height['unit']));
+                }
+                else
+                {
+                    throw new \Exception('The overlay ID ' . $overlayConfig->id . ' doesn\'t have a icon width and height set.');
+                }
 
                 $marker->setIcon($icon);
                 break;

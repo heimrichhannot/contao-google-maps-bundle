@@ -96,6 +96,18 @@ class MapManager
             return null;
         }
 
+        // compute API key
+        global $objPage;
+
+        $settings                    = new \stdClass();
+        $settings->googlemaps_apiKey = Config::get('googlemaps_apiKey');
+
+        $this->apiKey = System::getContainer()->get('huh.utils.dca')->getOverridableProperty('googlemaps_apiKey', [
+            $settings,
+            ['tl_page', $objPage->rootId ?: $objPage->id],
+            $mapConfig
+        ]);
+
         $templateData = $config;
         $map          = new Map();
 
@@ -132,19 +144,6 @@ class MapManager
         }
 
         $map       = $templateData['mapModel'];
-        $mapConfig = $templateData['mapConfigModel'];
-
-        // compute API key
-        global $objPage;
-
-        $settings                    = new \stdClass();
-        $settings->googlemaps_apiKey = Config::get('googlemaps_apiKey');
-
-        $this->apiKey = System::getContainer()->get('huh.utils.dca')->getOverridableProperty('googlemaps_apiKey', [
-            $settings,
-            ['tl_page', $objPage->rootId ?: $objPage->id],
-            $mapConfig
-        ]);
 
         $mapHelper = MapHelperBuilder::create()->build();
         $apiHelper = ApiHelperBuilder::create()->setKey($this->apiKey)->build();
@@ -198,6 +197,7 @@ class MapManager
                     [
                         'width'          => '100%',
                         'height'         => '100%',
+                        'background-color' => 'red !important',
                         'padding-bottom' => (100 * (int)$mapConfig->aspectRatioY / (int)$mapConfig->aspectRatioX) . '%'
                     ]
                 );
@@ -310,11 +310,11 @@ class MapManager
                 break;
             case GoogleMap::CENTER_MODE_STATIC_ADDRESS:
                 if (!($coordinates = System::getContainer()->get('huh.utils.cache.database')->getValue(static::CACHE_KEY_PREFIX . $mapConfig->centerAddress))) {
-                    $coordinates = $this->locationUtil->computeCoordinatesByString($mapConfig->centerAddress);
+                    $coordinates = $this->locationUtil->computeCoordinatesByString($mapConfig->centerAddress, $this->apiKey);
 
                     if (is_array($coordinates)) {
                         $coordinates = serialize($coordinates);
-                        System::getContainer()->get('huh.utils.cache.database')->cacheValue($mapConfig->centerAddress, $coordinates);
+                        System::getContainer()->get('huh.utils.cache.database')->cacheValue(static::CACHE_KEY_PREFIX . $mapConfig->centerAddress, $coordinates);
                     }
                 }
 

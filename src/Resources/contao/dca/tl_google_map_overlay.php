@@ -231,14 +231,14 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
             'inputType' => 'inputUnit',
             'options'   => $GLOBALS['TL_CSS_UNITS'],
             'eval'      => ['rgxp' => 'digit', 'maxlength' => 10, 'tl_class' => 'w50', 'mandatory' => true],
-            'sql'       => "int(10) unsigned NOT NULL default '0'"
+            'sql'       => "varchar(64) NOT NULL default ''"
         ],
         'iconHeight'         => [
             'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['iconHeight'],
             'inputType' => 'inputUnit',
             'options'   => $GLOBALS['TL_CSS_UNITS'],
             'eval'      => ['rgxp' => 'digit', 'maxlength' => 10, 'tl_class' => 'w50', 'mandatory' => true],
-            'sql'       => "int(10) unsigned NOT NULL default '0'"
+            'sql'       => "varchar(64) NOT NULL default ''"
         ],
         'iconAnchorX'        => [
             'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['iconAnchorX'],
