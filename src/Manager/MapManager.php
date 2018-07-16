@@ -197,7 +197,6 @@ class MapManager
                     [
                         'width'          => '100%',
                         'height'         => '100%',
-                        'background-color' => 'red !important',
                         'padding-bottom' => (100 * (int)$mapConfig->aspectRatioY / (int)$mapConfig->aspectRatioX) . '%'
                     ]
                 );
