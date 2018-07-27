@@ -65,7 +65,7 @@ class MapManager
     /**
      * @var string
      */
-    protected $apiKey;
+    protected static $apiKey;
 
     const CACHE_KEY_PREFIX       = 'googleMaps_map';
     const GOOGLE_MAPS_STATIC_URL = 'https://maps.googleapis.com/maps/api/staticmap';
@@ -97,16 +97,7 @@ class MapManager
         }
 
         // compute API key
-        global $objPage;
-
-        $settings                    = new \stdClass();
-        $settings->googlemaps_apiKey = Config::get('googlemaps_apiKey');
-
-        $this->apiKey = System::getContainer()->get('huh.utils.dca')->getOverridableProperty('googlemaps_apiKey', [
-            $settings,
-            ['tl_page', $objPage->rootId ?: $objPage->id],
-            $mapConfig
-        ]);
+        static::$apiKey = $this->computeApiKey($mapConfig);
 
         $templateData = $config;
         $map          = new Map();
@@ -124,7 +115,7 @@ class MapManager
         // add overlays
         if (null !== ($overlays = $this->modelUtil->findModelInstancesBy('tl_google_map_overlay', ['tl_google_map_overlay.pid=?', 'tl_google_map_overlay.published=?'], [$mapConfig->id, true]))) {
             foreach ($overlays as $overlay) {
-                $this->overlayManager->addOverlayToMap($map, $overlay, $this->apiKey);
+                $this->overlayManager->addOverlayToMap($map, $overlay, static::$apiKey);
             }
         }
 
@@ -143,10 +134,26 @@ class MapManager
             return null;
         }
 
-        $map       = $templateData['mapModel'];
+        $map = $templateData['mapModel'];
 
         $mapHelper = MapHelperBuilder::create()->build();
-        $apiHelper = ApiHelperBuilder::create()->setKey($this->apiKey)->build();
+        $apiHelper = ApiHelperBuilder::create()->setKey(static::$apiKey)->build();
+
+        $templateData['mapHtml']     = $mapHelper->renderHtml($map);
+        $templateData['mapCss']      = $mapHelper->renderStylesheet($map);
+        $templateData['mapJs']       = $mapHelper->renderJavascript($map);
+        $templateData['mapGoogleJs'] = $apiHelper->render([$map]);
+
+        $template = $templateData['mapConfig']['template'] ?: 'gmap_map_default';
+        $template = System::getContainer()->get('huh.utils.template')->getTemplate($template);
+
+        return $this->twig->render($template, $templateData);
+    }
+
+    public function renderMapObject(Map $map)
+    {
+        $mapHelper = MapHelperBuilder::create()->build();
+        $apiHelper = ApiHelperBuilder::create()->setKey(static::$apiKey)->build();
 
         $templateData['mapHtml']     = $mapHelper->renderHtml($map);
         $templateData['mapCss']      = $mapHelper->renderStylesheet($map);
@@ -309,7 +316,7 @@ class MapManager
                 break;
             case GoogleMap::CENTER_MODE_STATIC_ADDRESS:
                 if (!($coordinates = System::getContainer()->get('huh.utils.cache.database')->getValue(static::CACHE_KEY_PREFIX . $mapConfig->centerAddress))) {
-                    $coordinates = $this->locationUtil->computeCoordinatesByString($mapConfig->centerAddress, $this->apiKey);
+                    $coordinates = $this->locationUtil->computeCoordinatesByString($mapConfig->centerAddress, static::$apiKey);
 
                     if (is_array($coordinates)) {
                         $coordinates = serialize($coordinates);
@@ -341,7 +348,7 @@ class MapManager
                 'zoom'    => $map->getMapOption('zoom'),
                 'size'    => $mapConfig->staticMapWidth . 'x' . $mapConfig->staticMapHeight,
                 'maptype' => $map->getMapOption('mapTypeId'),
-                'key'     => $this->apiKey
+                'key'     => static::$apiKey
             ];
 
             $templateData['staticMapUrl'] = static::GOOGLE_MAPS_STATIC_URL . '?' . http_build_query($staticParams);
@@ -407,5 +414,32 @@ class MapManager
 
             $map->getControlManager()->setScaleControl($control);
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiKey(): string
+    {
+        return static::$apiKey;
+    }
+
+    public function computeApiKey(GoogleMapModel $mapConfig)
+    {
+        if (static::$apiKey)
+        {
+            return static::$apiKey;
+        }
+
+        global $objPage;
+
+        $settings                    = new \stdClass();
+        $settings->googlemaps_apiKey = Config::get('googlemaps_apiKey');
+
+        return System::getContainer()->get('huh.utils.dca')->getOverridableProperty('googlemaps_apiKey', [
+            $settings,
+            ['tl_page', $objPage->rootId ?: $objPage->id],
+            $mapConfig
+        ]);
     }
 }

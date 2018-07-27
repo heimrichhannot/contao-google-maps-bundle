@@ -58,6 +58,8 @@ $lang['centerLng'][0]       = 'Longitude';
 $lang['centerLng'][1]       = 'Geben Sie hier eine Longitude ein (Beispiel: 13.733525).';
 $lang['centerAddress'][0]   = 'Adresse';
 $lang['centerAddress'][1]   = 'Geben Sie hier eine Adresse ein.';
+$lang['boundMode'][0]       = 'Bound-Modus';
+$lang['boundMode'][1]       = 'Wählen Sie hier einen Modus aus.';
 
 // controls
 $lang['mapTypesAvailable'][0]    = 'Verfügbare Kartenansichten';
@@ -99,8 +101,11 @@ $lang['reference'] = [
     \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::SIZE_MODE_CSS              => 'CSS',
     \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::POSITIONING_MODE_STANDARD  => 'Standard',
     \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::POSITIONING_MODE_BOUND     => 'Rahmen (Bounding)',
+    \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::BOUND_MODE_AUTOMATIC       => 'Automatisch',
+    \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::BOUND_MODE_COORDINATES     => 'Koordinaten',
     \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::CENTER_MODE_COORDINATE     => 'Koordinate',
     \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::CENTER_MODE_STATIC_ADDRESS => 'Adresse',
+    \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::CENTER_MODE_EXTERNAL       => 'Wird extern festgelegt (bspw. durch ein anderes Modul)',
     \Ivory\GoogleMap\Control\MapTypeControlStyle::DEFAULT_                         => 'Standard',
     \Ivory\GoogleMap\Control\MapTypeControlStyle::DROPDOWN_MENU                    => 'Dropdown-Menü',
     \Ivory\GoogleMap\Control\MapTypeControlStyle::HORIZONTAL_BAR                   => 'Horizontale Bar'

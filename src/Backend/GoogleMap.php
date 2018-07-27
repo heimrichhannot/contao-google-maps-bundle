@@ -31,7 +31,7 @@ class GoogleMap extends Backend
 
     const POSITIONING_MODES = [
         self::POSITIONING_MODE_STANDARD,
-        self::POSITIONING_MODE_BOUND
+        self::POSITIONING_MODE_BOUND,
     ];
 
     const BOUND_MODE_COORDINATES = 'coordinates';
@@ -44,10 +44,12 @@ class GoogleMap extends Backend
 
     const CENTER_MODE_COORDINATE     = 'coordinate';
     const CENTER_MODE_STATIC_ADDRESS = 'static_address';
+    const CENTER_MODE_EXTERNAL       = 'external';
 
     const CENTER_MODES = [
         self::CENTER_MODE_COORDINATE,
-        self::CENTER_MODE_STATIC_ADDRESS
+        self::CENTER_MODE_STATIC_ADDRESS,
+        self::CENTER_MODE_EXTERNAL
     ];
 
     const POSITIONS = [

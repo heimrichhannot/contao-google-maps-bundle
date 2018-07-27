@@ -25,9 +25,16 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface
      */
     public function getBundles(ParserInterface $parser)
     {
+        $loadAfterBundles = [ContaoCoreBundle::class, IvoryGoogleMapBundle::class];
+
+        if (class_exists('HeimrichHannot\ReaderBundle\HeimrichHannotContaoReaderBundle'))
+        {
+            $loadAfterBundles[] = 'HeimrichHannot\ReaderBundle\HeimrichHannotContaoReaderBundle';
+        }
+
         return [
             BundleConfig::create(IvoryGoogleMapBundle::class)->setLoadAfter([ContaoCoreBundle::class]),
-            BundleConfig::create(HeimrichHannotContaoGoogleMapsBundle::class)->setLoadAfter([ContaoCoreBundle::class, IvoryGoogleMapBundle::class]),
+            BundleConfig::create(HeimrichHannotContaoGoogleMapsBundle::class)->setLoadAfter($loadAfterBundles),
         ];
     }
 
@@ -36,6 +43,13 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface
      */
     public function getExtensionConfig($extensionName, array $extensionConfigs, ContainerBuilder $container)
     {
+        $extensionConfigs = ContainerUtil::mergeConfigFile(
+            'huh_reader',
+            $extensionName,
+            $extensionConfigs,
+            __DIR__.'/../Resources/config/config_reader.yml'
+        );
+
         return ContainerUtil::mergeConfigFile(
             'huh_GoogleMaps',
             $extensionName,

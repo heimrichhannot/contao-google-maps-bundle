@@ -28,6 +28,8 @@ This bundle offers functionality concerning the Google Maps v3 API. It acts as a
 
 ## Migrating from dlh_googlemaps
 
+_NOTE: For migration you have to have [delahaye/dlh_googlemaps](https://github.com/delahaye/dlh_googlemaps) installed._
+
 Although we cannot guarantee to fully migrate your existing dlh_googlemaps instances, you will nevertheless have a point to start from. Think of it as a 95% migration ;-)
 
 Migrating is as simple as running `vendor/bin/contao-console google-maps:migrate-dlh` from your contao root dir. Your dlh google maps are not changed by this process, only new instances in `tl_google_map` and `tl_google_map_overlay` are created out of the existing legacy data.
