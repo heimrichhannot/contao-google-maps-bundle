@@ -2,7 +2,7 @@
 Thumbs.db
 .DS_Store
 .sass-cache
-vendor
+/vendor
 composer.lock
 composer.json~
 composer.phar

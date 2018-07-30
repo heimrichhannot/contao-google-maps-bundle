@@ -22,7 +22,7 @@ return PhpCsFixer\Config::create()
         '@Symfony:risky' => true,
         'psr0' => false,
         'strict_comparison' => false,
-        'strict_param' => true,
+        'strict_param' => false,
         'array_syntax' => ['syntax' => 'short'],
         'heredoc_to_nowdoc' => true,
         'header_comment' => ['header' => $header],
