@@ -11,11 +11,15 @@ $lang['start']     = ['Show from', 'Do not publish the Google Map on the website
 $lang['stop']      = ['Show until', 'Unpublish the Google Map on the website after this date.'];
 $lang['tstamp']    = ['Revision date', ''];
 
+$lang['overrideLanguage'] = ['override language','Choose this option to override the language for this map. By default the language set in page config is used.'];
+$lang['language'] = ['Language','Please enter the page language according to the ISO-639-1 standard (e.g. "en" for English or "en-US" for American English).'];
+
 /**
  * Legends
  */
 $lang['general_legend'] = 'General settings';
 $lang['publish_legend'] = 'Publish settings';
+$lang['language_legend']       = 'Language';
 
 /**
  * Buttons

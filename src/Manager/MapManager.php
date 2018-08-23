@@ -137,7 +137,7 @@ class MapManager
         $map = $templateData['mapModel'];
 
         $mapHelper = MapHelperBuilder::create()->build();
-        $apiHelper = ApiHelperBuilder::create()->setKey(static::$apiKey)->build();
+        $apiHelper = ApiHelperBuilder::create()->setLanguage($this->getLanguage($mapId))->setKey(static::$apiKey)->build();
 
         $templateData['mapHtml']     = $mapHelper->renderHtml($map);
         $templateData['mapCss']      = $mapHelper->renderStylesheet($map);
@@ -153,7 +153,7 @@ class MapManager
     public function renderMapObject(Map $map)
     {
         $mapHelper = MapHelperBuilder::create()->build();
-        $apiHelper = ApiHelperBuilder::create()->setKey(static::$apiKey)->build();
+        $apiHelper = ApiHelperBuilder::create()->setLanguage($this->getLanguage())->setKey(static::$apiKey)->build();
 
         $templateData['mapHtml']     = $mapHelper->renderHtml($map);
         $templateData['mapCss']      = $mapHelper->renderStylesheet($map);
@@ -442,4 +442,33 @@ class MapManager
             $mapConfig
         ]);
     }
+
+    /**
+     * * return language that is either configured at map config or set at page config
+     *
+     * @param int|null $id
+     *
+     * @return string
+     */
+    protected function getLanguage(int $id = null): string
+    {
+        global $objPage;
+        
+        if(!$id)
+        {
+            return $objPage->language;
+        }
+        
+        if(null === ($config = $this->modelUtil->findModelInstanceByPk('tl_google_map', $id)))
+        {
+            return $objPage->language;
+        }
+        
+        if(!$config->overrideLanguage)
+        {
+            return $objPage->language;
+        }
+        
+        return $config->language;
+    }	
 }

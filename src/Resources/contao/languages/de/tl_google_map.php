@@ -81,6 +81,10 @@ $lang['addScaleControl'][1]      = 'Wählen Sie diese Option, um das entsprechen
 $lang['addStreetViewControl'][0] = 'Bedienelement "StreetView" hinzufügen';
 $lang['addStreetViewControl'][1] = 'Wählen Sie diese Option, um das entsprechende Bedienelement einzubinden.';
 
+// language
+$lang['overrideLanguage'] = ['Sprache überschreiben','Wählen Sie diese Option wenn Sie die Sprache in der die Karte ausgegeben wird anpassen möchten. Standardmäßig wird die Sprache genutzt, die in der Seitenkonfiguration festgelegt wurde.'];
+$lang['language'] = ['Sprache','Bitte geben Sie die Sprache der Seite gemäß des ISO-639-1 Standards ein (z.B. "de" für Deutsch oder "de-CH"; für Schweizerdeutsch).'];
+
 // template
 $lang['template'][0] = 'Template';
 $lang['template'][1] = 'Wählen Sie hier bei Bedarf ein alternatives Template für die Karte aus.';
@@ -121,6 +125,7 @@ $lang['positioning_legend']   = 'Positionierung';
 $lang['control_legend']       = 'Bedienelemente';
 $lang['template_legend']      = 'Template';
 $lang['publish_legend']       = 'Veröffentlichung';
+$lang['language_legend']       = 'Sprache';
 
 /**
  * Buttons

@@ -95,6 +95,8 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'addRotateControl',
             'addFullscreenControl',
             'addStreetViewControl',
+	    // language
+            'overrideLanguage',
             // published
             'published'
         ],
@@ -103,6 +105,7 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             . '{behavior_legend},disableDoubleClickZoom,draggable,scrollwheel,staticMapNoscript;'
             . '{positioning_legend},positioningMode;'
             . '{control_legend},mapTypesAvailable,addMapTypeControl,addZoomControl,addRotateControl,addFullscreenControl,addStreetViewControl,addScaleControl;'
+   	    . '{language_legend},overrideLanguage;'
             . '{template_legend},template;'
             . '{publish_legend},published;'
     ],
@@ -127,6 +130,8 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
         'addRotateControl'                                                                                 => 'rotateControlPos',
         'addFullscreenControl'                                                                             => 'fullscreenControlPos',
         'addStreetViewControl'                                                                             => 'streetViewControlPos',
+        // language
+        'overrideLanguage'                                                                                 => 'language',
         // published
         'published'                                                                                        => 'start,stop'
     ],
@@ -519,7 +524,23 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'inputType' => 'text',
             'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
             'sql'       => "varchar(10) NOT NULL default ''"
-        ]
+        ],
+        'overrideLanguage'       => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map']['overrideLanguage'],
+            'exclude'   => true,
+            'filter'    => true,
+            'inputType' => 'checkbox',
+            'eval'      => ['doNotCopy' => true, 'submitOnChange' => true],
+            'sql'       => "char(1) NOT NULL default ''"
+        ],
+        'language'               => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map']['language'],
+            'exclude'   => true,
+            'search'    => true,
+            'inputType' => 'text',
+            'eval'      => ['mandatory' => true, 'rgxp' => 'language', 'maxlength' => 5, 'nospace' => true, 'doNotCopy' => true, 'tl_class' => 'w50'],
+            'sql'       => "varchar(5) NOT NULL default ''"
+        ],
     ]
 ];
 
