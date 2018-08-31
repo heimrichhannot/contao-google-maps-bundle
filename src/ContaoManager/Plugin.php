@@ -31,6 +31,11 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface
         {
             $loadAfterBundles[] = 'HeimrichHannot\ReaderBundle\HeimrichHannotContaoReaderBundle';
         }
+    
+        if (class_exists('HeimrichHannot\ListBundle\HeimrichHannotContaoListBundle'))
+        {
+            $loadAfterBundles[] = 'HeimrichHannot\ListBundle\HeimrichHannotContaoListBundle';
+        }
 
         return [
             BundleConfig::create(IvoryGoogleMapBundle::class)->setLoadAfter([ContaoCoreBundle::class]),
@@ -48,6 +53,13 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface
             $extensionName,
             $extensionConfigs,
             __DIR__.'/../Resources/config/config_reader.yml'
+        );
+    
+        $extensionConfigs = ContainerUtil::mergeConfigFile(
+            'huh_list',
+            $extensionName,
+            $extensionConfigs,
+            __DIR__.'/../Resources/config/config_list.yml'
         );
 
         return ContainerUtil::mergeConfigFile(

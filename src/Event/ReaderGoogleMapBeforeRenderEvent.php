@@ -8,24 +8,9 @@ use HeimrichHannot\ReaderBundle\Model\ReaderConfigElementModel;
 use Ivory\GoogleMap\Map;
 use Symfony\Component\EventDispatcher\Event;
 
-class ReaderGoogleMapBeforeRenderEvent extends Event
+class ReaderGoogleMapBeforeRenderEvent extends GoogleMapBeforeRenderEvent
 {
     const NAME = 'huh.google_maps.event.reader_before_render';
-
-    /**
-     * @var ItemInterface
-     */
-    protected $item;
-
-    /**
-     * @var Map
-     */
-    protected $map;
-
-    /**
-     * @var GoogleMapModel
-     */
-    protected $mapConfig;
 
     /**
      * @var ReaderConfigElementModel
@@ -48,22 +33,6 @@ class ReaderGoogleMapBeforeRenderEvent extends Event
     }
 
     /**
-     * @return ItemInterface
-     */
-    public function getItem(): ItemInterface
-    {
-        return $this->item;
-    }
-
-    /**
-     * @param ItemInterface $item
-     */
-    public function setItem(ItemInterface $item): void
-    {
-        $this->item = $item;
-    }
-
-    /**
      * @return ReaderConfigElementModel
      */
     public function getReaderConfigElement(): ReaderConfigElementModel
@@ -77,37 +46,5 @@ class ReaderGoogleMapBeforeRenderEvent extends Event
     public function setReaderConfigElement(ReaderConfigElementModel $readerConfigElement): void
     {
         $this->readerConfigElement = $readerConfigElement;
-    }
-
-    /**
-     * @return Map
-     */
-    public function getMap(): Map
-    {
-        return $this->map;
-    }
-
-    /**
-     * @param Map $map
-     */
-    public function setMap(Map $map): void
-    {
-        $this->map = $map;
-    }
-
-    /**
-     * @return GoogleMapModel
-     */
-    public function getMapConfig(): GoogleMapModel
-    {
-        return $this->mapConfig;
-    }
-
-    /**
-     * @param GoogleMapModel $mapConfig
-     */
-    public function setMapConfig(GoogleMapModel $mapConfig): void
-    {
-        $this->mapConfig = $mapConfig;
     }
 }
