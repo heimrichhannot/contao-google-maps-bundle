@@ -12,25 +12,22 @@ use Contao\Config;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\StringUtil;
 use Contao\System;
-use HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap;
+use HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap;
+use HeimrichHannot\GoogleMapsBundle\EventListener\MapRendererListener;
 use HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel;
-use HeimrichHannot\UtilsBundle\Cache\DatabaseCacheUtil;
 use HeimrichHannot\UtilsBundle\File\FileUtil;
 use HeimrichHannot\UtilsBundle\Location\LocationUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use Ivory\GoogleMap\Base\Bound;
 use Ivory\GoogleMap\Base\Coordinate;
-use Ivory\GoogleMap\Control\ControlPosition;
 use Ivory\GoogleMap\Control\FullscreenControl;
 use Ivory\GoogleMap\Control\MapTypeControl;
-use Ivory\GoogleMap\Control\MapTypeControlStyle;
 use Ivory\GoogleMap\Control\RotateControl;
 use Ivory\GoogleMap\Control\ScaleControl;
 use Ivory\GoogleMap\Control\StreetViewControl;
 use Ivory\GoogleMap\Control\ZoomControl;
 use Ivory\GoogleMap\Helper\Builder\ApiHelperBuilder;
 use Ivory\GoogleMap\Helper\Builder\MapHelperBuilder;
-use Ivory\GoogleMap\Helper\Renderer\ApiRenderer;
 use Ivory\GoogleMap\Map;
 use Ivory\GoogleMap\MapTypeId;
 use Ivory\GoogleMap\Overlay\MarkerClusterType;
@@ -101,6 +98,7 @@ class MapManager
 
         $templateData = $config;
         $map          = new Map();
+        $map->setVariable('map_' . $mapId . '_' . substr(md5(time() . $mapId), 0, 8));
 
         // apply map config
         $htmlId = $mapConfig->htmlId ?: 'map_canvas_' . uniqid();
@@ -134,15 +132,21 @@ class MapManager
             return null;
         }
 
+        /** @var Map $map */
         $map = $templateData['mapModel'];
 
         $mapHelper = MapHelperBuilder::create()->build();
         $apiHelper = ApiHelperBuilder::create()->setLanguage($this->getLanguage($mapId))->setKey(static::$apiKey)->build();
 
+        $listener = new MapRendererListener($templateData['mapConfigModel'], $this, $mapHelper);
+
+        $mapHelper->getEventDispatcher()->addListener('map.stylesheet', [$listener, 'renderStylesheet']);
+
         $templateData['mapHtml']     = $mapHelper->renderHtml($map);
         $templateData['mapCss']      = $mapHelper->renderStylesheet($map);
         $templateData['mapJs']       = $mapHelper->renderJavascript($map);
         $templateData['mapGoogleJs'] = $apiHelper->render([$map]);
+
 
         $template = $templateData['mapConfig']['template'] ?: 'gmap_map_default';
         $template = System::getContainer()->get('huh.utils.template')->getTemplate($template);
@@ -355,6 +359,7 @@ class MapManager
         }
     }
 
+
     /**
      * @param Map $map
      * @param GoogleMapModel $mapConfig
@@ -426,8 +431,7 @@ class MapManager
 
     public function computeApiKey(GoogleMapModel $mapConfig)
     {
-        if (static::$apiKey)
-        {
+        if (static::$apiKey) {
             return static::$apiKey;
         }
 
@@ -453,22 +457,19 @@ class MapManager
     protected function getLanguage(int $id = null): string
     {
         global $objPage;
-        
-        if(!$id)
-        {
+
+        if (!$id) {
             return $objPage->language;
         }
-        
-        if(null === ($config = $this->modelUtil->findModelInstanceByPk('tl_google_map', $id)))
-        {
+
+        if (null === ($config = $this->modelUtil->findModelInstanceByPk('tl_google_map', $id))) {
             return $objPage->language;
         }
-        
-        if(!$config->overrideLanguage)
-        {
+
+        if (!$config->overrideLanguage) {
             return $objPage->language;
         }
-        
+
         return $config->language;
-    }	
+    }
 }

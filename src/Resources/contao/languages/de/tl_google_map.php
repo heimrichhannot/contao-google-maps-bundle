@@ -6,6 +6,8 @@ $lang = &$GLOBALS['TL_LANG']['tl_google_map'];
  * Fields
  */
 // general
+$lang['type'][0]   = 'Typ';
+$lang['type'][1]   = 'Wählen Sie den Typ der Konfiguration aus.';
 $lang['title'][0]  = 'Titel';
 $lang['title'][1]  = 'Geben Sie hier bitte den Titel ein.';
 $lang['htmlId'][0] = 'Abweichende HTML-ID';
@@ -81,9 +83,15 @@ $lang['addScaleControl'][1]      = 'Wählen Sie diese Option, um das entsprechen
 $lang['addStreetViewControl'][0] = 'Bedienelement "StreetView" hinzufügen';
 $lang['addStreetViewControl'][1] = 'Wählen Sie diese Option, um das entsprechende Bedienelement einzubinden.';
 
+// responsive
+$lang['responsive'][0]            = 'Responsive';
+$lang['responsive'][1]            = 'Verwendet ab einem definierten Breakpoint die hinterlegte Responsive-Konfiguration';
+$lang['responsive_breakpoint'][0] = 'Breakpoint';
+$lang['responsive_map'][0]        = 'Konfiguration';
+
 // language
-$lang['overrideLanguage'] = ['Sprache überschreiben','Wählen Sie diese Option wenn Sie die Sprache in der die Karte ausgegeben wird anpassen möchten. Standardmäßig wird die Sprache genutzt, die in der Seitenkonfiguration festgelegt wurde.'];
-$lang['language'] = ['Sprache','Bitte geben Sie die Sprache der Seite gemäß des ISO-639-1 Standards ein (z.B. "de" für Deutsch oder "de-CH"; für Schweizerdeutsch).'];
+$lang['overrideLanguage'] = ['Sprache überschreiben', 'Wählen Sie diese Option wenn Sie die Sprache in der die Karte ausgegeben wird anpassen möchten. Standardmäßig wird die Sprache genutzt, die in der Seitenkonfiguration festgelegt wurde.'];
+$lang['language']         = ['Sprache', 'Bitte geben Sie die Sprache der Seite gemäß des ISO-639-1 Standards ein (z.B. "de" für Deutsch oder "de-CH"; für Schweizerdeutsch).'];
 
 // template
 $lang['template'][0] = 'Template';
@@ -96,23 +104,25 @@ $lang['start']        = ['Anzeigen ab', 'Google Map erst ab diesem Tag auf der W
 $lang['stop']         = ['Anzeigen bis', 'Google Map nur bis zu diesem Tag auf der Webseite anzeigen.'];
 
 $lang['reference'] = [
-    \Ivory\GoogleMap\MapTypeId::ROADMAP                                            => 'Roadmap',
-    \Ivory\GoogleMap\MapTypeId::SATELLITE                                          => 'Satellit',
-    \Ivory\GoogleMap\MapTypeId::TERRAIN                                            => 'Terrain',
-    \Ivory\GoogleMap\MapTypeId::HYBRID                                             => 'Hybrid',
-    \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::SIZE_MODE_ASPECT_RATIO     => 'Seitenverhältnis',
-    \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::SIZE_MODE_STATIC           => 'Statisch',
-    \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::SIZE_MODE_CSS              => 'CSS',
-    \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::POSITIONING_MODE_STANDARD  => 'Standard',
-    \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::POSITIONING_MODE_BOUND     => 'Rahmen (Bounding)',
-    \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::BOUND_MODE_AUTOMATIC       => 'Automatisch',
-    \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::BOUND_MODE_COORDINATES     => 'Koordinaten',
-    \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::CENTER_MODE_COORDINATE     => 'Koordinate',
-    \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::CENTER_MODE_STATIC_ADDRESS => 'Adresse',
-    \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::CENTER_MODE_EXTERNAL       => 'Wird extern festgelegt (bspw. durch ein anderes Modul)',
-    \Ivory\GoogleMap\Control\MapTypeControlStyle::DEFAULT_                         => 'Standard',
-    \Ivory\GoogleMap\Control\MapTypeControlStyle::DROPDOWN_MENU                    => 'Dropdown-Menü',
-    \Ivory\GoogleMap\Control\MapTypeControlStyle::HORIZONTAL_BAR                   => 'Horizontale Bar'
+    \Ivory\GoogleMap\MapTypeId::ROADMAP                                                  => 'Roadmap',
+    \Ivory\GoogleMap\MapTypeId::SATELLITE                                                => 'Satellit',
+    \Ivory\GoogleMap\MapTypeId::TERRAIN                                                  => 'Terrain',
+    \Ivory\GoogleMap\MapTypeId::HYBRID                                                   => 'Hybrid',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::SIZE_MODE_ASPECT_RATIO     => 'Seitenverhältnis',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::SIZE_MODE_STATIC           => 'Statisch',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::SIZE_MODE_CSS              => 'CSS',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::POSITIONING_MODE_STANDARD  => 'Standard',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::POSITIONING_MODE_BOUND     => 'Rahmen (Bounding)',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::BOUND_MODE_AUTOMATIC       => 'Automatisch',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::BOUND_MODE_COORDINATES     => 'Koordinaten',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::CENTER_MODE_COORDINATE     => 'Koordinate',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::CENTER_MODE_STATIC_ADDRESS => 'Adresse',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::CENTER_MODE_EXTERNAL       => 'Wird extern festgelegt (bspw. durch ein anderes Modul)',
+    \Ivory\GoogleMap\Control\MapTypeControlStyle::DEFAULT_                               => 'Standard',
+    \Ivory\GoogleMap\Control\MapTypeControlStyle::DROPDOWN_MENU                          => 'Dropdown-Menü',
+    \Ivory\GoogleMap\Control\MapTypeControlStyle::HORIZONTAL_BAR                         => 'Horizontale Bar',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::MAP_TYPE_BASE              => 'Basis-Konfiguration',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::MAP_TYPE_RESPONSIVE        => 'Responsive-Konfiguration'
 ];
 
 /**
@@ -123,9 +133,10 @@ $lang['visualization_legend'] = 'Darstellung';
 $lang['behavior_legend']      = 'Verhalten';
 $lang['positioning_legend']   = 'Positionierung';
 $lang['control_legend']       = 'Bedienelemente';
+$lang['responsive_legend']    = 'Responsive Einstellungen';
 $lang['template_legend']      = 'Template';
 $lang['publish_legend']       = 'Veröffentlichung';
-$lang['language_legend']       = 'Sprache';
+$lang['language_legend']      = 'Sprache';
 
 /**
  * Buttons

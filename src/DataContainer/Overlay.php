@@ -1,12 +1,14 @@
 <?php
 
-namespace HeimrichHannot\GoogleMapsBundle\Backend;
+namespace HeimrichHannot\GoogleMapsBundle\DataContainer;
 
 use Contao\Backend;
 use Contao\DataContainer;
 use Contao\Image;
 use Contao\Input;
+use HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel;
 use Ivory\GoogleMap\Overlay\Animation;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class Overlay extends Backend
 {
@@ -66,29 +68,43 @@ class Overlay extends Backend
     ];
 
     /**
-     * Return the link picker wizard
-     *
-     * @param \DataContainer
-     *
-     * @return string
+     * @var ContainerInterface
      */
-    public function pagePicker(DataContainer $dc)
+    protected $container;
+
+    public function __construct(ContainerInterface $container)
     {
-        return ' <a style="display: inline-block; margin-top: -3px" href="contao/page.php?do=' . Input::get('do') . '&amp;table=' . $dc->table . '&amp;field=' . $dc->field . '&amp;value=' . str_replace(
-                ['{{link_url::', '}}'],
-                '',
-                $dc->value
-            ) . '" onclick="Backend.getScrollOffset();Backend.openModalSelector({\'width\':765,\'title\':\'' . specialchars(
-                str_replace("'", "\\'", $GLOBALS['TL_LANG']['MOD']['page'][0])
-            ) . '\',\'url\':this.href,\'id\':\'' . $dc->field . '\',\'tag\':\'ctrl_' . $dc->field . ((Input::get('act') == 'editAll') ? '_' . $dc->id : '')
-            . '\',\'self\':this});return false">' . Image::getHtml('pickpage.gif', $GLOBALS['TL_LANG']['MSC']['pagepicker'], 'style="vertical-align:top;cursor:pointer"')
-            . '</a>';
+        $this->container = $container;
+        parent::__construct();
     }
 
     public function listChildren($arrRow)
     {
         return '<div class="tl_content_left">' . ($arrRow['title'] ?: $arrRow['id']) . ' <span style="color:#b3b3b3; padding-left:3px">[' .
             \Date::parse(\Contao\Config::get('datimFormat'), trim($arrRow['dateAdded'])) . ']</span></div>';
+    }
+
+    /**
+     * Modify palettes
+     * @param DataContainer $dc
+     */
+    public function modifyDca(DataContainer $dc)
+    {
+        /** @var GoogleMapModel $adapter */
+        $adapter = $this->container->get('contao.framework')->getAdapter(GoogleMapModel::class);
+
+        /** @var GoogleMapModel $map */
+        if (null === ($map = $adapter->findByPK($dc->id))) {
+            return;
+        }
+
+        if($map->type === GoogleMap::MAP_TYPE_RESPONSIVE)
+        {
+            $GLOBALS['TL_DCA']['tl_google_map_overlay']['config']['closed'] = true;
+            $GLOBALS['TL_DCA']['tl_google_map_overlay']['config']['notCreatable'] = true;
+            $GLOBALS['TL_DCA']['tl_google_map_overlay']['config']['notEditable'] = true;
+            $GLOBALS['TL_DCA']['tl_google_map_overlay']['config']['notCopyable'] = true;
+        }
     }
 
     public function checkPermission()

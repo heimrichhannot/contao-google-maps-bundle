@@ -10,8 +10,8 @@ use Contao\Database;
 use Contao\Model;
 use Contao\StringUtil;
 use Contao\System;
-use HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap;
-use HeimrichHannot\GoogleMapsBundle\Backend\Overlay;
+use HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap;
+use HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay;
 use HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel;
 use HeimrichHannot\GoogleMapsBundle\Model\OverlayModel;
 use Symfony\Component\Console\Input\InputInterface;
@@ -219,7 +219,7 @@ class MigrateDlhCommand extends AbstractLockedCommand implements FrameworkAwareI
                 $mapSize = StringUtil::deserialize($legacyMap->mapSize, true);
 
                 if (count($mapSize) > 2) {
-                    $map->sizeMode = \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::SIZE_MODE_STATIC;
+                    $map->sizeMode = \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::SIZE_MODE_STATIC;
 
                     $map->width = serialize([
                         'value' => $mapSize[0],
@@ -231,7 +231,7 @@ class MigrateDlhCommand extends AbstractLockedCommand implements FrameworkAwareI
                         'unit'  => 'px'
                     ]);
                 } else {
-                    $map->sizeMode     = \HeimrichHannot\GoogleMapsBundle\Backend\GoogleMap::SIZE_MODE_ASPECT_RATIO;
+                    $map->sizeMode     = \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::SIZE_MODE_ASPECT_RATIO;
                     $map->aspectRatioX = 16;
                     $map->aspectRatioY = 9;
                 }

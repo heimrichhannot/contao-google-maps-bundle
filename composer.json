@@ -26,6 +26,7 @@
     "psr-4": {
       "HeimrichHannot\\GoogleMapsBundle\\": "src/",
       "Ivory\\GoogleMap\\Helper\\Renderer\\ApiRenderer\\": "src/Helper/Renderer/",
+      "Ivory\\GoogleMap\\Helper\\Renderer\\MapRenderer\\": "src/Helper/Renderer/",
       "Ivory\\GoogleMap\\Helper\\Renderer\\Html\\StylesheetTagRenderer\\": "src/Helper/Renderer/Html/"
     },
     "classmap": [

@@ -74,24 +74,24 @@ $lang['stop'][1]      = 'Overlay nur bis zu diesem Tag auf der Webseite anzeigen
  * Reference
  */
 $lang['reference'] = [
-    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::TITLE_MODE_TITLE_FIELD          => 'Titelfeld',
-    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::TITLE_MODE_CUSTOM_TEXT          => 'Eigener Text',
-    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::POSITIONING_MODE_COORDINATE     => 'Koordinate',
-    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::POSITIONING_MODE_STATIC_ADDRESS => 'Statische Adresse',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TITLE_MODE_TITLE_FIELD          => 'Titelfeld',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TITLE_MODE_CUSTOM_TEXT          => 'Eigener Text',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::POSITIONING_MODE_COORDINATE     => 'Koordinate',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::POSITIONING_MODE_STATIC_ADDRESS => 'Statische Adresse',
     \Ivory\GoogleMap\Overlay\Animation::DROP                                          => 'Drop',
     \Ivory\GoogleMap\Overlay\Animation::BOUNCE                                        => 'Bound',
-    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::TITLE_MODE_CUSTOM_TEXT          => 'Eigener Text',
-    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::TYPE_MARKER                     => 'Marker',
-    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::TYPE_INFO_WINDOW                => 'Infoblase',
-    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::TYPE_POLYLINE                   => 'Polyline',
-    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::TYPE_POLYGON                    => 'Polygon',
-    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::TYPE_CIRCLE                     => 'Kreis',
-    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::TYPE_RECTANGLE                  => 'Rechteck',
-    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::TYPE_GROUND_OVERLAY             => 'Ground-Overlay',
-    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::MARKER_TYPE_SIMPLE              => 'Standard',
-    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::MARKER_TYPE_ICON                => 'Individuelles Bild',
-    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::CLICK_EVENT_LINK                => 'Link',
-    \HeimrichHannot\GoogleMapsBundle\Backend\Overlay::CLICK_EVENT_INFO_WINDOW         => 'Infoblase'
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TITLE_MODE_CUSTOM_TEXT          => 'Eigener Text',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_MARKER                     => 'Marker',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_INFO_WINDOW                => 'Infoblase',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_POLYLINE                   => 'Polyline',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_POLYGON                    => 'Polygon',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_CIRCLE                     => 'Kreis',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_RECTANGLE                  => 'Rechteck',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_GROUND_OVERLAY             => 'Ground-Overlay',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::MARKER_TYPE_SIMPLE              => 'Standard',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::MARKER_TYPE_ICON                => 'Individuelles Bild',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::CLICK_EVENT_LINK                => 'Link',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::CLICK_EVENT_INFO_WINDOW         => 'Infoblase'
 ];
 
 /**

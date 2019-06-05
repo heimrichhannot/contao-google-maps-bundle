@@ -29,10 +29,7 @@ class GoogleMapBeforeRenderEvent extends Event
      */
     protected $mapConfig;
     
-    
-    
-    
-    
+
     public function getItem()
     {
         return $this->item;

@@ -1,11 +1,16 @@
 <?php
 
-namespace HeimrichHannot\GoogleMapsBundle\Backend;
+namespace HeimrichHannot\GoogleMapsBundle\DataContainer;
 
 use Contao\Backend;
+use Contao\BackendUser;
+use Contao\Database;
+use Contao\DataContainer;
+use HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel;
 use Ivory\GoogleMap\Control\ControlPosition;
 use Ivory\GoogleMap\Control\MapTypeControlStyle;
-use Ivory\GoogleMap\Control\ZoomControlStyle;
+use Ivory\GoogleMap\MapTypeId;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class GoogleMap extends Backend
 {
@@ -19,11 +24,14 @@ class GoogleMap extends Backend
         self::SIZE_MODE_CSS
     ];
 
+    const MAP_TYPE_BASE = 'base';
+    const MAP_TYPE_RESPONSIVE = 'responsive';
+
     const TYPES = [
-        \Ivory\GoogleMap\MapTypeId::ROADMAP,
-        \Ivory\GoogleMap\MapTypeId::SATELLITE,
-        \Ivory\GoogleMap\MapTypeId::TERRAIN,
-        \Ivory\GoogleMap\MapTypeId::HYBRID
+        MapTypeId::ROADMAP,
+        MapTypeId::SATELLITE,
+        MapTypeId::TERRAIN,
+        MapTypeId::HYBRID
     ];
 
     const POSITIONING_MODE_STANDARD = 'standard';
@@ -76,6 +84,31 @@ class GoogleMap extends Backend
         MapTypeControlStyle::HORIZONTAL_BAR
     ];
 
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
+
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+        parent::__construct();
+    }
+
+    public function getResponsiveMaps(DataContainer $dc)
+    {
+        $options = [];
+
+        /** @var GoogleMapModel $configAdapter */
+        $configAdapter = $this->container->get('contao.framework')->getAdapter(GoogleMapModel::class);
+
+        if (null === ($configs = $configAdapter->findBy(['type = ?'], 'responsive'))) {
+            return $options;
+        }
+
+        return $configs->fetchEach('title');
+    }
+
     public static function getMapChoices()
     {
         return \Contao\System::getContainer()->get('huh.utils.choice.model_instance')->getCachedChoices(
@@ -87,8 +120,8 @@ class GoogleMap extends Backend
 
     public function checkPermission()
     {
-        $user     = \Contao\BackendUser::getInstance();
-        $database = \Contao\Database::getInstance();
+        $user     = BackendUser::getInstance();
+        $database = Database::getInstance();
 
         if ($user->isAdmin) {
             return;
@@ -216,6 +249,18 @@ class GoogleMap extends Backend
                 }
                 break;
         }
+    }
+
+
+    public function edit($row, $href, $label, $title, $icon, $attributes)
+    {
+        return $row['type'] !== static::MAP_TYPE_RESPONSIVE
+            ? '<a href="' .$this->addToUrl(
+                $href . '&amp;id=' . $row['id']
+            )  . '" title="' . \StringUtil::specialchars($title) . '"' . $attributes . '>' . \Image::getHtml($icon, $label) . '</a> '
+            : \Image::getHtml(
+                preg_replace('/\.svg$/i', '_.svg', $icon)
+            ) . ' ';
     }
 
     public function editHeader($row, $href, $label, $title, $icon, $attributes)

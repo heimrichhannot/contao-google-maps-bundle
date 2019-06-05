@@ -20,3 +20,28 @@ services:
       - "@huh.utils.location"
       - "@huh.utils.file"
       - "@twig"
+  huh.google_maps.data_container.google_map:
+    class: HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap
+    public: true
+    arguments:
+      - "@service_container"
+  huh.google_maps.data_container.google_map_overlay:
+    class: HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay
+    public: true
+    arguments:
+      - "@service_container"
+  huh.google_maps.data_container.content:
+    class: HeimrichHannot\GoogleMapsBundle\DataContainer\Content
+    public: true
+    arguments:
+      - "@service_container"
+  huh.google_maps.data_container.module:
+    class: HeimrichHannot\GoogleMapsBundle\DataContainer\Module
+    public: true
+    arguments:
+      - "@service_container"
+  huh.google_maps.data_container.reader_config_element:
+    class: HeimrichHannot\GoogleMapsBundle\DataContainer\ReaderConfigElement
+    public: true
+    arguments:
+      - "@service_container"

@@ -70,7 +70,7 @@ class Extension extends \Twig_Extension
      */
     public function renderJs(int $mapId)
     {
-        return $this->mapManager->renderCss($mapId);
+        return $this->mapManager->renderJs($mapId);
     }
 
     /**

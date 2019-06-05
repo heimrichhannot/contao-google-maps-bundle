@@ -1,5 +1,10 @@
 # Contao Google Maps Bundle
 
+![](https://img.shields.io/packagist/v/heimrichhannot/contao-google-maps-bundle.svg)
+![](https://img.shields.io/packagist/dt/heimrichhannot/contao-google-maps-bundle.svg)
+[![Build Status](https://travis-ci.org/heimrichhannot/contao-google-maps-bundle.svg?branch=master)](https://travis-ci.org/heimrichhannot/contao-google-maps-bundle)
+[![Coverage Status](https://coveralls.io/repos/github/heimrichhannot/contao-google-maps-bundle/badge.svg?branch=master)](https://coveralls.io/github/heimrichhannot/contao-google-maps-bundle?branch=master)
+
 This bundle offers functionality concerning the Google Maps v3 API. It acts as a contao wrapper for [egeloen/ivory-google-map](https://github.com/egeloen/ivory-google-map) and [egeloen/IvoryGoogleMapBundle](https://github.com/egeloen/IvoryGoogleMapBundle).
 
 *NOTE: This bundle is in beta state and not fully implemented, yet. Refer to TODO section for more details about missing features*
@@ -10,6 +15,7 @@ This bundle offers functionality concerning the Google Maps v3 API. It acts as a
 - frontend module and content element
 - insert tag and twig function
 - easy contao command based migration tool for [delahaye/dlh_googlemaps](https://github.com/delahaye/dlh_googlemaps) (courtesy to delahaye!)
+- responsive support (mobile first), provide responsive configurations that will update the map upon reaching the value (greater than breakpoint)    
 
 ## Installation
 
