@@ -103,6 +103,7 @@ class MigrateDlhCommand extends AbstractLockedCommand implements FrameworkAwareI
                 $this->io->text('Migrating dlh google map ID ' . $legacyMap->id . ' ("' . $legacyMap->title . '") ...');
 
                 $map         = new GoogleMapModel();
+                $map->type   = 'base';
                 $map->tstamp = $map->dateAdded = time();
 
                 /** @var Database $dbAdapter */
