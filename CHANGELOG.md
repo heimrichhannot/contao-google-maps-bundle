@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.2] - 2019-06-11
+
+### Changed
+- dlh migrate command name to match other heimrichhannot bundles (see README)
+
 ## [1.0.1] - 2019-06-06
 
 ### Fixed

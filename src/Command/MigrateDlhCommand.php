@@ -37,7 +37,7 @@ class MigrateDlhCommand extends AbstractLockedCommand implements FrameworkAwareI
      */
     protected function configure()
     {
-        $this->setName('google-maps:migrate-dlh')->setDescription('Migrates existing Maps created using delahaye/dlh_googlemaps.');
+        $this->setName('huh:google-maps:migrate-dlh')->setDescription('Migrates existing Maps created using delahaye/dlh_googlemaps.');
     }
 
     /**
