@@ -15,6 +15,7 @@ use HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay;
 use HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel;
 use HeimrichHannot\GoogleMapsBundle\Model\OverlayModel;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -33,11 +34,23 @@ class MigrateDlhCommand extends AbstractLockedCommand implements FrameworkAwareI
     private $rootDir;
 
     /**
+     * @var bool
+     */
+    private $skipUnsupportedFieldWarnings;
+
+    /**
+     * @var bool
+     */
+    private $cleanBeforeMigration;
+
+    /**
      * {@inheritdoc}
      */
     protected function configure()
     {
         $this->setName('huh:google-maps:migrate-dlh')->setDescription('Migrates existing Maps created using delahaye/dlh_googlemaps.');
+        $this->addOption('skip-unsupported-field-warnings', null, InputOption::VALUE_NONE, 'Skip warnings indicating that fields don\'t exist anymore in Google Maps v3.');
+        $this->addOption('clean-before-migration', null, InputOption::VALUE_NONE, 'Deletes ALL entries of tl_google_map and tl_google_map_overlay. Use with Caution.');
     }
 
     /**
@@ -48,6 +61,18 @@ class MigrateDlhCommand extends AbstractLockedCommand implements FrameworkAwareI
         $this->io      = new SymfonyStyle($input, $output);
         $this->rootDir = $this->getContainer()->getParameter('kernel.project_dir');
         $this->framework->initialize();
+
+        $this->skipUnsupportedFieldWarnings = $input->getOption('skip-unsupported-field-warnings');
+        $this->cleanBeforeMigration = $input->getOption('clean-before-migration');
+
+        // clean
+        if ($this->cleanBeforeMigration && $this->io->ask('CAUTION: You set the parameter "clean-before-migration". This will delete ALL entries of tl_google_map and tl_google_map_overlay. Are you sure? [y,n]') === 'y')
+        {
+            Database::getInstance()->execute('DELETE FROM tl_google_map');
+            Database::getInstance()->execute('DELETE FROM tl_google_map_overlay');
+
+            $this->io->success('tl_google_map and tl_google_map_overlay cleaned successfully.');
+        }
 
         // API key
         $this->migrateApiKeys();
@@ -161,7 +186,7 @@ class MigrateDlhCommand extends AbstractLockedCommand implements FrameworkAwareI
                     }
 
                     if (in_array($legacyField, $removedFields)) {
-                        if ($legacyMap->{$legacyField}) {
+                        if ($legacyMap->{$legacyField} && !$this->skipUnsupportedFieldWarnings) {
                             $this->io->caution('The field "' . $legacyField . '" which is different from NULL in the current google map is not used in Google Maps v3 anymore or not supported by this bundle. Please refer to https://developers.google.com/maps/documentation/javascript for further information.');
                         }
 
@@ -223,12 +248,12 @@ class MigrateDlhCommand extends AbstractLockedCommand implements FrameworkAwareI
                     $map->sizeMode = \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::SIZE_MODE_STATIC;
 
                     $map->width = serialize([
-                        'value' => $mapSize[0],
+                        'value' => preg_replace('/[^\d]/i', '', $mapSize[0]),
                         'unit'  => 'px'
                     ]);
 
                     $map->height = serialize([
-                        'value' => $mapSize[1],
+                        'value' => preg_replace('/[^\d]/i', '', $mapSize[1]),
                         'unit'  => 'px'
                     ]);
                 } else {
@@ -269,8 +294,7 @@ class MigrateDlhCommand extends AbstractLockedCommand implements FrameworkAwareI
                     'id',
                     'pid',
                     'tstamp',
-                    'dateAdded',
-                    'published'
+                    'dateAdded'
                 ];
 
                 $fieldsMappings = [
@@ -304,7 +328,7 @@ class MigrateDlhCommand extends AbstractLockedCommand implements FrameworkAwareI
                     }
 
                     if (in_array($legacyField, $removedFields)) {
-                        if ($legacyOverlay->{$legacyField}) {
+                        if ($legacyOverlay->{$legacyField} && !$this->skipUnsupportedFieldWarnings) {
                             $this->io->caution('The field "' . $legacyField . '" which is different from NULL in the current google map is not used in Google Maps v3 anymore or not supported by this bundle. Please refer to https://developers.google.com/maps/documentation/javascript for further information.');
                         }
 
@@ -346,7 +370,18 @@ class MigrateDlhCommand extends AbstractLockedCommand implements FrameworkAwareI
                 }
 
                 // positioning
-                if ($legacyOverlay->geocoderAddress) {
+                if ($legacyOverlay->singleCoords) {
+                    $overlay->positioningMode = Overlay::POSITIONING_MODE_COORDINATE;
+
+                    if (strpos($legacyOverlay->singleCoords, ',')) {
+                        $coordinates = explode(',', str_replace(' ', '', $legacyOverlay->singleCoords));
+
+                        if (is_array($coordinates) && count($coordinates) > 1) {
+                            $overlay->positioningLat = $coordinates[0];
+                            $overlay->positioningLng = $coordinates[1];
+                        }
+                    }
+                } else {
                     $overlay->positioningMode = Overlay::POSITIONING_MODE_STATIC_ADDRESS;
                     $address                  = $legacyOverlay->geocoderAddress;
 
@@ -355,17 +390,22 @@ class MigrateDlhCommand extends AbstractLockedCommand implements FrameworkAwareI
                     }
 
                     $overlay->positioningAddress = $address;
-                } else {
-                    $overlay->positioningMode = Overlay::POSITIONING_MODE_COORDINATE;
+                }
 
-                    if (strpos($legacyOverlay->singleCoords, ',')) {
-                        $coordinates = explode(',', $legacyOverlay->singleCoords);
+                // marker type
+                switch ($overlay->markerType) {
+                    case \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::MARKER_TYPE_ICON:
+                        $iconSize = StringUtil::deserialize($legacyOverlay->iconSize, true);
 
-                        if (is_array($coordinates) && count($coordinates) > 1) {
-                            $overlay->positioningLat = $coordinates[0];
-                            $overlay->positioningLng = $coordinates[1];
-                        }
-                    }
+                        $overlay->iconWidth = ['value' => $iconSize[0], 'unit' => 'px'];
+                        $overlay->iconHeight = ['value' => $iconSize[1], 'unit' => 'px'];
+
+                        $iconAnchor = StringUtil::deserialize($legacyOverlay->iconAnchor, true);
+
+                        $overlay->iconAnchorX = ['value' => $iconAnchor[0], 'unit' => 'px'];
+                        $overlay->iconAnchorY = ['value' => $iconAnchor[1], 'unit' => 'px'];
+
+                        break;
                 }
 
                 // info window

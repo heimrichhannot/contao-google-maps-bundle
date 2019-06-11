@@ -1,6 +1,20 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2019-06-11
+
+### Added
+- new command parameters:
+    - clean-before-migration
+    - skip-unsupported-field-warnings
+
+### Removed
+- published from google maps entity
+
+### Changed
+- dlh migrate command now also imports overlay publish states
+- dlh migrate command now adds a higher attention to overlay coordinates rather than addresses
+
 ## [1.0.2] - 2019-06-11
 
 ### Changed

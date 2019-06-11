@@ -99,9 +99,7 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'addFullscreenControl',
             'addStreetViewControl',
             // language
-            'overrideLanguage',
-            // published
-            'published'
+            'overrideLanguage'
         ],
         'default'      => '{general_legend},type,title,htmlId,overrideGooglemaps_apiKey;'
             . '{visualization_legend},mapType,sizeMode,addClusterer,styles;'
@@ -110,11 +108,9 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             . '{control_legend},mapTypesAvailable,addMapTypeControl,addZoomControl,addRotateControl,addFullscreenControl,addStreetViewControl,addScaleControl;'
             . '{language_legend},overrideLanguage;'
             . '{responsive_legend},responsive;'
-            . '{template_legend},template;'
-            . '{publish_legend},published;',
+            . '{template_legend},template;',
         'responsive'   => '{general_legend},type,title;'
             . '{visualization_legend},sizeMode;'
-            . '{publish_legend},published;',
     ],
     'subpalettes' => [
         // visualization
@@ -138,9 +134,7 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
         'addFullscreenControl'                                                                                   => 'fullscreenControlPos',
         'addStreetViewControl'                                                                                   => 'streetViewControlPos',
         // language
-        'overrideLanguage'                                                                                       => 'language',
-        // published
-        'published'                                                                                              => 'start,stop'
+        'overrideLanguage'                                                                                       => 'language'
     ],
     'fields'      => [
         'id'                     => [
@@ -555,29 +549,6 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             },
             'eval'             => ['tl_class' => 'w50', 'includeBlankOption' => true],
             'sql'              => "varchar(64) NOT NULL default ''"
-        ],
-        // published
-        'published'              => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_google_map']['published'],
-            'exclude'   => true,
-            'filter'    => true,
-            'inputType' => 'checkbox',
-            'eval'      => ['doNotCopy' => true, 'submitOnChange' => true],
-            'sql'       => "char(1) NOT NULL default ''"
-        ],
-        'start'                  => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_google_map']['start'],
-            'exclude'   => true,
-            'inputType' => 'text',
-            'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
-            'sql'       => "varchar(10) NOT NULL default ''"
-        ],
-        'stop'                   => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_google_map']['stop'],
-            'exclude'   => true,
-            'inputType' => 'text',
-            'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
-            'sql'       => "varchar(10) NOT NULL default ''"
         ],
         'overrideLanguage'       => [
             'label'     => &$GLOBALS['TL_LANG']['tl_google_map']['overrideLanguage'],
