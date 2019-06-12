@@ -316,8 +316,7 @@ class MigrateDlhCommand extends AbstractLockedCommand implements FrameworkAwareI
                     'markerAction'    => 'clickEvent',
                     'useRouting'      => 'addRouting',
                     'linkTitle'       => 'titleText',
-                    'infoWindow'      => 'infoWindowText',
-                    'popupInfoWindow' => 'infoWindowAutoOpen'
+                    'infoWindow'      => 'infoWindowText'
                 ];
 
                 $fieldsToLower = [

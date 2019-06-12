@@ -96,7 +96,7 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
         'positioningMode_' . \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::POSITIONING_MODE_STATIC_ADDRESS => 'positioningAddress',
         'markerType_' . \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::MARKER_TYPE_ICON                     => 'iconSrc,iconWidth,iconHeight,iconAnchorX,iconAnchorY',
         'clickEvent_' . \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::CLICK_EVENT_LINK                     => 'url,target',
-        'clickEvent_' . \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::CLICK_EVENT_INFO_WINDOW              => 'infoWindowWidth,infoWindowHeight,infoWindowAnchorX,infoWindowAnchorY,infoWindowAutoOpen,infoWindowText,addRouting',
+        'clickEvent_' . \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::CLICK_EVENT_INFO_WINDOW              => 'infoWindowWidth,infoWindowHeight,infoWindowAnchorX,infoWindowAnchorY,infoWindowText,addRouting',
         'addRouting'                                                                                           => 'routingAddress,routingTemplate',
         'published'                                                                                            => 'start,stop'
     ],
@@ -266,17 +266,6 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['reference'],
             'eval'      => ['includeBlankOption' => true, 'submitOnChange' => true, 'tl_class' => 'w50 clr'],
             'sql'       => "varchar(64) NOT NULL default ''",
-        ],
-        'infoWindowAutoOpen'    => [
-            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['infoWindowAutoOpen'],
-            'exclude'   => true,
-            'filter'    => true,
-            'default'   => false,
-            'inputType' => 'checkbox',
-            'eval' => [
-                'tl_class' => 'w50'
-            ],
-            'sql'       => "char(1) NOT NULL default ''",
         ],
         'infoWindowText'         => [
             'label'       => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['infoWindowText'],

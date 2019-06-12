@@ -172,7 +172,8 @@ class OverlayManager
                     $infoWindow = $this->prepareInfoWindow($overlayConfig);
                     $infoWindow->setPixelOffset(new Size($overlayConfig->infoWindowAnchorX, $overlayConfig->infoWindowAnchorY));
                     $infoWindow->setOpenEvent(MouseEvent::CLICK);
-                    $infoWindow->setAutoOpen($overlayConfig->infoWindowAutoOpen ? true : false);
+                    // caution: this autoOpen is different from the one in dlh google maps
+                    $infoWindow->setAutoOpen(true);
 
                     $marker->setInfoWindow($infoWindow);
 

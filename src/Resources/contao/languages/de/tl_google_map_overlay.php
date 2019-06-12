@@ -50,8 +50,6 @@ $lang['infoWindowAnchorX'][0]  = 'Versatz (X-Achse)';
 $lang['infoWindowAnchorX'][1]  = 'Geben Sie hier einen Versatz in X-Richtung ein.';
 $lang['infoWindowAnchorY'][0]  = 'Versatz (Y-Achse)';
 $lang['infoWindowAnchorY'][1]  = 'Geben Sie hier einen Versatz in Y-Richtung ein.';
-$lang['infoWindowAutoOpen'][0] = 'Infoblase automatisch öffnen';
-$lang['infoWindowAutoOpen'][1] = 'Wählen Sie diese Option, wenn die Infoblase automatisch geöffnet werden soll.';
 $lang['infoWindowText'][0]     = 'Text';
 $lang['infoWindowText'][1]     = 'Geben Sie hier den Text der Infoblase ein.';
 $lang['addRouting'][0]         = 'Routenplaner hinzufügen';
@@ -78,9 +76,8 @@ $lang['reference'] = [
     \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TITLE_MODE_CUSTOM_TEXT          => 'Eigener Text',
     \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::POSITIONING_MODE_COORDINATE     => 'Koordinate',
     \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::POSITIONING_MODE_STATIC_ADDRESS => 'Statische Adresse',
-    \Ivory\GoogleMap\Overlay\Animation::DROP                                          => 'Drop',
-    \Ivory\GoogleMap\Overlay\Animation::BOUNCE                                        => 'Bound',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TITLE_MODE_CUSTOM_TEXT          => 'Eigener Text',
+    \Ivory\GoogleMap\Overlay\Animation::DROP                                                => 'Drop',
+    \Ivory\GoogleMap\Overlay\Animation::BOUNCE                                              => 'Bound',
     \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_MARKER                     => 'Marker',
     \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_INFO_WINDOW                => 'Infoblase',
     \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_POLYLINE                   => 'Polyline',
@@ -90,8 +87,7 @@ $lang['reference'] = [
     \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_GROUND_OVERLAY             => 'Ground-Overlay',
     \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::MARKER_TYPE_SIMPLE              => 'Standard',
     \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::MARKER_TYPE_ICON                => 'Individuelles Bild',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::CLICK_EVENT_LINK                => 'Link',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::CLICK_EVENT_INFO_WINDOW         => 'Infoblase'
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::CLICK_EVENT_LINK                => 'Link'
 ];
 
 /**

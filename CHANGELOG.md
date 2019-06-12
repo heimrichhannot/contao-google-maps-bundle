@@ -1,7 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.2.0] - 2019-06-11
+## [1.2.1] - 2019-06-12
+
+### Removed
+- `autoOpen` flag since it has never been needed with the egeloen implementation
+
+## [1.2.0] - 2019-06-12
 
 ### Added
 - new events: `DlhMigrationModifyMapEvent`, `DlhMigrationModifyOverlayEvent`
