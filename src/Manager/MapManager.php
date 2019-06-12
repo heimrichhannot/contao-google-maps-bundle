@@ -31,6 +31,7 @@ use Ivory\GoogleMap\Helper\Builder\MapHelperBuilder;
 use Ivory\GoogleMap\Map;
 use Ivory\GoogleMap\MapTypeId;
 use Ivory\GoogleMap\Overlay\MarkerClusterType;
+use Model\Collection;
 
 class MapManager
 {
@@ -83,7 +84,7 @@ class MapManager
         $this->twig           = $twig;
     }
 
-    public function prepareMap(int $mapId, array $config = []): array
+    public function prepareMap(int $mapId, array $config = [], Collection $overlays = null): array
     {
         if (!$mapId) {
             return null;
@@ -111,7 +112,12 @@ class MapManager
         $this->addStaticMap($map, $mapConfig, $templateData);
 
         // add overlays
-        if (null !== ($overlays = $this->modelUtil->findModelInstancesBy('tl_google_map_overlay', ['tl_google_map_overlay.pid=?', 'tl_google_map_overlay.published=?'], [$mapConfig->id, true]))) {
+        if (null === $overlays)
+        {
+            $overlays = $this->modelUtil->findModelInstancesBy('tl_google_map_overlay', ['tl_google_map_overlay.pid=?', 'tl_google_map_overlay.published=?'], [$mapConfig->id, true]);
+        }
+
+        if (null !== $overlays) {
             foreach ($overlays as $overlay) {
                 $this->overlayManager->addOverlayToMap($map, $overlay, static::$apiKey);
             }
@@ -454,7 +460,7 @@ class MapManager
      *
      * @return string
      */
-    protected function getLanguage(int $id = null): string
+    public function getLanguage(int $id = null): string
     {
         global $objPage;
 

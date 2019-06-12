@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.2] - 2019-06-12
+
+### Added
+- possibility to override overlays in `MapManager::prepareMap()` method
+
 ## [1.2.1] - 2019-06-12
 
 ### Removed
