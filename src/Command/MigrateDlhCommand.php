@@ -12,12 +12,15 @@ use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap;
 use HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay;
+use HeimrichHannot\GoogleMapsBundle\Event\DlhMigrationModifyMapEvent;
+use HeimrichHannot\GoogleMapsBundle\Event\DlhMigrationModifyOverlayEvent;
 use HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel;
 use HeimrichHannot\GoogleMapsBundle\Model\OverlayModel;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class MigrateDlhCommand extends AbstractLockedCommand implements FrameworkAwareInterface
 {
@@ -44,6 +47,11 @@ class MigrateDlhCommand extends AbstractLockedCommand implements FrameworkAwareI
     private $cleanBeforeMigration;
 
     /**
+     * @var EventDispatcher
+     */
+    private $dispatcher;
+
+    /**
      * {@inheritdoc}
      */
     protected function configure()
@@ -62,6 +70,7 @@ class MigrateDlhCommand extends AbstractLockedCommand implements FrameworkAwareI
         $this->rootDir = $this->getContainer()->getParameter('kernel.project_dir');
         $this->framework->initialize();
 
+        $this->dispatcher = System::getContainer()->get('event_dispatcher');
         $this->skipUnsupportedFieldWarnings = $input->getOption('skip-unsupported-field-warnings');
         $this->cleanBeforeMigration = $input->getOption('clean-before-migration');
 
@@ -262,6 +271,11 @@ class MigrateDlhCommand extends AbstractLockedCommand implements FrameworkAwareI
                     $map->aspectRatioY = 9;
                 }
 
+                $this->dispatcher->dispatch(DlhMigrationModifyMapEvent::NAME, new DlhMigrationModifyMapEvent(
+                    $legacyMap,
+                    $map
+                ));
+
                 $map->save();
 
                 // tl_dlh_googlemaps_elements -> tl_google_map_overlay
@@ -369,6 +383,10 @@ class MigrateDlhCommand extends AbstractLockedCommand implements FrameworkAwareI
                     $overlay->titleMode = Overlay::TITLE_MODE_CUSTOM_TEXT;
                 }
 
+                if ($legacyOverlay->markerAction == 'INFO') {
+                    $overlay->clickEvent = 'infowindow';
+                }
+
                 // positioning
                 if ($legacyOverlay->singleCoords) {
                     $overlay->positioningMode = Overlay::POSITIONING_MODE_COORDINATE;
@@ -431,6 +449,13 @@ class MigrateDlhCommand extends AbstractLockedCommand implements FrameworkAwareI
                     $overlay->infoWindowAnchorX = $infoWindowAnchor[0];
                     $overlay->infoWindowAnchorY = $infoWindowAnchor[1];
                 }
+
+                $this->dispatcher->dispatch(DlhMigrationModifyOverlayEvent::NAME, new DlhMigrationModifyOverlayEvent(
+                    $legacyOverlay,
+                    $overlay,
+                    $legacyMap,
+                    $map
+                ));
 
                 $overlay->save();
 

@@ -58,6 +58,13 @@ google_map_html | ID of the `tl_google_map` instance | {{ google_map_html(1) }}
 google_map_css | ID of the `tl_google_map` instance | {{ google_map_css(1) }}
 google_map_js | ID of the `tl_google_map` instance | {{ google_map_js(1) }}
 
+## Events
+
+Name | Arguments | Description
+---- | --------- | -----------
+DlhMigrationModifyMapEvent | $legacyMap, $map | Triggered just before a the migrated map is being saved
+DlhMigrationModifyOverlayEvent | $legacyOverlay, $overlay, $legacyMap, $map | Triggered just before a the migrated overlay is being saved
+
 ## TODO
 
 - Overlay types:

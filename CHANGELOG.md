@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2019-06-11
+
+### Added
+- new events: `DlhMigrationModifyMapEvent`, `DlhMigrationModifyOverlayEvent`
+
+### Fixed
+- infowindow issue for click event in dlh migration command
+
 ## [1.1.0] - 2019-06-11
 
 ### Added
