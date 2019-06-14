@@ -49,6 +49,11 @@ class OverlayManager
      */
     protected $twig;
 
+    /**
+     * @var array
+     */
+    protected static $markerVariableMapping;
+
     const CACHE_KEY_PREFIX = 'googleMaps_overlay';
 
     public function __construct(
@@ -71,7 +76,7 @@ class OverlayManager
 
         switch ($overlayConfig->type) {
             case Overlay::TYPE_MARKER:
-                list($marker, $events) = $this->prepareMarker($overlayConfig);
+                list($marker, $events) = $this->prepareMarker($overlayConfig, $map);
 
                 $map->getOverlayManager()->addMarker($marker);
 
@@ -91,11 +96,13 @@ class OverlayManager
         }
     }
 
-    protected function prepareMarker(OverlayModel $overlayConfig)
+    protected function prepareMarker(OverlayModel $overlayConfig, Map $map)
     {
         $events = [];
         $marker = new Marker(new Coordinate());
         $this->setPositioning($marker, $overlayConfig);
+
+        static::$markerVariableMapping[$overlayConfig->id] = $marker->getVariable();
 
         switch ($overlayConfig->markerType) {
             case Overlay::MARKER_TYPE_SIMPLE:
@@ -267,5 +274,21 @@ class OverlayManager
 
                 break;
         }
+    }
+
+    /**
+     * @return array
+     */
+    public static function getMarkerVariableMapping(): array
+    {
+        return static::$markerVariableMapping;
+    }
+
+    /**
+     * @param array $markerVariableMapping
+     */
+    public static function setMarkerVariableMapping(array $markerVariableMapping): void
+    {
+        static::$markerVariableMapping = $markerVariableMapping;
     }
 }
