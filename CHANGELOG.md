@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.5] - 2019-06-19
+
+### Fixed
+- `responsive` datacontainer check on `tl_google_map_overlay` (set closed on demand)
+
 ## [1.2.4] - 2019-06-18
 
 ### Added

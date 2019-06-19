@@ -93,17 +93,20 @@ class Overlay extends Backend
         /** @var GoogleMapModel $adapter */
         $adapter = $this->container->get('contao.framework')->getAdapter(GoogleMapModel::class);
 
-        /** @var GoogleMapModel $map */
-        if (null === ($map = $adapter->findByPK($dc->id))) {
+        if (null === ($overlay = $this->container->get('huh.utils.model')->findModelInstanceByPk($dc->table, $dc->id))) {
             return;
         }
 
-        if($map->type === GoogleMap::MAP_TYPE_RESPONSIVE)
-        {
-            $GLOBALS['TL_DCA']['tl_google_map_overlay']['config']['closed'] = true;
+        /** @var GoogleMapModel $map */
+        if (null === ($map = $adapter->findByPK($overlay->pid))) {
+            return;
+        }
+
+        if ($map->type === GoogleMap::MAP_TYPE_RESPONSIVE) {
+            $GLOBALS['TL_DCA']['tl_google_map_overlay']['config']['closed']       = true;
             $GLOBALS['TL_DCA']['tl_google_map_overlay']['config']['notCreatable'] = true;
-            $GLOBALS['TL_DCA']['tl_google_map_overlay']['config']['notEditable'] = true;
-            $GLOBALS['TL_DCA']['tl_google_map_overlay']['config']['notCopyable'] = true;
+            $GLOBALS['TL_DCA']['tl_google_map_overlay']['config']['notEditable']  = true;
+            $GLOBALS['TL_DCA']['tl_google_map_overlay']['config']['notCopyable']  = true;
         }
     }
 
