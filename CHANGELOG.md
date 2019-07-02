@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2019-07-02
+
+### Added
+- `ElevationService` to get the elevation data for coordinates
+
 ## [1.2.5] - 2019-06-19
 
 ### Fixed

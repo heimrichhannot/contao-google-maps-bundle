@@ -21,3 +21,4 @@ class HeimrichHannotContaoGoogleMapsBundle extends Bundle
         return new GoogleMapsExtension();
     }
 }
+

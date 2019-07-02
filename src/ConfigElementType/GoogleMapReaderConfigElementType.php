@@ -78,6 +78,7 @@ class GoogleMapReaderConfigElementType implements ConfigElementType
         $item->setFormattedValue($readerConfigElement->name, $this->mapManager->renderMapObject($map));
     }
 
+
     public function addOverlaysToMap(Map $map, $overlays)
     {
 
