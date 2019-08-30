@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.3.1] - 2019-08-30
+
+### Fixed
+- `$markerVariableMapping` bug
+- api key bug
+
 ## [1.3.0] - 2019-07-02
 
 ### Added

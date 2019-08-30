@@ -444,7 +444,7 @@ class MapManager
         global $objPage;
 
         $settings                    = new \stdClass();
-        $settings->googlemaps_apiKey = Config::get('googlemaps_apiKey');
+        $settings->googlemaps_apiKey = Config::get('utilsGoogleApiKey');
 
         return System::getContainer()->get('huh.utils.dca')->getOverridableProperty('googlemaps_apiKey', [
             $settings,

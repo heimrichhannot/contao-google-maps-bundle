@@ -52,7 +52,7 @@ class OverlayManager
     /**
      * @var array
      */
-    protected static $markerVariableMapping;
+    protected static $markerVariableMapping = [];
 
     const CACHE_KEY_PREFIX = 'googleMaps_overlay';
 
