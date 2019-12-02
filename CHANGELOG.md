@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [1.4.0] - 2019-12-02
 - also consider googlemaps_apiKey config key when checking for api key (MapManager)
+- removed symfony framework dependency
 - some code enhancements
 
 ## [1.3.1] - 2019-08-30
