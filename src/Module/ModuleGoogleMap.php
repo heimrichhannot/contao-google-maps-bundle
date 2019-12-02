@@ -41,8 +41,7 @@ class ModuleGoogleMap extends Module
     {
         if (TL_MODE == 'BE')
         {
-            /** @var BackendTemplate|object $objTemplate */
-            $objTemplate = new \BackendTemplate('be_wildcard');
+            $objTemplate = new BackendTemplate('be_wildcard');
 
             $objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD'][$this->type][0]) . ' ###';
             $objTemplate->title = $this->headline;
@@ -50,7 +49,7 @@ class ModuleGoogleMap extends Module
             if (null !== ($map = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk('tl_google_map', $this->googlemaps_map))) {
                 $objTemplate->id   = $map->id;
                 $objTemplate->link = $map->title;
-                $objTemplate->href = 'contao/main.php?do=google_maps&amp;table=tl_google_map&amp;act=edit&amp;id=' . $map->id;
+                $objTemplate->href = 'contao?do=google_maps&amp;table=tl_google_map&amp;act=edit&amp;id=' . $map->id;
             }
 
             return $objTemplate->parse();
