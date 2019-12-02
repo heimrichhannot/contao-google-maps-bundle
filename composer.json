@@ -1,7 +1,7 @@
 {
   "name": "heimrichhannot/contao-google-maps-bundle",
   "type": "contao-bundle",
-  "description": "This bundle offers the opportunity to specify which webpack modules should be loaded on a per page level (3rd party bundles are also supported if compatible).",
+  "description": "This bundle offers functionality concerning the Google Maps v3 API. It acts as a contao wrapper for egeloen/ivory-google-map and egeloen/IvoryGoogleMapBundle.",
   "license": "LGPL-3.0-or-later",
   "require": {
     "php": "^7.1",
