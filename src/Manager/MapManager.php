@@ -84,7 +84,7 @@ class MapManager
         $this->twig           = $twig;
     }
 
-    public function prepareMap(int $mapId, array $config = [], Collection $overlays = null): array
+    public function prepareMap(int $mapId, array $config = [], Collection $overlays = null): ?array
     {
         if (!$mapId) {
             return null;
