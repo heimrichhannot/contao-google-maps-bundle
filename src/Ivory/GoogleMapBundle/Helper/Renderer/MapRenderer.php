@@ -1,17 +1,13 @@
 <?php
 
 /*
- * This file is part of the Ivory Google Map package.
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
- * (c) Eric GELOEN <geloen.eric@gmail.com>
- *
- * For the full copyright and license information, please read the LICENSE
- * file that was distributed with this source code.
+ * @license LGPL-3.0-or-later
  */
 
 namespace Ivory\GoogleMap\Helper\Renderer;
 
-use Ivory\GoogleMap\Event\Event;
 use Ivory\GoogleMap\Helper\Formatter\Formatter;
 use Ivory\GoogleMap\Helper\Renderer\Control\ControlManagerRenderer;
 use Ivory\GoogleMap\Helper\Renderer\Utility\RequirementRenderer;
@@ -39,13 +35,6 @@ class MapRenderer extends AbstractJsonRenderer
      */
     private $requirementRenderer;
 
-    /**
-     * @param Formatter              $formatter
-     * @param JsonBuilder            $jsonBuilder
-     * @param MapTypeIdRenderer      $mapTypeIdRenderer
-     * @param ControlManagerRenderer $controlManagerRenderer
-     * @param RequirementRenderer    $requirementRenderer
-     */
     public function __construct(
         Formatter $formatter,
         JsonBuilder $jsonBuilder,
@@ -68,9 +57,6 @@ class MapRenderer extends AbstractJsonRenderer
         return $this->mapTypeIdRenderer;
     }
 
-    /**
-     * @param MapTypeIdRenderer $mapTypeIdRenderer
-     */
     public function setMapTypeIdRenderer(MapTypeIdRenderer $mapTypeIdRenderer)
     {
         $this->mapTypeIdRenderer = $mapTypeIdRenderer;
@@ -84,9 +70,6 @@ class MapRenderer extends AbstractJsonRenderer
         return $this->controlManagerRenderer;
     }
 
-    /**
-     * @param ControlManagerRenderer $controlManagerRenderer
-     */
     public function setControlManagerRenderer(ControlManagerRenderer $controlManagerRenderer)
     {
         $this->controlManagerRenderer = $controlManagerRenderer;
@@ -109,8 +92,6 @@ class MapRenderer extends AbstractJsonRenderer
     }
 
     /**
-     * @param Map $map
-     *
      * @return string
      */
     public function render(Map $map)
@@ -131,27 +112,27 @@ class MapRenderer extends AbstractJsonRenderer
 
         $this->controlManagerRenderer->render($map->getControlManager(), $jsonBuilder);
 
-        if(!$map->getControlManager()->hasZoomControl()){
+        if (!$map->getControlManager()->hasZoomControl()) {
             $options['zoomControl'] = false;
         }
 
-        if(!$map->getControlManager()->hasStreetViewControl()){
+        if (!$map->getControlManager()->hasStreetViewControl()) {
             $options['streetViewControl'] = false;
         }
 
-        if(!$map->getControlManager()->hasScaleControl()){
+        if (!$map->getControlManager()->hasScaleControl()) {
             $options['scaleControl'] = false;
         }
 
-        if(!$map->getControlManager()->hasFullscreenControl()){
+        if (!$map->getControlManager()->hasFullscreenControl()) {
             $options['fullscreenControl'] = false;
         }
 
-        if(!$map->getControlManager()->hasRotateControl()){
+        if (!$map->getControlManager()->hasRotateControl()) {
             $options['rotateControl'] = false;
         }
 
-        if(!$map->getControlManager()->hasMapTypeControl()){
+        if (!$map->getControlManager()->hasMapTypeControl()) {
             $options['mapTypeControl'] = false;
         }
 

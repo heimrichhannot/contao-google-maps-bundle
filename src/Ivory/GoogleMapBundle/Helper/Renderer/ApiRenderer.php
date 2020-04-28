@@ -1,5 +1,11 @@
 <?php
 
+/*
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace Ivory\GoogleMap\Helper\Renderer;
 
 use Ivory\GoogleMap\Helper\Formatter\Formatter;
@@ -31,13 +37,6 @@ class ApiRenderer extends AbstractRenderer
      */
     private $sourceRenderer;
 
-    /**
-     * @param Formatter                 $formatter
-     * @param ApiInitRenderer           $apiInitRenderer
-     * @param LoaderRenderer            $loaderRenderer
-     * @param RequirementLoaderRenderer $requirementLoaderRenderer
-     * @param SourceRenderer            $sourceRenderer
-     */
     public function __construct(
         Formatter $formatter,
         ApiInitRenderer $apiInitRenderer,
@@ -61,9 +60,6 @@ class ApiRenderer extends AbstractRenderer
         return $this->apiInitRenderer;
     }
 
-    /**
-     * @param ApiInitRenderer $apiInitRenderer
-     */
     public function setApiInitRenderer(ApiInitRenderer $apiInitRenderer)
     {
         $this->apiInitRenderer = $apiInitRenderer;
@@ -77,9 +73,6 @@ class ApiRenderer extends AbstractRenderer
         return $this->loaderRenderer;
     }
 
-    /**
-     * @param LoaderRenderer $loaderRenderer
-     */
     public function setLoaderRenderer(LoaderRenderer $loaderRenderer)
     {
         $this->loaderRenderer = $loaderRenderer;
@@ -93,9 +86,6 @@ class ApiRenderer extends AbstractRenderer
         return $this->requirementLoaderRenderer;
     }
 
-    /**
-     * @param RequirementLoaderRenderer $requirementLoaderRenderer
-     */
     public function setRequirementLoaderRenderer(RequirementLoaderRenderer $requirementLoaderRenderer)
     {
         $this->requirementLoaderRenderer = $requirementLoaderRenderer;
@@ -109,19 +99,14 @@ class ApiRenderer extends AbstractRenderer
         return $this->sourceRenderer;
     }
 
-    /**
-     * @param SourceRenderer $sourceRenderer
-     */
     public function setSourceRenderer(SourceRenderer $sourceRenderer)
     {
         $this->sourceRenderer = $sourceRenderer;
     }
 
     /**
-     * @param \SplObjectStorage $callbacks
-     * @param \SplObjectStorage $requirements
-     * @param string[]          $sources
-     * @param string[]          $libraries
+     * @param string[] $sources
+     * @param string[] $libraries
      *
      * @return string
      */
@@ -165,7 +150,7 @@ class ApiRenderer extends AbstractRenderer
     private function getCallbackName($callback)
     {
         // FIX
-        return 'ivory_google_map_'.$callback. '_'.uniqid();
+        return 'ivory_google_map_'.$callback.'_'.uniqid();
         // ENDFIX
     }
 }

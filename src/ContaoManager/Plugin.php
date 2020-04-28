@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2018 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -29,13 +29,11 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface, ConfigP
     {
         $loadAfterBundles = [ContaoCoreBundle::class, IvoryGoogleMapBundle::class];
 
-        if (class_exists('HeimrichHannot\ReaderBundle\HeimrichHannotContaoReaderBundle'))
-        {
+        if (class_exists('HeimrichHannot\ReaderBundle\HeimrichHannotContaoReaderBundle')) {
             $loadAfterBundles[] = 'HeimrichHannot\ReaderBundle\HeimrichHannotContaoReaderBundle';
         }
-    
-        if (class_exists('HeimrichHannot\ListBundle\HeimrichHannotContaoListBundle'))
-        {
+
+        if (class_exists('HeimrichHannot\ListBundle\HeimrichHannotContaoListBundle')) {
             $loadAfterBundles[] = 'HeimrichHannot\ListBundle\HeimrichHannotContaoListBundle';
         }
 
@@ -56,7 +54,7 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface, ConfigP
             $extensionConfigs,
             __DIR__.'/../Resources/config/config_reader.yml'
         );
-    
+
         return ContainerUtil::mergeConfigFile(
             'huh_list',
             $extensionName,

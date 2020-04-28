@@ -1,8 +1,12 @@
 <?php
 
+/*
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
 
 namespace HeimrichHannot\GoogleMapsBundle\EventListener;
-
 
 use Contao\StringUtil;
 use Contao\System;
@@ -11,7 +15,6 @@ use HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel;
 use Ivory\GoogleMap\Event\Event;
 use Ivory\GoogleMap\Helper\Event\MapEvent;
 use Ivory\GoogleMap\Helper\MapHelper;
-use Ivory\GoogleMap\Map;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class MapRendererListener
@@ -31,11 +34,10 @@ class MapRendererListener
 
     public function __construct(GoogleMapModel $model, MapManager $manager, MapHelper $mapHelper)
     {
-        $this->model     = $model;
-        $this->manager   = $manager;
+        $this->model = $model;
+        $this->manager = $manager;
         $this->mapHelper = $mapHelper;
     }
-
 
     public function renderStylesheet(MapEvent $event, string $eventName, EventDispatcherInterface $dispatcher)
     {
@@ -60,50 +62,35 @@ class MapRendererListener
 
             $this->manager->setVisualization($responsiveMap, $responsiveMapModel);
 
-            $event->addCode(preg_replace('/(<\s*style[^>]*>)(.*?)(<\s*\/\s*style>)/i', '$1@media (min-width:' . $responsiveSetting['breakpoint'] . 'px){$2}$3', $this->mapHelper->renderStylesheet($responsiveMap)));
+            $event->addCode(preg_replace('/(<\s*style[^>]*>)(.*?)(<\s*\/\s*style>)/i', '$1@media (min-width:'.$responsiveSetting['breakpoint'].'px){$2}$3', $this->mapHelper->renderStylesheet($responsiveMap)));
         }
 
         $resizeEvent = new Event('window', 'resize', 'function(){
-            var center = ' . $event->getMap()->getVariable() . '.getCenter();
-            google.maps.event.trigger(' . $event->getMap()->getVariable() . ', "resize");
-            ' . $event->getMap()->getVariable() . '.setCenter(center);  
+            var center = '.$event->getMap()->getVariable().'.getCenter();
+            google.maps.event.trigger('.$event->getMap()->getVariable().', "resize");
+            '.$event->getMap()->getVariable().'.setCenter(center);  
         }');
 
         $event->getMap()->getEventManager()->addDomEvent($resizeEvent);
     }
 
-    /**
-     * @return MapManager
-     */
     public function getManager(): MapManager
     {
         return $this->manager;
     }
 
-    /**
-     * @param MapManager $manager
-     */
     public function setManager(MapManager $manager): void
     {
         $this->manager = $manager;
     }
 
-
-    /**
-     * @return GoogleMapModel
-     */
     public function getModel(): GoogleMapModel
     {
         return $this->model;
     }
 
-    /**
-     * @param GoogleMapModel $model
-     */
     public function setModel(GoogleMapModel $model): void
     {
         $this->model = $model;
     }
-
-
 }

@@ -1,5 +1,11 @@
 <?php
 
+/*
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace HeimrichHannot\GoogleMapsBundle\Event;
 
 use Contao\Model;
@@ -21,37 +27,25 @@ class DlhMigrationModifyMapEvent extends Event
 
     public function __construct(Model $legacyMap, Model $map)
     {
-        $this->legacyMap     = $legacyMap;
-        $this->map           = $map;
+        $this->legacyMap = $legacyMap;
+        $this->map = $map;
     }
 
-    /**
-     * @return Model
-     */
     public function getLegacyMap(): Model
     {
         return $this->legacyMap;
     }
 
-    /**
-     * @param Model $legacyMap
-     */
     public function setLegacyMap(Model $legacyMap): void
     {
         $this->legacyMap = $legacyMap;
     }
 
-    /**
-     * @return Model
-     */
     public function getMap(): Model
     {
         return $this->map;
     }
 
-    /**
-     * @param Model $map
-     */
     public function setMap(Model $map): void
     {
         $this->map = $map;

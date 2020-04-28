@@ -1,7 +1,8 @@
 <?php
 
 /*
- * Copyright (c) 2018 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
+ *
  * @license LGPL-3.0-or-later
  */
 
@@ -24,11 +25,6 @@ class GoogleMapReaderConfigElementType implements ConfigElementType
     const TYPE = 'google_map';
 
     /**
-     * @var ContaoFrameworkInterface
-     */
-    private $framework;
-
-    /**
      * @var MapManager
      */
     protected $mapManager;
@@ -48,15 +44,20 @@ class GoogleMapReaderConfigElementType implements ConfigElementType
      */
     protected $dispatcher;
 
+    /**
+     * @var ContaoFrameworkInterface
+     */
+    private $framework;
+
     public function __construct(ContaoFrameworkInterface $framework)
     {
-        $this->framework      = $framework;
-        $this->mapManager     = System::getContainer()->get('huh.google_maps.map_manager');
+        $this->framework = $framework;
+        $this->mapManager = System::getContainer()->get('huh.google_maps.map_manager');
         $this->overlayManager = System::getContainer()->get('huh.google_maps.overlay_manager');
-        $this->arrayUtil      = System::getContainer()->get('huh.utils.array');
-        $this->modelUtil      = System::getContainer()->get('huh.utils.model');
-        $this->twig           = System::getContainer()->get('twig');
-        $this->dispatcher     = System::getContainer()->get('event_dispatcher');
+        $this->arrayUtil = System::getContainer()->get('huh.utils.array');
+        $this->modelUtil = System::getContainer()->get('huh.utils.model');
+        $this->twig = System::getContainer()->get('twig');
+        $this->dispatcher = System::getContainer()->get('event_dispatcher');
     }
 
     public function addToItemData(ItemInterface $item, ReaderConfigElementModel $readerConfigElement)
@@ -70,7 +71,7 @@ class GoogleMapReaderConfigElementType implements ConfigElementType
         }
 
         /** @var Map $map */
-        $map       = $templateData['mapModel'];
+        $map = $templateData['mapModel'];
         $mapConfig = $templateData['mapConfigModel'];
 
         $this->dispatcher->dispatch(ReaderGoogleMapBeforeRenderEvent::NAME, new ReaderGoogleMapBeforeRenderEvent($item, $map, $mapConfig, $readerConfigElement));
@@ -78,9 +79,7 @@ class GoogleMapReaderConfigElementType implements ConfigElementType
         $item->setFormattedValue($readerConfigElement->name, $this->mapManager->renderMapObject($map));
     }
 
-
     public function addOverlaysToMap(Map $map, $overlays)
     {
-
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2018 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -29,6 +29,7 @@ use Ivory\GoogleMap\Overlay\Marker;
 
 class OverlayManager
 {
+    const CACHE_KEY_PREFIX = 'googleMaps_overlay';
     /**
      * @var ContaoFrameworkInterface
      */
@@ -54,8 +55,6 @@ class OverlayManager
      */
     protected static $markerVariableMapping = [];
 
-    const CACHE_KEY_PREFIX = 'googleMaps_overlay';
-
     public function __construct(
         ContaoFrameworkInterface $framework,
         ModelUtil $modelUtil,
@@ -63,11 +62,11 @@ class OverlayManager
         FileUtil $fileUtil,
         \Twig_Environment $twig
     ) {
-        $this->framework         = $framework;
-        $this->modelUtil         = $modelUtil;
-        $this->locationUtil      = $locationUtil;
-        $this->fileUtil          = $fileUtil;
-        $this->twig              = $twig;
+        $this->framework = $framework;
+        $this->modelUtil = $modelUtil;
+        $this->locationUtil = $locationUtil;
+        $this->fileUtil = $fileUtil;
+        $this->twig = $twig;
     }
 
     public function addOverlayToMap(Map $map, OverlayModel $overlayConfig, string $apiKey): void
@@ -83,17 +82,83 @@ class OverlayManager
                 foreach ($events as $event) {
                     $map->getEventManager()->addDomEvent($event);
                 }
+
                 break;
+
             case Overlay::TYPE_INFO_WINDOW:
                 $infoWindow = $this->prepareInfoWindow($overlayConfig);
                 $infoWindow->setOpen(true);
 
                 $map->getOverlayManager()->addInfoWindow($infoWindow);
+
                 break;
+
             default:
                 // TODO allow event subscribers
                 break;
         }
+    }
+
+    public function addRoutingToInfoWindow(InfoWindow $infoWindow, OverlayModel $overlayConfig)
+    {
+        $position = $infoWindow->getPosition();
+
+        if ($overlayConfig->addRouting && $position) {
+            $template = $overlayConfig->routingTemplate ?: 'gmap_routing_default';
+            $template = System::getContainer()->get('huh.utils.template')->getTemplate($template);
+
+            $routing = $this->twig->render($template, [
+                'lat' => $position->getLatitude(),
+                'lng' => $position->getLongitude(),
+            ]);
+
+            $infoWindow->setContent($infoWindow->getContent().$routing);
+        }
+    }
+
+    /**
+     * @param Marker|InfoWindow $overlay
+     *
+     * @throws \Exception
+     */
+    public function setPositioning($overlay, OverlayModel $overlayConfig)
+    {
+        switch ($overlayConfig->positioningMode) {
+            case Overlay::POSITIONING_MODE_COORDINATE:
+                $overlay->setPosition(new Coordinate($overlayConfig->positioningLat, $overlayConfig->positioningLng));
+
+                break;
+
+            case Overlay::POSITIONING_MODE_STATIC_ADDRESS:
+                if (!($coordinates = System::getContainer()->get('huh.utils.cache.database')->getValue(static::CACHE_KEY_PREFIX.$overlayConfig->positioningAddress))) {
+                    $coordinates = $this->locationUtil->computeCoordinatesByString($overlayConfig->positioningAddress, $this->apiKey);
+
+                    if (\is_array($coordinates)) {
+                        $coordinates = serialize($coordinates);
+                        System::getContainer()->get('huh.utils.cache.database')->cacheValue(static::CACHE_KEY_PREFIX.$overlayConfig->positioningAddress, $coordinates);
+                    }
+                }
+
+                if (\is_string($coordinates)) {
+                    $coordinates = StringUtil::deserialize($coordinates, true);
+
+                    if (isset($coordinates['lat']) && isset($coordinates['lng'])) {
+                        $overlay->setPosition(new Coordinate($coordinates['lat'], $coordinates['lng']));
+                    }
+                }
+
+                break;
+        }
+    }
+
+    public static function getMarkerVariableMapping(): array
+    {
+        return static::$markerVariableMapping;
+    }
+
+    public static function setMarkerVariableMapping(array $markerVariableMapping): void
+    {
+        static::$markerVariableMapping = $markerVariableMapping;
     }
 
     protected function prepareMarker(OverlayModel $overlayConfig, Map $map)
@@ -107,6 +172,7 @@ class OverlayManager
         switch ($overlayConfig->markerType) {
             case Overlay::MARKER_TYPE_SIMPLE:
                 break;
+
             case Overlay::MARKER_TYPE_ICON:
                 $icon = new Icon();
 
@@ -121,19 +187,17 @@ class OverlayManager
                 $icon->setAnchor(new Point($overlayConfig->iconAnchorX, $overlayConfig->iconAnchorY));
 
                 // size
-                $width  = StringUtil::deserialize($overlayConfig->iconWidth, true);
+                $width = StringUtil::deserialize($overlayConfig->iconWidth, true);
                 $height = StringUtil::deserialize($overlayConfig->iconHeight, true);
 
-                if ($width['value'] && $height['value'])
-                {
+                if ($width['value'] && $height['value']) {
                     $icon->setScaledSize(new Size($width['value'], $height['value'], $width['unit'], $height['unit']));
-                }
-                else
-                {
-                    throw new \Exception('The overlay ID ' . $overlayConfig->id . ' doesn\'t have a icon width and height set.');
+                } else {
+                    throw new \Exception('The overlay ID '.$overlayConfig->id.' doesn\'t have a icon width and height set.');
                 }
 
                 $marker->setIcon($icon);
+
                 break;
         }
 
@@ -142,16 +206,19 @@ class OverlayManager
         }
 
         if ($overlayConfig->zIndex) {
-            $marker->setOption('zIndex', (int)$overlayConfig->zIndex);
+            $marker->setOption('zIndex', (int) $overlayConfig->zIndex);
         }
 
         // title
         switch ($overlayConfig->titleMode) {
             case Overlay::TITLE_MODE_TITLE_FIELD:
                 $marker->setOption('title', $overlayConfig->title);
+
                 break;
+
             case Overlay::TITLE_MODE_CUSTOM_TEXT:
                 $marker->setOption('title', $overlayConfig->titleText);
+
                 break;
         }
 
@@ -163,18 +230,20 @@ class OverlayManager
                 case Overlay::CLICK_EVENT_LINK:
                     /** @var Controller $controller */
                     $controller = $this->framework->getAdapter(Controller::class);
-                    $url        = $controller->replaceInsertTags($overlayConfig->url);
+                    $url = $controller->replaceInsertTags($overlayConfig->url);
 
                     $event = new Event(
                         $marker->getVariable(),
                         'click',
                         "function() {
-                            var win = window.open('" . $url . "', '" . ($overlayConfig->target ? '_blank' : '_self') . "');
+                            var win = window.open('".$url."', '".($overlayConfig->target ? '_blank' : '_self')."');
                         }"
                     );
 
                     $events[] = $event;
+
                     break;
+
                 case Overlay::CLICK_EVENT_INFO_WINDOW:
                     $infoWindow = $this->prepareInfoWindow($overlayConfig);
                     $infoWindow->setPixelOffset(new Size($overlayConfig->infoWindowAnchorX, $overlayConfig->infoWindowAnchorY));
@@ -198,97 +267,28 @@ class OverlayManager
         $this->addRoutingToInfoWindow($infoWindow, $overlayConfig);
 
         // size
-        $width  = StringUtil::deserialize($overlayConfig->infoWindowWidth, true);
+        $width = StringUtil::deserialize($overlayConfig->infoWindowWidth, true);
         $height = StringUtil::deserialize($overlayConfig->infoWindowHeight, true);
         $sizing = [];
 
-        if (isset($width['value']) && $width['value'])
-        {
-            $sizing[] = 'width: ' . $width['value'] . $width['unit'] . ';';
+        if (isset($width['value']) && $width['value']) {
+            $sizing[] = 'width: '.$width['value'].$width['unit'].';';
         }
 
-        if (isset($height['value']) && $height['value'])
-        {
-            $sizing[] = 'height: ' . $height['value'] . $height['unit'] . ';';
+        if (isset($height['value']) && $height['value']) {
+            $sizing[] = 'height: '.$height['value'].$height['unit'].';';
         }
 
-        if (!empty($sizing))
-        {
+        if (!empty($sizing)) {
             $infoWindow->setContent(
-                '<div class="wrapper" style="' . implode(' ', $sizing) . '">' . $infoWindow->getContent() . '</div>'
+                '<div class="wrapper" style="'.implode(' ', $sizing).'">'.$infoWindow->getContent().'</div>'
             );
         }
 
         if ($overlayConfig->zIndex) {
-            $infoWindow->setOption('zIndex', (int)$overlayConfig->zIndex);
+            $infoWindow->setOption('zIndex', (int) $overlayConfig->zIndex);
         }
 
         return $infoWindow;
-    }
-
-    public function addRoutingToInfoWindow(InfoWindow $infoWindow, OverlayModel $overlayConfig)
-    {
-        $position = $infoWindow->getPosition();
-
-        if ($overlayConfig->addRouting && $position) {
-            $template = $overlayConfig->routingTemplate ?: 'gmap_routing_default';
-            $template = System::getContainer()->get('huh.utils.template')->getTemplate($template);
-
-            $routing = $this->twig->render($template, [
-                'lat' => $position->getLatitude(),
-                'lng' => $position->getLongitude()
-            ]);
-
-            $infoWindow->setContent($infoWindow->getContent() . $routing);
-        }
-    }
-
-    /**
-     * @param Marker|InfoWindow $overlay
-     * @param OverlayModel $overlayConfig
-     * @throws \Exception
-     */
-    public function setPositioning($overlay, OverlayModel $overlayConfig)
-    {
-        switch ($overlayConfig->positioningMode) {
-            case Overlay::POSITIONING_MODE_COORDINATE:
-                $overlay->setPosition(new Coordinate($overlayConfig->positioningLat, $overlayConfig->positioningLng));
-                break;
-            case Overlay::POSITIONING_MODE_STATIC_ADDRESS:
-                if (!($coordinates = System::getContainer()->get('huh.utils.cache.database')->getValue(static::CACHE_KEY_PREFIX . $overlayConfig->positioningAddress))) {
-                    $coordinates = $this->locationUtil->computeCoordinatesByString($overlayConfig->positioningAddress, $this->apiKey);
-
-                    if (is_array($coordinates)) {
-                        $coordinates = serialize($coordinates);
-                        System::getContainer()->get('huh.utils.cache.database')->cacheValue(static::CACHE_KEY_PREFIX . $overlayConfig->positioningAddress, $coordinates);
-                    }
-                }
-
-                if (is_string($coordinates)) {
-                    $coordinates = StringUtil::deserialize($coordinates, true);
-
-                    if (isset($coordinates['lat']) && isset($coordinates['lng'])) {
-                        $overlay->setPosition(new Coordinate($coordinates['lat'], $coordinates['lng']));
-                    }
-                }
-
-                break;
-        }
-    }
-
-    /**
-     * @return array
-     */
-    public static function getMarkerVariableMapping(): array
-    {
-        return static::$markerVariableMapping;
-    }
-
-    /**
-     * @param array $markerVariableMapping
-     */
-    public static function setMarkerVariableMapping(array $markerVariableMapping): void
-    {
-        static::$markerVariableMapping = $markerVariableMapping;
     }
 }
