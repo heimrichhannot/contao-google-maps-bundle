@@ -1,6 +1,6 @@
 <?php
 
-namespace Ivory\GoogleMap\Helper\Renderer;;
+namespace Ivory\GoogleMap\Helper\Renderer;
 
 use Ivory\GoogleMap\Helper\Formatter\Formatter;
 use Ivory\GoogleMap\Helper\Renderer\Utility\RequirementLoaderRenderer;

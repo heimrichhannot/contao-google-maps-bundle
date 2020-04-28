@@ -12,13 +12,15 @@ use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
+use Contao\ManagerPlugin\Config\ConfigPluginInterface;
 use Contao\ManagerPlugin\Config\ContainerBuilder;
 use Contao\ManagerPlugin\Config\ExtensionPluginInterface;
 use HeimrichHannot\GoogleMapsBundle\HeimrichHannotContaoGoogleMapsBundle;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 use Ivory\GoogleMapBundle\IvoryGoogleMapBundle;
+use Symfony\Component\Config\Loader\LoaderInterface;
 
-class Plugin implements BundlePluginInterface, ExtensionPluginInterface
+class Plugin implements BundlePluginInterface, ExtensionPluginInterface, ConfigPluginInterface
 {
     /**
      * {@inheritdoc}
@@ -55,18 +57,19 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface
             __DIR__.'/../Resources/config/config_reader.yml'
         );
     
-        $extensionConfigs = ContainerUtil::mergeConfigFile(
+        return ContainerUtil::mergeConfigFile(
             'huh_list',
             $extensionName,
             $extensionConfigs,
             __DIR__.'/../Resources/config/config_list.yml'
         );
+    }
 
-        return ContainerUtil::mergeConfigFile(
-            'huh_GoogleMaps',
-            $extensionName,
-            $extensionConfigs,
-            $container->getParameter('kernel.project_dir').'/vendor/heimrichhannot/contao-GoogleMaps-bundle/src/Resources/config/config.yml'
-        );
+    public function registerContainerConfiguration(LoaderInterface $loader, array $managerConfig)
+    {
+        $loader->load('@HeimrichHannotContaoGoogleMapsBundle/Resources/config/commands.yml');
+        $loader->load('@HeimrichHannotContaoGoogleMapsBundle/Resources/config/listeners.yml');
+        $loader->load('@HeimrichHannotContaoGoogleMapsBundle/Resources/config/services.yml');
+        $loader->load('@HeimrichHannotContaoGoogleMapsBundle/Resources/config/twig.yml');
     }
 }
