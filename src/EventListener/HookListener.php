@@ -1,5 +1,11 @@
 <?php
 
+/*
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace HeimrichHannot\GoogleMapsBundle\EventListener;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
@@ -8,23 +14,20 @@ use HeimrichHannot\GoogleMapsBundle\Manager\MapManager;
 class HookListener
 {
     /**
+     * @var MapManager
+     */
+    protected $mapManager;
+    /**
      * @var ContaoFrameworkInterface
      */
     private $framework;
 
     /**
-     * @var MapManager
-     */
-    protected $mapManager;
-
-    /**
      * Constructor.
-     *
-     * @param ContaoFrameworkInterface $framework
      */
     public function __construct(ContaoFrameworkInterface $framework, MapManager $mapManager)
     {
-        $this->framework  = $framework;
+        $this->framework = $framework;
         $this->mapManager = $mapManager;
     }
 

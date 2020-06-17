@@ -1,5 +1,11 @@
 <?php
 
+/*
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace HeimrichHannot\GoogleMapsBundle\Element;
 
 use Contao\BackendTemplate;
@@ -35,7 +41,6 @@ class ContentGoogleMap extends ContentElement
 
     public function __construct(ContentModel $objElement, $strColumn = 'main')
     {
-
         parent::__construct($objElement, $strColumn);
         $this->mapManager = System::getContainer()->get('huh.google_maps.map_manager');
         $this->arrayUtil = System::getContainer()->get('huh.utils.array');
@@ -47,13 +52,13 @@ class ContentGoogleMap extends ContentElement
         if (TL_MODE == 'BE') {
             $objTemplate = new BackendTemplate('be_wildcard');
 
-            $objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['CTE'][$this->type][0]) . ' ###';
-            $objTemplate->title    = $this->headline;
+            $objTemplate->wildcard = '### '.Utf8::strtoupper($GLOBALS['TL_LANG']['CTE'][$this->type][0]).' ###';
+            $objTemplate->title = $this->headline;
 
             if (null !== ($map = $this->modelUtil->findModelInstanceByPk('tl_google_map', $this->googlemaps_map))) {
-                $objTemplate->id   = $map->id;
+                $objTemplate->id = $map->id;
                 $objTemplate->link = $map->title;
-                $objTemplate->href = 'contao?do=google_maps&amp;table=tl_google_map&amp;act=edit&amp;id=' . $map->id;
+                $objTemplate->href = 'contao?do=google_maps&amp;table=tl_google_map&amp;act=edit&amp;id='.$map->id;
             }
 
             return $objTemplate->parse();

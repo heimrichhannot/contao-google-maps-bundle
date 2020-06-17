@@ -1,5 +1,11 @@
 <?php
 
+/*
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace HeimrichHannot\GoogleMapsBundle\Module;
 
 use Contao\BackendTemplate;
@@ -39,17 +45,16 @@ class ModuleGoogleMap extends Module
 
     public function generate()
     {
-        if (TL_MODE == 'BE')
-        {
+        if (TL_MODE == 'BE') {
             $objTemplate = new BackendTemplate('be_wildcard');
 
-            $objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD'][$this->type][0]) . ' ###';
+            $objTemplate->wildcard = '### '.Utf8::strtoupper($GLOBALS['TL_LANG']['FMD'][$this->type][0]).' ###';
             $objTemplate->title = $this->headline;
 
             if (null !== ($map = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk('tl_google_map', $this->googlemaps_map))) {
-                $objTemplate->id   = $map->id;
+                $objTemplate->id = $map->id;
                 $objTemplate->link = $map->title;
-                $objTemplate->href = 'contao?do=google_maps&amp;table=tl_google_map&amp;act=edit&amp;id=' . $map->id;
+                $objTemplate->href = 'contao?do=google_maps&amp;table=tl_google_map&amp;act=edit&amp;id='.$map->id;
             }
 
             return $objTemplate->parse();
@@ -58,7 +63,7 @@ class ModuleGoogleMap extends Module
         $this->mapManager = System::getContainer()->get('huh.google_maps.map_manager');
         $this->arrayUtil = System::getContainer()->get('huh.utils.array');
         $this->modelUtil = System::getContainer()->get('huh.utils.model');
-        $this->twig      = System::getContainer()->get('twig');
+        $this->twig = System::getContainer()->get('twig');
 
         return parent::generate();
     }

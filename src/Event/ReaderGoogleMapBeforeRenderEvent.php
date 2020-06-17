@@ -1,12 +1,17 @@
 <?php
 
+/*
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace HeimrichHannot\GoogleMapsBundle\Event;
 
 use HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel;
 use HeimrichHannot\ReaderBundle\Item\ItemInterface;
 use HeimrichHannot\ReaderBundle\Model\ReaderConfigElementModel;
 use Ivory\GoogleMap\Map;
-use Symfony\Component\EventDispatcher\Event;
 
 class ReaderGoogleMapBeforeRenderEvent extends GoogleMapBeforeRenderEvent
 {
@@ -21,8 +26,7 @@ class ReaderGoogleMapBeforeRenderEvent extends GoogleMapBeforeRenderEvent
      * ReaderGoogleMapBeforeRenderEvent constructor.
      *
      * @param $templateName
-     * @param array         $templateData
-     * @param ItemInterface $item
+     * @param array $templateData
      */
     public function __construct(ItemInterface $item, Map $map, GoogleMapModel $mapConfig, ReaderConfigElementModel $readerConfigElement)
     {
@@ -32,17 +36,11 @@ class ReaderGoogleMapBeforeRenderEvent extends GoogleMapBeforeRenderEvent
         $this->readerConfigElement = $readerConfigElement;
     }
 
-    /**
-     * @return ReaderConfigElementModel
-     */
     public function getReaderConfigElement(): ReaderConfigElementModel
     {
         return $this->readerConfigElement;
     }
 
-    /**
-     * @param ReaderConfigElementModel $readerConfigElement
-     */
     public function setReaderConfigElement(ReaderConfigElementModel $readerConfigElement): void
     {
         $this->readerConfigElement = $readerConfigElement;

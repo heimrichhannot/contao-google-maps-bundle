@@ -1,5 +1,11 @@
 <?php
 
+/*
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace HeimrichHannot\GoogleMapsBundle\DataContainer;
 
 use Contao\Backend;
@@ -7,12 +13,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ReaderConfigElement extends Backend
 {
-    const CENTER_MODE_ADDRESS_FIELDS    = 'address_fields';
+    const CENTER_MODE_ADDRESS_FIELDS = 'address_fields';
     const CENTER_MODE_COORDINATE_FIELDS = 'coordinate_fields';
 
     const CENTER_MODES = [
         self::CENTER_MODE_ADDRESS_FIELDS,
-        self::CENTER_MODE_COORDINATE_FIELDS
+        self::CENTER_MODE_COORDINATE_FIELDS,
     ];
 
     /**

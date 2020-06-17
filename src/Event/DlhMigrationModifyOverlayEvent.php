@@ -1,5 +1,11 @@
 <?php
 
+/*
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace HeimrichHannot\GoogleMapsBundle\Event;
 
 use Contao\Model;
@@ -32,70 +38,46 @@ class DlhMigrationModifyOverlayEvent extends Event
     public function __construct(Model $legacyOverlay, Model $overlay, Model $legacyMap, Model $map)
     {
         $this->legacyOverlay = $legacyOverlay;
-        $this->overlay       = $overlay;
-        $this->legacyMap     = $legacyMap;
-        $this->map           = $map;
+        $this->overlay = $overlay;
+        $this->legacyMap = $legacyMap;
+        $this->map = $map;
     }
 
-    /**
-     * @return Model
-     */
     public function getLegacyOverlay(): Model
     {
         return $this->legacyOverlay;
     }
 
-    /**
-     * @param Model $legacyOverlay
-     */
     public function setLegacyOverlay(Model $legacyOverlay): void
     {
         $this->legacyOverlay = $legacyOverlay;
     }
 
-    /**
-     * @return Model
-     */
     public function getOverlay(): Model
     {
         return $this->overlay;
     }
 
-    /**
-     * @param Model $overlay
-     */
     public function setOverlay(Model $overlay): void
     {
         $this->overlay = $overlay;
     }
 
-    /**
-     * @return Model
-     */
     public function getLegacyMap(): Model
     {
         return $this->legacyMap;
     }
 
-    /**
-     * @param Model $legacyMap
-     */
     public function setLegacyMap(Model $legacyMap): void
     {
         $this->legacyMap = $legacyMap;
     }
 
-    /**
-     * @return Model
-     */
     public function getMap(): Model
     {
         return $this->map;
     }
 
-    /**
-     * @param Model $map
-     */
     public function setMap(Model $map): void
     {
         $this->map = $map;

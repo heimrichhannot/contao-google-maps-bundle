@@ -1,12 +1,9 @@
 <?php
 
 /*
- * This file is part of the Ivory Google Map package.
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
- * (c) Eric GELOEN <geloen.eric@gmail.com>
- *
- * For the full copyright and license information, please read the LICENSE
- * file that was distributed with this source code.
+ * @license LGPL-3.0-or-later
  */
 
 namespace Ivory\GoogleMap\Helper\Renderer\Html;
@@ -23,11 +20,6 @@ class StylesheetTagRenderer extends AbstractTagRenderer
      */
     private $stylesheetRenderer;
 
-    /**
-     * @param Formatter          $formatter
-     * @param TagRenderer        $tagRenderer
-     * @param StylesheetRenderer $stylesheetRenderer
-     */
     public function __construct(Formatter $formatter, TagRenderer $tagRenderer, StylesheetRenderer $stylesheetRenderer)
     {
         parent::__construct($formatter, $tagRenderer);
@@ -43,9 +35,6 @@ class StylesheetTagRenderer extends AbstractTagRenderer
         return $this->stylesheetRenderer;
     }
 
-    /**
-     * @param StylesheetRenderer $stylesheetRenderer
-     */
     public function setStylesheetRenderer(StylesheetRenderer $stylesheetRenderer)
     {
         $this->stylesheetRenderer = $stylesheetRenderer;
