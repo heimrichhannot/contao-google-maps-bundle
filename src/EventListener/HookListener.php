@@ -38,10 +38,13 @@ class HookListener
         switch ($arrTag[0]) {
             case 'google_map':
                 return $this->mapManager->render($arrTag[1]);
+
             case 'google_map_html':
                 return $this->mapManager->renderHtml($arrTag[1]);
+
             case 'google_map_css':
                 return $this->mapManager->renderCss($arrTag[1]);
+
             case 'google_map_js':
                 return $this->mapManager->renderJs($arrTag[1]);
         }

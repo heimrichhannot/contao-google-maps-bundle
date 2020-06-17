@@ -82,13 +82,17 @@ class OverlayManager
                 foreach ($events as $event) {
                     $map->getEventManager()->addDomEvent($event);
                 }
+
                 break;
+
             case Overlay::TYPE_INFO_WINDOW:
                 $infoWindow = $this->prepareInfoWindow($overlayConfig);
                 $infoWindow->setOpen(true);
 
                 $map->getOverlayManager()->addInfoWindow($infoWindow);
+
                 break;
+
             default:
                 // TODO allow event subscribers
                 break;
@@ -122,7 +126,9 @@ class OverlayManager
         switch ($overlayConfig->positioningMode) {
             case Overlay::POSITIONING_MODE_COORDINATE:
                 $overlay->setPosition(new Coordinate($overlayConfig->positioningLat, $overlayConfig->positioningLng));
+
                 break;
+
             case Overlay::POSITIONING_MODE_STATIC_ADDRESS:
                 if (!($coordinates = System::getContainer()->get('huh.utils.cache.database')->getValue(static::CACHE_KEY_PREFIX.$overlayConfig->positioningAddress))) {
                     $coordinates = $this->locationUtil->computeCoordinatesByString($overlayConfig->positioningAddress, $this->apiKey);
@@ -166,6 +172,7 @@ class OverlayManager
         switch ($overlayConfig->markerType) {
             case Overlay::MARKER_TYPE_SIMPLE:
                 break;
+
             case Overlay::MARKER_TYPE_ICON:
                 $icon = new Icon();
 
@@ -190,6 +197,7 @@ class OverlayManager
                 }
 
                 $marker->setIcon($icon);
+
                 break;
         }
 
@@ -205,9 +213,12 @@ class OverlayManager
         switch ($overlayConfig->titleMode) {
             case Overlay::TITLE_MODE_TITLE_FIELD:
                 $marker->setOption('title', $overlayConfig->title);
+
                 break;
+
             case Overlay::TITLE_MODE_CUSTOM_TEXT:
                 $marker->setOption('title', $overlayConfig->titleText);
+
                 break;
         }
 
@@ -230,7 +241,9 @@ class OverlayManager
                     );
 
                     $events[] = $event;
+
                     break;
+
                 case Overlay::CLICK_EVENT_INFO_WINDOW:
                     $infoWindow = $this->prepareInfoWindow($overlayConfig);
                     $infoWindow->setPixelOffset(new Size($overlayConfig->infoWindowAnchorX, $overlayConfig->infoWindowAnchorY));

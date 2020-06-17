@@ -53,6 +53,7 @@ class StylesheetTagRenderer extends AbstractTagRenderer
         $formatter = $this->getFormatter();
 
         $tagStylesheets = [];
+
         foreach ($stylesheets as $stylesheet => $value) {
             $tagStylesheets[] = $this->stylesheetRenderer->render($stylesheet, $value);
         }

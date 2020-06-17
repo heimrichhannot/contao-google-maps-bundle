@@ -141,6 +141,7 @@ class Overlay extends Backend
                 if (!\strlen(\Contao\Input::get('pid')) || !\in_array(\Contao\Input::get('pid'), $root)) {
                     throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to create google_map_overlay items in google_map_overlay archive ID '.\Contao\Input::get('pid').'.');
                 }
+
                 break;
 
             case 'cut':
@@ -166,6 +167,7 @@ class Overlay extends Backend
                 if (!\in_array($objArchive->pid, $root)) {
                     throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to '.\Contao\Input::get('act').' google_map_overlay item ID '.$id.' of google_map_overlay archive ID '.$objArchive->pid.'.');
                 }
+
                 break;
 
             case 'select':
@@ -191,6 +193,7 @@ class Overlay extends Backend
                 $session = $session->all();
                 $session['CURRENT']['IDS'] = array_intersect($session['CURRENT']['IDS'], $objArchive->fetchEach('id'));
                 $session->replace($session);
+
                 break;
 
             default:
@@ -199,6 +202,7 @@ class Overlay extends Backend
                 } elseif (!\in_array($id, $root)) {
                     throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to access google_map_overlay archive ID '.$id.'.');
                 }
+
                 break;
         }
     }

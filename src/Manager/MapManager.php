@@ -212,6 +212,7 @@ class MapManager
                 );
 
                 break;
+
             case GoogleMap::SIZE_MODE_STATIC:
                 $width = StringUtil::deserialize($mapConfig->width, true);
                 $height = StringUtil::deserialize($mapConfig->height, true);
@@ -226,6 +227,7 @@ class MapManager
                 }
 
                 break;
+
             case GoogleMap::SIZE_MODE_CSS:
                 $map->setStylesheetOptions(
                     [
@@ -269,6 +271,7 @@ class MapManager
                 $this->setCenter($map, $mapConfig);
 
                 break;
+
             case GoogleMap::POSITIONING_MODE_BOUND:
                 $map->setAutoZoom(true);
                 $this->setBound($map, $mapConfig);
@@ -286,7 +289,9 @@ class MapManager
             case GoogleMap::BOUND_MODE_COORDINATES:
                 $southWest = new Coordinate($mapConfig->boundSouthWestLat, $mapConfig->boundSouthWestLng);
                 $northEast = new Coordinate($mapConfig->boundNorthEastLat, $mapConfig->boundNorthEastLng);
+
                 break;
+
             case GoogleMap::BOUND_MODE_AUTOMATIC:
                 // TODO compute by pins
                 break;
@@ -300,7 +305,9 @@ class MapManager
         switch ($mapConfig->centerMode) {
             case GoogleMap::CENTER_MODE_COORDINATE:
                 $map->setCenter(new Coordinate($mapConfig->centerLat, $mapConfig->centerLng));
+
                 break;
+
             case GoogleMap::CENTER_MODE_STATIC_ADDRESS:
                 if (!($coordinates = System::getContainer()->get('huh.utils.cache.database')->getValue(static::CACHE_KEY_PREFIX.$mapConfig->centerAddress))) {
                     $coordinates = $this->locationUtil->computeCoordinatesByString($mapConfig->centerAddress, static::$apiKey);
@@ -410,6 +417,7 @@ class MapManager
 
         $settings = new \stdClass();
         $settings->googlemaps_apiKey = Config::get('utilsGoogleApiKey');
+
         if (!$settings->googlemaps_apiKey) {
             $settings->googlemaps_apiKey = Config::get('googlemaps_apiKey');
         }

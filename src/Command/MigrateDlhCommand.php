@@ -158,6 +158,7 @@ class MigrateDlhCommand extends AbstractLockedCommand
                 } elseif ($globalApiKey && $apiKey !== $globalApiKey) {
                     $page->overrideGooglemaps_apiKey = true;
                     $page->googlemaps_apiKey = $apiKey;
+
                     if (!$this->dryRun) {
                         $page->save();
                     }

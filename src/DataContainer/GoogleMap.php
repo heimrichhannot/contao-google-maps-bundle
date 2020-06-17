@@ -231,24 +231,28 @@ class GoogleMap extends Backend
                 ) {
                     throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to '.\Contao\Input::get('act').' google_map ID '.\Contao\Input::get('id').'.');
                 }
+
                 break;
 
             case 'editAll':
             case 'deleteAll':
             case 'overrideAll':
                 $session = $objSession->all();
+
                 if ('deleteAll' == \Contao\Input::get('act') && !$user->hasAccess('delete', 'contao_google_maps_bundlep')) {
                     $session['CURRENT']['IDS'] = [];
                 } else {
                     $session['CURRENT']['IDS'] = array_intersect($session['CURRENT']['IDS'], $root);
                 }
                 $objSession->replace($session);
+
                 break;
 
             default:
                 if (\strlen(\Contao\Input::get('act'))) {
                     throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to '.\Contao\Input::get('act').' google_maps.');
                 }
+
                 break;
         }
     }

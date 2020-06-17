@@ -90,9 +90,12 @@ class ElevationService
         switch ($type) {
             case self::REQUEST_TYPE_POSTITIONAL:
                 return new PositionalElevationRequest($locations);
+
                 break;
+
             case self::REQUEST_TYPE_PATH:
                 return new PathElevationRequest([$locations[0], end($locations)]);
+
                 break;
         }
     }
