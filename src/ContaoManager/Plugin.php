@@ -60,11 +60,6 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface
             __DIR__.'/../Resources/config/config_list.yml'
         );
 
-        return ContainerUtil::mergeConfigFile(
-            'huh_GoogleMaps',
-            $extensionName,
-            $extensionConfigs,
-            $container->getParameter('kernel.project_dir').'/vendor/heimrichhannot/contao-GoogleMaps-bundle/src/Resources/config/config.yml'
-        );
+        return $extensionConfigs;
     }
 }
