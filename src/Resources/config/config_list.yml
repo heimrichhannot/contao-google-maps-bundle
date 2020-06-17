@@ -1,4 +1,0 @@
-huh:
-  list:
-    config_element_types:
-      - { name: google_map, class: HeimrichHannot\GoogleMapBundle\ConfigElementType\GoogleMapListConfigElementType }

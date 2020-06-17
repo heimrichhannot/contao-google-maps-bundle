@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [1.5.0-DEV] - 2020-06-17
 - added dry-run option to migration command
 - set migration command dependencies by dependency injection
+- refactored GoogleMapListConfigElementType to implement ListConfigElementTypeInterface
 
 ## [1.4.1] - 2020-04-15
 - fixed MapManager return value declaration

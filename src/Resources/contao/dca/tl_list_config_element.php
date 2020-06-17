@@ -13,12 +13,6 @@ $dca = &$GLOBALS['TL_DCA']['tl_list_config_element'];
  */
 if (\Contao\System::getContainer()->get('huh.utils.container')->isBundleActive('HeimrichHannot\ListBundle\HeimrichHannotContaoListBundle')) {
     /**
-     * Palettes
-     */
-    $dca['palettes'][\HeimrichHannot\GoogleMapBundle\ConfigElementType\GoogleMapListConfigElementType::TYPE] =
-        '{title_type_legend},title,type;{config_legend},googlemaps_map,googlemaps_centerMode,googlemaps_skipHtml,googlemaps_skipCss,googlemaps_skipJs;';
-
-    /**
      * Fields
      */
     \Contao\System::loadLanguageFile('tl_content');

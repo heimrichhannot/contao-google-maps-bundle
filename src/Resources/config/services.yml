@@ -1,6 +1,10 @@
 services:
-  huh.google_maps.map_manager:
-    class: HeimrichHannot\GoogleMapsBundle\Manager\MapManager
+
+  HeimrichHannot\GoogleMapBundle\ConfigElementType\GoogleMapConfigElementType:
+    autowire: true
+    tags: ['huh.list.config_element_type']
+
+  HeimrichHannot\GoogleMapsBundle\Manager\MapManager:
     public: true
     shared: false
     arguments:
@@ -10,6 +14,10 @@ services:
       - "@huh.utils.location"
       - "@huh.utils.file"
       - "@twig"
+  huh.google_maps.map_manager:
+    alias: HeimrichHannot\GoogleMapsBundle\Manager\MapManager
+    public: true
+
   huh.google_maps.overlay_manager:
     class: HeimrichHannot\GoogleMapsBundle\Manager\OverlayManager
     public: true

@@ -53,13 +53,6 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface
             __DIR__.'/../Resources/config/config_reader.yml'
         );
 
-        $extensionConfigs = ContainerUtil::mergeConfigFile(
-            'huh_list',
-            $extensionName,
-            $extensionConfigs,
-            __DIR__.'/../Resources/config/config_list.yml'
-        );
-
         return $extensionConfigs;
     }
 }
