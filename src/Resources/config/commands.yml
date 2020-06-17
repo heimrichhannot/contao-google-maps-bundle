@@ -1,11 +1,8 @@
 services:
     _defaults:
         autoconfigure: true
+        autowire: true
+        bind:
+            $projectDir: '%kernel.project_dir%'
 
-    _instanceof:
-        Contao\CoreBundle\Framework\FrameworkAwareInterface:
-            calls:
-                - ["setFramework", ["@contao.framework"]]
-
-    huh.google_maps.command.migrate_dlh:
-        class: HeimrichHannot\GoogleMapsBundle\Command\MigrateDlhCommand
+    HeimrichHannot\GoogleMapsBundle\Command\MigrateDlhCommand: ~
