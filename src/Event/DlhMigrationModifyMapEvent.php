@@ -16,7 +16,7 @@ class DlhMigrationModifyMapEvent extends Event
     const NAME = 'huh.google_maps.event.dlh_migration_modify_map';
 
     /**
-     * @var Model
+     * @var object
      */
     protected $legacyMap;
 
@@ -25,18 +25,18 @@ class DlhMigrationModifyMapEvent extends Event
      */
     protected $map;
 
-    public function __construct(Model $legacyMap, Model $map)
+    public function __construct(object $legacyMap, Model $map)
     {
         $this->legacyMap = $legacyMap;
         $this->map = $map;
     }
 
-    public function getLegacyMap(): Model
+    public function getLegacyMap(): object
     {
         return $this->legacyMap;
     }
 
-    public function setLegacyMap(Model $legacyMap): void
+    public function setLegacyMap(object $legacyMap): void
     {
         $this->legacyMap = $legacyMap;
     }

@@ -16,7 +16,7 @@ class DlhMigrationModifyOverlayEvent extends Event
     const NAME = 'huh.google_maps.event.dlh_migration_modify_overlay';
 
     /**
-     * @var Model
+     * @var object
      */
     protected $legacyOverlay;
 
@@ -26,7 +26,7 @@ class DlhMigrationModifyOverlayEvent extends Event
     protected $overlay;
 
     /**
-     * @var Model
+     * @var object
      */
     protected $legacyMap;
 
@@ -35,7 +35,7 @@ class DlhMigrationModifyOverlayEvent extends Event
      */
     protected $map;
 
-    public function __construct(Model $legacyOverlay, Model $overlay, Model $legacyMap, Model $map)
+    public function __construct(object $legacyOverlay, Model $overlay, object $legacyMap, Model $map)
     {
         $this->legacyOverlay = $legacyOverlay;
         $this->overlay = $overlay;
@@ -43,12 +43,12 @@ class DlhMigrationModifyOverlayEvent extends Event
         $this->map = $map;
     }
 
-    public function getLegacyOverlay(): Model
+    public function getLegacyOverlay(): object
     {
         return $this->legacyOverlay;
     }
 
-    public function setLegacyOverlay(Model $legacyOverlay): void
+    public function setLegacyOverlay(object $legacyOverlay): void
     {
         $this->legacyOverlay = $legacyOverlay;
     }
@@ -63,12 +63,12 @@ class DlhMigrationModifyOverlayEvent extends Event
         $this->overlay = $overlay;
     }
 
-    public function getLegacyMap(): Model
+    public function getLegacyMap(): object
     {
         return $this->legacyMap;
     }
 
-    public function setLegacyMap(Model $legacyMap): void
+    public function setLegacyMap(object $legacyMap): void
     {
         $this->legacyMap = $legacyMap;
     }

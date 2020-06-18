@@ -54,7 +54,6 @@ class GoogleMapConfigElementType implements ListConfigElementTypeInterface
         $listConfigElement = $configElementData->getListConfigElement();
         $item = $configElementData->getItem();
 
-
         $config = $this->arrayUtil->removePrefix('googlemaps_', $listConfigElement->row());
 
         $templateData = $this->mapManager->prepareMap($config['map'], $config);
@@ -67,8 +66,8 @@ class GoogleMapConfigElementType implements ListConfigElementTypeInterface
         $map = $templateData['mapModel'];
         $mapConfig = $templateData['mapConfigModel'];
 
-        /** @noinspection PhpParamsInspection */
-        /** @noinspection PhpMethodParametersCountMismatchInspection */
+        /* @noinspection PhpParamsInspection */
+        /* @noinspection PhpMethodParametersCountMismatchInspection */
         $this->eventDispatcher->dispatch(
             ListGoogleMapBeforeRenderEvent::NAME,
             new ListGoogleMapBeforeRenderEvent($item, $map, $mapConfig, $listConfigElement));

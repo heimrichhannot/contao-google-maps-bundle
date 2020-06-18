@@ -19,6 +19,8 @@ use Patchwork\Utf8;
 
 class ContentGoogleMap extends ContentElement
 {
+    const TYPE = 'google_map';
+
     /**
      * @var string
      */
