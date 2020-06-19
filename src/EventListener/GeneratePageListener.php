@@ -1,16 +1,12 @@
 <?php
-/**
- * Contao Open Source CMS
- *
+
+/*
  * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
-
 namespace HeimrichHannot\GoogleMapsBundle\EventListener;
-
 
 use Contao\LayoutModel;
 use Contao\PageModel;
@@ -24,7 +20,6 @@ class GeneratePageListener
      */
     protected $mapManager;
 
-
     /**
      * GeneratePageListener constructor.
      */
@@ -36,13 +31,10 @@ class GeneratePageListener
     public function __invoke(PageModel $pageModel, LayoutModel $layout, PageRegular $pageRegular): void
     {
         if ($mapApi = $this->mapManager->renderApi()) {
-            if ($scripts = trim($layout->script))
-            {
+            if ($scripts = trim($layout->script)) {
                 $mapApi .= $scripts."\n".$mapApi;
             }
             $layout->script = $mapApi;
         }
-        return;
     }
-
 }

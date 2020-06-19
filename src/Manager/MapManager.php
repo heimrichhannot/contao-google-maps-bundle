@@ -70,7 +70,7 @@ class MapManager
      */
     protected static $apiKey;
     /**
-     * Collections of all maps on a page
+     * Collections of all maps on a page.
      *
      * @var Map[]
      */
@@ -215,9 +215,7 @@ class MapManager
     }
 
     /**
-     * Render the google map api
-     *
-     * @return string
+     * Render the google map api.
      */
     public function renderApi(): string
     {
@@ -225,13 +223,15 @@ class MapManager
             return '';
         }
         $collection = $this->mapCollection->getCollection();
-        if (1 === count($collection) && isset($collection[0]['id'])) {
+
+        if (1 === \count($collection) && isset($collection[0]['id'])) {
             $language = $this->getLanguage($collection[0]['id']);
         } else {
             $language = $this->getLanguage();
         }
         /** @var ApiHelper $apiHelper */
         $apiHelper = ApiHelperBuilder::create()->setLanguage($language)->setKey(static::$apiKey)->build();
+
         return $apiHelper->render($this->mapCollection->getMaps());
     }
 
@@ -469,9 +469,6 @@ class MapManager
 
     /**
      * return language that is either configured at map config or set at page config.
-     *
-     * @param int|null $mapId
-     * @return string
      */
     public function getLanguage(int $mapId = null): string
     {

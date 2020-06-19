@@ -1,24 +1,17 @@
 <?php
-/**
- * Contao Open Source CMS
- *
+
+/*
  * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
-
 namespace HeimrichHannot\GoogleMapsBundle\Collection;
-
 
 use Ivory\GoogleMap\Map;
 
 /**
- * Class MapCollection
- * @package HeimrichHannot\GoogleMapsBundle\Collection
- *
- * Collect all active maps on a page.
+ * Class MapCollection.
  */
 class MapCollection
 {
@@ -27,15 +20,13 @@ class MapCollection
      */
     protected $maps = [];
 
-    /**
-     * @param Map $map
-     */
-    public function addMap(Map $map, ?int $mapConfigId) {
+    public function addMap(Map $map, ?int $mapConfigId)
+    {
         $this->maps[] = ['map' => $map, 'id' => $mapConfigId];
     }
 
     /**
-     * Return only map objects
+     * Return only map objects.
      *
      * @return Map[]
      */
@@ -45,7 +36,7 @@ class MapCollection
     }
 
     /**
-     * Return map collection
+     * Return map collection.
      *
      * @return array
      */
