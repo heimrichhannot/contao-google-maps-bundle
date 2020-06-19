@@ -5,7 +5,7 @@
  */
 $GLOBALS['BE_MOD']['content']['google_maps'] = [
     'tables' => ['tl_google_map', 'tl_google_map_overlay'],
-    'stylesheet' => 'bundles/heimrichhannotcontaogooglemaps/css/backend.google-maps-bundle.css',
+    'stylesheet' => 'bundles/heimrichhannotgooglemaps/css/backend.google-maps-bundle.css',
 ];
 
 /**
@@ -26,6 +26,7 @@ $GLOBALS['FE_MOD']['maps'] = [
  * Hooks
  */
 $GLOBALS['TL_HOOKS']['replaceInsertTags']['googleMapsBundle'] = ['huh.google_maps.listener.hooks', 'addInsertTags'];
+$GLOBALS['TL_HOOKS']['generatePage']['huh_googlemaps'] = [\HeimrichHannot\GoogleMapsBundle\EventListener\GeneratePageListener::class, '__invoke'];
 
 /**
  * Models

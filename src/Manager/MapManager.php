@@ -9,9 +9,10 @@
 namespace HeimrichHannot\GoogleMapsBundle\Manager;
 
 use Contao\Config;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\StringUtil;
 use Contao\System;
+use HeimrichHannot\GoogleMapsBundle\Collection\MapCollection;
 use HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap;
 use HeimrichHannot\GoogleMapsBundle\EventListener\MapRendererListener;
 use HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel;
@@ -26,19 +27,21 @@ use Ivory\GoogleMap\Control\RotateControl;
 use Ivory\GoogleMap\Control\ScaleControl;
 use Ivory\GoogleMap\Control\StreetViewControl;
 use Ivory\GoogleMap\Control\ZoomControl;
+use Ivory\GoogleMap\Helper\ApiHelper;
 use Ivory\GoogleMap\Helper\Builder\ApiHelperBuilder;
 use Ivory\GoogleMap\Helper\Builder\MapHelperBuilder;
 use Ivory\GoogleMap\Map;
 use Ivory\GoogleMap\MapTypeId;
 use Ivory\GoogleMap\Overlay\MarkerClusterType;
 use Model\Collection;
+use Twig\Environment;
 
 class MapManager
 {
     const CACHE_KEY_PREFIX = 'googleMaps_map';
     const GOOGLE_MAPS_STATIC_URL = 'https://maps.googleapis.com/maps/api/staticmap';
     /**
-     * @var ContaoFrameworkInterface
+     * @var ContaoFramework
      */
     protected $framework;
 
@@ -58,7 +61,7 @@ class MapManager
     protected $locationUtil;
 
     /**
-     * @var \Twig_Environment
+     * @var Environment
      */
     protected $twig;
 
@@ -66,14 +69,25 @@ class MapManager
      * @var string
      */
     protected static $apiKey;
+    /**
+     * Collections of all maps on a page
+     *
+     * @var Map[]
+     */
+    protected $maps = [];
+    /**
+     * @var MapCollection
+     */
+    private $mapCollection;
 
     public function __construct(
-        ContaoFrameworkInterface $framework,
+        ContaoFramework $framework,
         OverlayManager $overlayManager,
         ModelUtil $modelUtil,
         LocationUtil $locationUtil,
         FileUtil $fileUtil,
-        \Twig_Environment $twig
+        Environment $twig,
+        MapCollection $mapCollection
     ) {
         $this->framework = $framework;
         $this->overlayManager = $overlayManager;
@@ -81,6 +95,7 @@ class MapManager
         $this->locationUtil = $locationUtil;
         $this->fileUtil = $fileUtil;
         $this->twig = $twig;
+        $this->mapCollection = $mapCollection;
     }
 
     public function prepareMap(int $mapId, array $config = [], Collection $overlays = null): ?array
@@ -140,16 +155,17 @@ class MapManager
         $map = $templateData['mapModel'];
 
         $mapHelper = MapHelperBuilder::create()->build();
-        $apiHelper = ApiHelperBuilder::create()->setLanguage($this->getLanguage($mapId))->setKey(static::$apiKey)->build();
+//        $apiHelper = $this->createApiHelper($this->getLanguage($mapId));
 
         $listener = new MapRendererListener($templateData['mapConfigModel'], $this, $mapHelper);
-
         $mapHelper->getEventDispatcher()->addListener('map.stylesheet', [$listener, 'renderStylesheet']);
 
         $templateData['mapHtml'] = $mapHelper->renderHtml($map);
         $templateData['mapCss'] = $mapHelper->renderStylesheet($map);
         $templateData['mapJs'] = $mapHelper->renderJavascript($map);
-        $templateData['mapGoogleJs'] = $apiHelper->render([$map]);
+        $this->mapCollection->addMap($map, $mapId);
+
+//        $templateData['mapGoogleJs'] = $apiHelper->render([$map]);
 
         $template = $templateData['mapConfig']['template'] ?: 'gmap_map_default';
         $template = System::getContainer()->get('huh.utils.template')->getTemplate($template);
@@ -157,15 +173,16 @@ class MapManager
         return $this->twig->render($template, $templateData);
     }
 
-    public function renderMapObject(Map $map)
+    public function renderMapObject(Map $map, ?int $mapId = null)
     {
         $mapHelper = MapHelperBuilder::create()->build();
-        $apiHelper = ApiHelperBuilder::create()->setLanguage($this->getLanguage())->setKey(static::$apiKey)->build();
 
         $templateData['mapHtml'] = $mapHelper->renderHtml($map);
         $templateData['mapCss'] = $mapHelper->renderStylesheet($map);
         $templateData['mapJs'] = $mapHelper->renderJavascript($map);
-        $templateData['mapGoogleJs'] = $apiHelper->render([$map]);
+        $this->mapCollection->addMap($map, $mapId);
+
+//        $templateData['mapGoogleJs'] = $apiHelper->render([$map]);
 
         $template = $templateData['mapConfig']['template'] ?: 'gmap_map_default';
         $template = System::getContainer()->get('huh.utils.template')->getTemplate($template);
@@ -195,6 +212,27 @@ class MapManager
         $config['skipCss'] = true;
 
         return $this->render($mapId, $config);
+    }
+
+    /**
+     * Render the google map api
+     *
+     * @return string
+     */
+    public function renderApi(): string
+    {
+        if ($this->mapCollection->isEmpty()) {
+            return '';
+        }
+        $collection = $this->mapCollection->getCollection();
+        if (1 === count($collection) && isset($collection[0]['id'])) {
+            $language = $this->getLanguage($collection[0]['id']);
+        } else {
+            $language = $this->getLanguage();
+        }
+        /** @var ApiHelper $apiHelper */
+        $apiHelper = ApiHelperBuilder::create()->setLanguage($language)->setKey(static::$apiKey)->build();
+        return $apiHelper->render($this->mapCollection->getMaps());
     }
 
     public function setVisualization(Map $map, GoogleMapModel $mapConfig)
@@ -430,17 +468,20 @@ class MapManager
     }
 
     /**
-     * * return language that is either configured at map config or set at page config.
+     * return language that is either configured at map config or set at page config.
+     *
+     * @param int|null $mapId
+     * @return string
      */
-    public function getLanguage(int $id = null): string
+    public function getLanguage(int $mapId = null): string
     {
         global $objPage;
 
-        if (!$id) {
+        if (!$mapId) {
             return $objPage->language;
         }
 
-        if (null === ($config = $this->modelUtil->findModelInstanceByPk('tl_google_map', $id))) {
+        if (null === ($config = $this->modelUtil->findModelInstanceByPk('tl_google_map', $mapId))) {
             return $objPage->language;
         }
 

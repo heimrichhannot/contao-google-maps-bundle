@@ -1,9 +1,12 @@
 <?php
 
 /*
- * Copyright (c) 2020 Heimrich & Hannot GmbH
+ * This file is part of the Ivory Google Map package.
  *
- * @license LGPL-3.0-or-later
+ * (c) Eric GELOEN <geloen.eric@gmail.com>
+ *
+ * For the full copyright and license information, please read the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Ivory\GoogleMap\Helper\Renderer\Html;
@@ -12,6 +15,9 @@ use Ivory\GoogleMap\Helper\Formatter\Formatter;
 
 /**
  * @author GeLo <geloen.eric@gmail.com>
+ *
+ * FIX wrong return value for style type. Override will be removed as soon as pull request is accepted
+ * See https://github.com/bresam/ivory-google-map/pull/6
  */
 class StylesheetTagRenderer extends AbstractTagRenderer
 {
@@ -53,7 +59,6 @@ class StylesheetTagRenderer extends AbstractTagRenderer
         $formatter = $this->getFormatter();
 
         $tagStylesheets = [];
-
         foreach ($stylesheets as $stylesheet => $value) {
             $tagStylesheets[] = $this->stylesheetRenderer->render($stylesheet, $value);
         }
@@ -65,9 +70,7 @@ class StylesheetTagRenderer extends AbstractTagRenderer
                 $formatter->renderIndentation($formatter->renderLines($tagStylesheets, true, false)),
                 '}',
             ], !empty($tagStylesheets), false),
-            // FIX
-            array_merge(['type' => 'text/css'], $attributes),
-            // ENDFIX
+            array_merge(['type' => 'text/css'], $attributes), // FIX
             $newLine
         );
     }

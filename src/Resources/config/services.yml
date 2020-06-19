@@ -4,16 +4,11 @@ services:
     autowire: true
     tags: ['huh.list.config_element_type']
 
+  HeimrichHannot\GoogleMapsBundle\Collection\MapCollection: ~
+
   HeimrichHannot\GoogleMapsBundle\Manager\MapManager:
-    public: true
     shared: false
-    arguments:
-      - "@contao.framework"
-      - "@huh.google_maps.overlay_manager"
-      - "@huh.utils.model"
-      - "@huh.utils.location"
-      - "@huh.utils.file"
-      - "@twig"
+    autowire: true
   huh.google_maps.map_manager:
     alias: HeimrichHannot\GoogleMapsBundle\Manager\MapManager
     public: true
@@ -28,6 +23,9 @@ services:
       - "@huh.utils.location"
       - "@huh.utils.file"
       - "@twig"
+  HeimrichHannot\GoogleMapsBundle\Manager\OverlayManager:
+    alias: 'huh.google_maps.overlay_manager'
+
   huh.google_maps.data_container.google_map:
     class: HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap
     public: true

@@ -9,7 +9,7 @@
 {% if not skipJs|default(false) %}
     {{ mapJs|raw }}
 
-    {{ mapGoogleJs|raw }}
+{#    {{ mapGoogleJs|raw }}#}
 {% endif %}
 
 {% if mapConfig.staticMapNoscript|default() %}

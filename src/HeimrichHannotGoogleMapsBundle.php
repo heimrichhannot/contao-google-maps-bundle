@@ -11,7 +11,7 @@ namespace HeimrichHannot\GoogleMapsBundle;
 use HeimrichHannot\GoogleMapsBundle\DependencyInjection\GoogleMapsExtension;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class HeimrichHannotContaoGoogleMapsBundle extends Bundle
+class HeimrichHannotGoogleMapsBundle extends Bundle
 {
     /**
      * {@inheritdoc}

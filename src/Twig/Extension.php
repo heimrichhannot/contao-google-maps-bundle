@@ -9,8 +9,10 @@
 namespace HeimrichHannot\GoogleMapsBundle\Twig;
 
 use HeimrichHannot\GoogleMapsBundle\Manager\MapManager;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-class Extension extends \Twig_Extension
+class Extension extends AbstractExtension
 {
     /**
      * @var MapManager
@@ -30,7 +32,7 @@ class Extension extends \Twig_Extension
         $functions = [];
 
         foreach ($this->getMapping() as $name => $method) {
-            $functions[] = new \Twig_SimpleFunction($name, [$this, $method], ['is_safe' => ['html']]);
+            $functions[] = new TwigFunction($name, [$this, $method], ['is_safe' => ['html']]);
         }
 
         return $functions;
