@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [2.0-DEV] - 2020-06-17
+## [2.0.0-beta3] - 2020-06-17
 - works now with multiple maps on one page
 - added dry-run option to migration command
 - added content element and frontend module migration to migration command
@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - [BREAKING] Change DlhMigrationModifyOverlayEvent legacy map and legacyOverlay type to object
 - [BREAKING] removed mapGoogleJs variable from map template
 - [BREAKING] renamed Bundle class to HeimrichHannotGoogleMapsBundle to reflect coding standards
+- enhanced warning MapManager::setCenter()
 - fixed some deprecation notices
 
 ## [1.4.1] - 2020-04-15
