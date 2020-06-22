@@ -348,11 +348,10 @@ class MapManager
 
             case GoogleMap::CENTER_MODE_STATIC_ADDRESS:
                 if (!($coordinates = System::getContainer()->get('huh.utils.cache.database')->getValue(static::CACHE_KEY_PREFIX.$mapConfig->centerAddress))) {
-
                     $coordinates = $this->locationUtil->computeCoordinatesByString($mapConfig->centerAddress, static::$apiKey);
 
-                    if (false === $coordinates)  {
-                        trigger_error("Could no compute coordinates from address. Maybe your google API key is invalid or geocoding api is not enabled.", E_USER_WARNING);
+                    if (false === $coordinates) {
+                        trigger_error('Could no compute coordinates from address. Maybe your google API key is invalid or geocoding api is not enabled.', E_USER_WARNING);
                     }
 
                     if (\is_array($coordinates)) {

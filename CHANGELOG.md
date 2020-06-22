@@ -1,12 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [2.0.0-beta3] - 2020-06-17
+## [2.0.0-beta] - 2020-06-17
 - works now with multiple maps on one page
 - added dry-run option to migration command
 - added content element and frontend module migration to migration command
 - changed migration command to not require installed delahaye/dlh_googlemaps module
 - refactored GoogleMapListConfigElementType to implement ListConfigElementTypeInterface
+- refactored GoogleMapReaderConfigElementType to implement ReaderConfigElementTypeInterface
 - [BREAKING] Change DlhMigrationModifyMapEvent legacy map type to object
 - [BREAKING] Change DlhMigrationModifyOverlayEvent legacy map and legacyOverlay type to object
 - [BREAKING] removed mapGoogleJs variable from map template

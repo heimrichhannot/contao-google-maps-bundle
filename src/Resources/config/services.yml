@@ -2,7 +2,7 @@ services:
 
   HeimrichHannot\GoogleMapBundle\ConfigElementType\GoogleMapConfigElementType:
     autowire: true
-    tags: ['huh.list.config_element_type']
+    tags: ['huh.list.config_element_type', 'huh.reader.config_element_type']
 
   HeimrichHannot\GoogleMapsBundle\Collection\MapCollection: ~
 

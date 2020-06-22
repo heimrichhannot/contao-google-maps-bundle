@@ -5,6 +5,9 @@ services:
   HeimrichHannot\GoogleMapsBundle\EventListener\GeneratePageListener:
     public: true
 
+  HeimrichHannot\GoogleMapsBundle\EventListener\LoadDataContainerListener:
+    public: true
+
   huh.google_maps.listener.hooks:
     class: HeimrichHannot\GoogleMapsBundle\EventListener\HookListener
     public: true

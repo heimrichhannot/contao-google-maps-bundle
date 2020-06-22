@@ -8,15 +8,23 @@
 
 namespace HeimrichHannot\GoogleMapBundle\ConfigElementType;
 
+use Contao\Model;
 use HeimrichHannot\GoogleMapsBundle\Event\ListGoogleMapBeforeRenderEvent;
+use HeimrichHannot\GoogleMapsBundle\Event\ReaderGoogleMapBeforeRenderEvent;
 use HeimrichHannot\GoogleMapsBundle\Manager\MapManager;
 use HeimrichHannot\ListBundle\ConfigElementType\ListConfigElementData;
 use HeimrichHannot\ListBundle\ConfigElementType\ListConfigElementTypeInterface;
+use HeimrichHannot\ListBundle\Item\ItemInterface as ListItemInterface;
+use HeimrichHannot\ListBundle\Model\ListConfigElementModel;
+use HeimrichHannot\ReaderBundle\ConfigElementType\ReaderConfigElementData;
+use HeimrichHannot\ReaderBundle\ConfigElementType\ReaderConfigElementTypeInterface;
+use HeimrichHannot\ReaderBundle\Item\ItemInterface as ReaderItemInterface;
+use HeimrichHannot\ReaderBundle\Model\ReaderConfigElementModel;
 use HeimrichHannot\UtilsBundle\Arrays\ArrayUtil;
 use Ivory\GoogleMap\Map;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class GoogleMapConfigElementType implements ListConfigElementTypeInterface
+class GoogleMapConfigElementType implements ListConfigElementTypeInterface, ReaderConfigElementTypeInterface
 {
     const TYPE = 'google_map';
     /**
@@ -51,29 +59,48 @@ class GoogleMapConfigElementType implements ListConfigElementTypeInterface
 
     public function addToListItemData(ListConfigElementData $configElementData): void
     {
-        $listConfigElement = $configElementData->getListConfigElement();
-        $item = $configElementData->getItem();
+        $this->addToItemData($configElementData->getListConfigElement(), $configElementData->getItem());
+    }
 
-        $config = $this->arrayUtil->removePrefix('googlemaps_', $listConfigElement->row());
+    public function addToReaderItemData(ReaderConfigElementData $configElementData): void
+    {
+        $this->addToItemData($configElementData->getReaderConfigElement(), $configElementData->getItem());
+    }
+
+    /**
+     * @param ReaderConfigElementModel|ListConfigElementModel $configElement
+     * @param ListItemInterface|ReaderItemInterface $item
+     */
+    protected function addToItemData(Model $configElement, $item): void
+    {
+        $config = $this->arrayUtil->removePrefix('googlemaps_', $configElement->row());
 
         $templateData = $this->mapManager->prepareMap($config['map'], $config);
 
-        if (null === $templateData || !($templateData['mapModel'] instanceof Map)) {
+        if (null === $templateData || !($templateData['mapModel'] instanceof Map))
+        {
             return;
         }
 
         /** @var Map $map */
-        $map = $templateData['mapModel'];
+        $map       = $templateData['mapModel'];
         $mapConfig = $templateData['mapConfigModel'];
 
-        /* @noinspection PhpParamsInspection */
-        /* @noinspection PhpMethodParametersCountMismatchInspection */
-        $this->eventDispatcher->dispatch(
-            ListGoogleMapBeforeRenderEvent::NAME,
-            new ListGoogleMapBeforeRenderEvent($item, $map, $mapConfig, $listConfigElement));
+        if ($item instanceof ListItemInterface) {
+            $event = new ListGoogleMapBeforeRenderEvent($item, $map, $mapConfig, $configElement);
+            // Fallback for version 1 usages
+            $templateVariable = $configElement->templateVariable ?: 'map';
+        } else {
+            $event = new ReaderGoogleMapBeforeRenderEvent($item, $map, $mapConfig, $configElement);
+            // Fallback for version 1 usages
+            $templateVariable = $configElement->templateVariable ?: $configElement->name;
+        }
+
+        /** @noinspection PhpMethodParametersCountMismatchInspection */
+        $this->eventDispatcher->dispatch($event::NAME, $event);
 
         $item->setFormattedValue(
-            $listConfigElement->templateVariable ?: 'map',
+            $templateVariable,
             $this->mapManager->renderMapObject($map)
         );
     }

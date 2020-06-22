@@ -18,7 +18,7 @@ use HeimrichHannot\GoogleMapsBundle\HeimrichHannotGoogleMapsBundle;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 use Ivory\GoogleMapBundle\IvoryGoogleMapBundle;
 
-class Plugin implements BundlePluginInterface, ExtensionPluginInterface
+class Plugin implements BundlePluginInterface
 {
     /**
      * {@inheritdoc}
@@ -39,20 +39,5 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface
             BundleConfig::create(IvoryGoogleMapBundle::class)->setLoadAfter([ContaoCoreBundle::class]),
             BundleConfig::create(HeimrichHannotGoogleMapsBundle::class)->setLoadAfter($loadAfterBundles),
         ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getExtensionConfig($extensionName, array $extensionConfigs, ContainerBuilder $container)
-    {
-        $extensionConfigs = ContainerUtil::mergeConfigFile(
-            'huh_reader',
-            $extensionName,
-            $extensionConfigs,
-            __DIR__.'/../Resources/config/config_reader.yml'
-        );
-
-        return $extensionConfigs;
     }
 }
