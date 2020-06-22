@@ -69,7 +69,7 @@ class GoogleMapConfigElementType implements ListConfigElementTypeInterface, Read
 
     /**
      * @param ReaderConfigElementModel|ListConfigElementModel $configElement
-     * @param ListItemInterface|ReaderItemInterface $item
+     * @param ListItemInterface|ReaderItemInterface           $item
      */
     protected function addToItemData(Model $configElement, $item): void
     {
@@ -77,13 +77,12 @@ class GoogleMapConfigElementType implements ListConfigElementTypeInterface, Read
 
         $templateData = $this->mapManager->prepareMap($config['map'], $config);
 
-        if (null === $templateData || !($templateData['mapModel'] instanceof Map))
-        {
+        if (null === $templateData || !($templateData['mapModel'] instanceof Map)) {
             return;
         }
 
         /** @var Map $map */
-        $map       = $templateData['mapModel'];
+        $map = $templateData['mapModel'];
         $mapConfig = $templateData['mapConfigModel'];
 
         if ($item instanceof ListItemInterface) {
@@ -96,7 +95,7 @@ class GoogleMapConfigElementType implements ListConfigElementTypeInterface, Read
             $templateVariable = $configElement->templateVariable ?: $configElement->name;
         }
 
-        /** @noinspection PhpMethodParametersCountMismatchInspection */
+        /* @noinspection PhpMethodParametersCountMismatchInspection */
         $this->eventDispatcher->dispatch($event::NAME, $event);
 
         $item->setFormattedValue(

@@ -12,10 +12,7 @@ use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
-use Contao\ManagerPlugin\Config\ContainerBuilder;
-use Contao\ManagerPlugin\Config\ExtensionPluginInterface;
 use HeimrichHannot\GoogleMapsBundle\HeimrichHannotGoogleMapsBundle;
-use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 use Ivory\GoogleMapBundle\IvoryGoogleMapBundle;
 
 class Plugin implements BundlePluginInterface
