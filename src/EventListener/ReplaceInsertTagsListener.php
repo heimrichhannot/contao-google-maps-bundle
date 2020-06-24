@@ -1,39 +1,47 @@
 <?php
-
-/*
+/**
+ * Contao Open Source CMS
+ *
  * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
- * @license LGPL-3.0-or-later
+ * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
+ * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
+
 
 namespace HeimrichHannot\GoogleMapsBundle\EventListener;
 
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+
 use HeimrichHannot\GoogleMapsBundle\Manager\MapManager;
 
-class HookListener
+class ReplaceInsertTagsListener
 {
     /**
      * @var MapManager
      */
-    protected $mapManager;
-    /**
-     * @var ContaoFrameworkInterface
-     */
-    private $framework;
+    private $mapManager;
 
-    /**
-     * Constructor.
-     */
-    public function __construct(ContaoFrameworkInterface $framework, MapManager $mapManager)
+    public function __construct(MapManager $mapManager)
     {
-        $this->framework = $framework;
         $this->mapManager = $mapManager;
     }
 
-    public function addInsertTags($strTag)
+
+    /**
+     * @Hook("replaceInsertTags")
+     */
+    public function __invoke(
+        string $insertTag,
+        bool $useCache,
+        string $cachedValue,
+        array $flags,
+        array $tags,
+        array $cache,
+        int $_rit,
+        int $_cnt
+    )
     {
-        $arrTag = explode('::', $strTag);
+        $arrTag = explode('::', $insertTag);
 
         switch ($arrTag[0]) {
             case 'google_map':

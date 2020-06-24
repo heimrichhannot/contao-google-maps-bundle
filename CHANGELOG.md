@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - changed migration command to not require installed delahaye/dlh_googlemaps module
 - refactored GoogleMapListConfigElementType to implement ListConfigElementTypeInterface
 - refactored GoogleMapReaderConfigElementType to implement ReaderConfigElementTypeInterface
+- refactored HookListener to ReplaceInsertTagsListener
 - [BREAKING] Change DlhMigrationModifyMapEvent legacy map type to object
 - [BREAKING] Change DlhMigrationModifyOverlayEvent legacy map and legacyOverlay type to object
 - [BREAKING] removed mapGoogleJs variable from map template

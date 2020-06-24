@@ -8,9 +8,5 @@ services:
   HeimrichHannot\GoogleMapsBundle\EventListener\LoadDataContainerListener:
     public: true
 
-  huh.google_maps.listener.hooks:
-    class: HeimrichHannot\GoogleMapsBundle\EventListener\HookListener
+  HeimrichHannot\GoogleMapsBundle\EventListener\ReplaceInsertTagsListener:
     public: true
-    arguments:
-      - "@contao.framework"
-      - "@huh.google_maps.map_manager"
