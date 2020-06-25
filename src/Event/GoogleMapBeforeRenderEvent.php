@@ -13,8 +13,7 @@ use Ivory\GoogleMap\Map;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
- * Class GoogleMapBeforeRenderEvent
- * @package HeimrichHannot\GoogleMapsBundle\Event
+ * Class GoogleMapBeforeRenderEvent.
  */
 class GoogleMapBeforeRenderEvent extends Event
 {
