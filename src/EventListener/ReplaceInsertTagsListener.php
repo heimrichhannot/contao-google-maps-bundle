@@ -1,16 +1,12 @@
 <?php
-/**
- * Contao Open Source CMS
- *
+
+/*
  * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
-
 namespace HeimrichHannot\GoogleMapsBundle\EventListener;
-
 
 use HeimrichHannot\GoogleMapsBundle\Manager\MapManager;
 
@@ -26,7 +22,6 @@ class ReplaceInsertTagsListener
         $this->mapManager = $mapManager;
     }
 
-
     /**
      * @Hook("replaceInsertTags")
      */
@@ -39,8 +34,7 @@ class ReplaceInsertTagsListener
         array $cache,
         int $_rit,
         int $_cnt
-    )
-    {
+    ) {
         $arrTag = explode('::', $insertTag);
 
         switch ($arrTag[0]) {

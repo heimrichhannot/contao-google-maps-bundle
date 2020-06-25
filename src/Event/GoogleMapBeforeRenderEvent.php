@@ -12,6 +12,10 @@ use HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel;
 use Ivory\GoogleMap\Map;
 use Symfony\Component\EventDispatcher\Event;
 
+/**
+ * Class GoogleMapBeforeRenderEvent
+ * @package HeimrichHannot\GoogleMapsBundle\Event
+ */
 class GoogleMapBeforeRenderEvent extends Event
 {
     protected $item;

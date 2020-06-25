@@ -14,6 +14,7 @@ use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\GoogleMapsBundle\Collection\MapCollection;
 use HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap;
+use HeimrichHannot\GoogleMapsBundle\Event\BeforeRenderMapEvent;
 use HeimrichHannot\GoogleMapsBundle\EventListener\MapRendererListener;
 use HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel;
 use HeimrichHannot\UtilsBundle\File\FileUtil;
@@ -34,6 +35,7 @@ use Ivory\GoogleMap\Map;
 use Ivory\GoogleMap\MapTypeId;
 use Ivory\GoogleMap\Overlay\MarkerClusterType;
 use Model\Collection;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Twig\Environment;
 
 class MapManager
@@ -79,6 +81,10 @@ class MapManager
      * @var MapCollection
      */
     private $mapCollection;
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
 
     public function __construct(
         ContaoFramework $framework,
@@ -87,7 +93,8 @@ class MapManager
         LocationUtil $locationUtil,
         FileUtil $fileUtil,
         Environment $twig,
-        MapCollection $mapCollection
+        MapCollection $mapCollection,
+        EventDispatcherInterface $eventDispatcher
     ) {
         $this->framework = $framework;
         $this->overlayManager = $overlayManager;
@@ -96,6 +103,7 @@ class MapManager
         $this->fileUtil = $fileUtil;
         $this->twig = $twig;
         $this->mapCollection = $mapCollection;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function prepareMap(int $mapId, array $config = [], Collection $overlays = null): ?array
@@ -155,7 +163,6 @@ class MapManager
         $map = $templateData['mapModel'];
 
         $mapHelper = MapHelperBuilder::create()->build();
-//        $apiHelper = $this->createApiHelper($this->getLanguage($mapId));
 
         $listener = new MapRendererListener($templateData['mapConfigModel'], $this, $mapHelper);
         $mapHelper->getEventDispatcher()->addListener('map.stylesheet', [$listener, 'renderStylesheet']);
@@ -165,12 +172,14 @@ class MapManager
         $templateData['mapJs'] = $mapHelper->renderJavascript($map);
         $this->mapCollection->addMap($map, $mapId);
 
-//        $templateData['mapGoogleJs'] = $apiHelper->render([$map]);
-
         $template = $templateData['mapConfig']['template'] ?: 'gmap_map_default';
         $template = System::getContainer()->get('huh.utils.template')->getTemplate($template);
 
-        return $this->twig->render($template, $templateData);
+        /** @var BeforeRenderMapEvent $event */
+        /** @noinspection PhpParamsInspection */
+        $event = $this->eventDispatcher->dispatch(BeforeRenderMapEvent::NAME, new BeforeRenderMapEvent($template, $templateData, $map));
+
+        return $this->twig->render($event->getTemplate(), $event->getTemplateData());
     }
 
     public function renderMapObject(Map $map, ?int $mapId = null)
@@ -182,10 +191,12 @@ class MapManager
         $templateData['mapJs'] = $mapHelper->renderJavascript($map);
         $this->mapCollection->addMap($map, $mapId);
 
-//        $templateData['mapGoogleJs'] = $apiHelper->render([$map]);
-
         $template = $templateData['mapConfig']['template'] ?: 'gmap_map_default';
         $template = System::getContainer()->get('huh.utils.template')->getTemplate($template);
+
+        /** @var BeforeRenderMapEvent $event */
+        /** @noinspection PhpParamsInspection */
+        $event = $this->eventDispatcher->dispatch(BeforeRenderMapEvent::NAME, new BeforeRenderMapEvent($template, $templateData, $map));
 
         return $this->twig->render($template, $templateData);
     }

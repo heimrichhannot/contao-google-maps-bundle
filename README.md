@@ -5,9 +5,7 @@
 [![Build Status](https://travis-ci.org/heimrichhannot/contao-google-maps-bundle.svg?branch=master)](https://travis-ci.org/heimrichhannot/contao-google-maps-bundle)
 [![Coverage Status](https://coveralls.io/repos/github/heimrichhannot/contao-google-maps-bundle/badge.svg?branch=master)](https://coveralls.io/github/heimrichhannot/contao-google-maps-bundle?branch=master)
 
-This bundle offers functionality concerning the Google Maps v3 API. It acts as a contao wrapper for [egeloen/ivory-google-map](https://github.com/egeloen/ivory-google-map) and [egeloen/IvoryGoogleMapBundle](https://github.com/egeloen/IvoryGoogleMapBundle).
-
-*NOTE: This bundle is in beta state and not fully implemented, yet. Refer to TODO section for more details about missing features*
+This bundle adds google maps integration to [Contao](https://contao.org/de/). It's based on [ivory/google-map](https://github.com/bresam/ivory-google-map) and [ivory/google-map-bundle](https://github.com/bresam/ivory-google-map-bundle).
 
 ## Features
 
@@ -15,7 +13,8 @@ This bundle offers functionality concerning the Google Maps v3 API. It acts as a
 - frontend module and content element
 - insert tag and twig function
 - easy contao command based migration tool for [delahaye/dlh_googlemaps](https://github.com/delahaye/dlh_googlemaps) (courtesy to delahaye!)
-- responsive support (mobile first), provide responsive configurations that will update the map upon reaching the value (greater than breakpoint)    
+- responsive support (mobile first), provide responsive configurations that will update the map upon reaching the value (greater than breakpoint)
+- [List bundle](https://github.com/heimrichhannot/contao-list-bundle) and [Reader bundle](https://github.com/heimrichhannot/contao-reader-bundle) support
 
 ## Installation
 
@@ -33,8 +32,6 @@ This bundle offers functionality concerning the Google Maps v3 API. It acts as a
     - Twig function (see below)
 
 ## Migrating from dlh_googlemaps
-
-_NOTE: For migration you have to have [delahaye/dlh_googlemaps](https://github.com/delahaye/dlh_googlemaps) installed._
 
 Although we cannot guarantee to fully migrate your existing dlh_googlemaps instances, you will nevertheless have a point to start from. Think of it as a 95% migration ;-)
 
@@ -58,13 +55,6 @@ google_map_html | ID of the `tl_google_map` instance | {{ google_map_html(1) }}
 google_map_css | ID of the `tl_google_map` instance | {{ google_map_css(1) }}
 google_map_js | ID of the `tl_google_map` instance | {{ google_map_js(1) }}
 
-## Events
-
-Name | Arguments | Description
----- | --------- | -----------
-DlhMigrationModifyMapEvent | $legacyMap, $map | Triggered just before a the migrated map is being saved
-DlhMigrationModifyOverlayEvent | $legacyOverlay, $overlay, $legacyMap, $map | Triggered just before a the migrated overlay is being saved
-
 ## TODO
 
 - Overlay types:
@@ -73,3 +63,7 @@ DlhMigrationModifyOverlayEvent | $legacyOverlay, $overlay, $legacyMap, $map | Tr
     - circle
     - rectangle
     - ground_overlay
+    
+## Documentation
+
+[Developer documentation](docs/developers.md)

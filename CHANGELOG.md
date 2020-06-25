@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 - works now with multiple maps on one page
 - added dry-run option to migration command
 - added content element and frontend module migration to migration command
+- added generic BeforeRenderMapEvent
 - changed migration command to not require installed delahaye/dlh_googlemaps module
 - refactored GoogleMapListConfigElementType to implement ListConfigElementTypeInterface
 - refactored GoogleMapReaderConfigElementType to implement ReaderConfigElementTypeInterface

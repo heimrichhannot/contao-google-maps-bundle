@@ -7,4 +7,10 @@
 * DlhMigrationModifyOverlayEvent: legacyOverlay and legacyMap parameters are now type stdClass instead of Model
 * Templates:
     * gmap_map template: mapGoogleJs variable removed. Update your custom templates accordingly
+* List bundle:
+    * refactored list config type to GoogleMapConfigElementType
+    * added templateVariable field support
+* Reader bundle:
+    * refactored reader config type to GoogleMapConfigElementType
+    * added templateVariable field support
     
