@@ -9,8 +9,9 @@
 namespace HeimrichHannot\GoogleMapsBundle\Event;
 
 use Ivory\GoogleMap\Map;
+use Symfony\Component\EventDispatcher\Event;
 
-class BeforeRenderMapEvent
+class BeforeRenderMapEvent extends Event
 {
     const NAME = 'huh.maps.before_render_map';
 

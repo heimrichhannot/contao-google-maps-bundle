@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - [BREAKING] removed mapGoogleJs variable from map template
 - [BREAKING] renamed Bundle class to HeimrichHannotGoogleMapsBundle to reflect coding standards
 - enhanced warning MapManager::setCenter()
+- removed library overrides
 - fixed some deprecation notices
 
 ## [1.4.1] - 2020-04-15

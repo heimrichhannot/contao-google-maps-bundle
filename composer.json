@@ -10,12 +10,12 @@
     "heimrichhannot/contao-utils-bundle": "^2.0"
   },
   "conflict": {
-    "twig/twig": "<1.38.0 || <2.7.0 "
+    "twig/twig": "<1.38.0 || <2.7.0 ",
+    "ivory/google-map": "<3.0.4"
   },
   "autoload": {
     "psr-4": {
-      "HeimrichHannot\\GoogleMapsBundle\\": "src/",
-      "Ivory\\GoogleMap\\": "src/IvoryGoogleMap/"
+      "HeimrichHannot\\GoogleMapsBundle\\": "src/"
     },
     "classmap": [
       "src/"
@@ -24,8 +24,7 @@
       "src/Resources/contao/config/",
       "src/Resources/contao/dca/",
       "src/Resources/contao/languages/",
-      "src/Resources/contao/templates/",
-      "vendor/ivory/google-map/src/Helper/Renderer/Html/StylesheetTagRenderer.php"
+      "src/Resources/contao/templates/"
     ]
   },
   "autoload-dev": {
