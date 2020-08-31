@@ -10,7 +10,7 @@
     "heimrichhannot/contao-utils-bundle": "^2.0"
   },
   "conflict": {
-    "twig/twig": "<1.38.0 || <2.7.0 ",
+    "twig/twig": "<1.38.0 || >=2.0 <2.7.0",
     "ivory/google-map": "<3.0.4"
   },
   "autoload": {
