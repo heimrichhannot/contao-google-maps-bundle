@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - removed library overrides
 - fixed some deprecation notices
 - fixed `composer.json` twig dependency (thanks to fritzmg)
+- fixed `EventDispatcher` interface
 
 ## [1.4.1] - 2020-04-15
 - fixed MapManager return value declaration
