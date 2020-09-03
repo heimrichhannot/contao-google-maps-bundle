@@ -226,7 +226,7 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'search'    => true,
             'inputType' => 'text',
             'eval'      => ['rgxp' => 'digit', 'maxlength' => 5, 'tl_class' => 'w50', 'mandatory' => true],
-            'sql'       => "int(5) unsigned NOT NULL default '0'"
+            'sql'       => "int(5) unsigned NOT NULL default '16'"
         ],
         'aspectRatioY'           => [
             'label'     => &$GLOBALS['TL_LANG']['tl_google_map']['aspectRatioY'],
@@ -234,7 +234,7 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'search'    => true,
             'inputType' => 'text',
             'eval'      => ['rgxp' => 'digit', 'maxlength' => 5, 'tl_class' => 'w50', 'mandatory' => true],
-            'sql'       => "int(5) unsigned NOT NULL default '0'"
+            'sql'       => "int(5) unsigned NOT NULL default '9'"
         ],
         'addClusterer'           => [
             'label'     => &$GLOBALS['TL_LANG']['tl_google_map']['addClusterer'],

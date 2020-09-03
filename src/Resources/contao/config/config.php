@@ -27,8 +27,8 @@ $GLOBALS['FE_MOD']['maps'] = [
  */
 $GLOBALS['TL_HOOKS']['replaceInsertTags']['huh_googlemaps'] = [
     \HeimrichHannot\GoogleMapsBundle\EventListener\ReplaceInsertTagsListener::class, '__invoke'];
-$GLOBALS['TL_HOOKS']['generatePage']['huh_googlemaps'] = [
-    \HeimrichHannot\GoogleMapsBundle\EventListener\GeneratePageListener::class, '__invoke'];
+$GLOBALS['TL_HOOKS']['replaceDynamicScriptTags']['huh_googlemaps'] = [
+    \HeimrichHannot\GoogleMapsBundle\EventListener\ReplaceDynamicScriptTagsListener::class, '__invoke'];
 $GLOBALS['TL_HOOKS']['loadDataContainer']['huh_googlemaps'] = [
     \HeimrichHannot\GoogleMapsBundle\EventListener\LoadDataContainerListener::class, '__invoke'];
 

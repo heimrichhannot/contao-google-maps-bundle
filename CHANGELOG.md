@@ -19,6 +19,8 @@ All notable changes to this project will be documented in this file.
 - fixed some deprecation notices
 - fixed `composer.json` twig dependency (thanks to fritzmg)
 - fixed `EventDispatcher` interface
+- added default values for aspect ratio (16:9)
+- fixed insert tag inclusion
 
 ## [1.4.1] - 2020-04-15
 - fixed MapManager return value declaration

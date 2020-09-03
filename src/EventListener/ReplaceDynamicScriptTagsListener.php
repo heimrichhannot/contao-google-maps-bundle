@@ -8,33 +8,26 @@
 
 namespace HeimrichHannot\GoogleMapsBundle\EventListener;
 
-use Contao\LayoutModel;
-use Contao\PageModel;
-use Contao\PageRegular;
 use HeimrichHannot\GoogleMapsBundle\Manager\MapManager;
 
-class GeneratePageListener
+class ReplaceDynamicScriptTagsListener
 {
     /**
      * @var MapManager
      */
     protected $mapManager;
 
-    /**
-     * GeneratePageListener constructor.
-     */
     public function __construct(MapManager $mapManager)
     {
         $this->mapManager = $mapManager;
     }
 
-    public function __invoke(PageModel $pageModel, LayoutModel $layout, PageRegular $pageRegular): void
+    public function __invoke($buffer)
     {
         if ($mapApi = $this->mapManager->renderApi()) {
-            if ($scripts = trim($layout->script)) {
-                $mapApi .= $scripts."\n".$mapApi;
-            }
-            $layout->script = $mapApi;
+            $GLOBALS['TL_BODY']['huhGoogleMaps'] = $mapApi;
         }
+
+        return $buffer;
     }
 }
