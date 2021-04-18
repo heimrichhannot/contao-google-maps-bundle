@@ -23,6 +23,7 @@ class Overlay extends Backend
     const TYPE_CIRCLE = 'circle';
     const TYPE_RECTANGLE = 'rectangle';
     const TYPE_GROUND_OVERLAY = 'ground_overlay';
+    const TYPE_KML_LAYER = 'kml';
 
     const TYPES = [
         self::TYPE_MARKER,
@@ -32,6 +33,7 @@ class Overlay extends Backend
         self::TYPE_CIRCLE,
         self::TYPE_RECTANGLE,
         self::TYPE_GROUND_OVERLAY,
+        self::TYPE_KML_LAYER,
     ];
 
     const TITLE_MODE_TITLE_FIELD = 'title_field';

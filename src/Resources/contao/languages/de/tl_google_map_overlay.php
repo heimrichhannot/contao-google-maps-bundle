@@ -85,6 +85,7 @@ $lang['reference'] = [
     \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_CIRCLE                     => 'Kreis',
     \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_RECTANGLE                  => 'Rechteck',
     \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_GROUND_OVERLAY             => 'Ground-Overlay',
+    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_KML_LAYER                  => 'KML-Layer',
     \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::MARKER_TYPE_SIMPLE              => 'Standard',
     \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::MARKER_TYPE_ICON                => 'Individuelles Bild',
     \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::CLICK_EVENT_LINK                => 'Link'
@@ -106,3 +107,17 @@ $lang['copy']   = ['Overlay duplizieren', 'Overlay ID %s duplizieren'];
 $lang['delete'] = ['Overlay löschen', 'Overlay ID %s löschen'];
 $lang['toggle'] = ['Overlay veröffentlichen', 'Overlay ID %s veröffentlichen/verstecken'];
 $lang['show']   = ['Overlay Details', 'Overlay-Details ID %s anzeigen'];
+
+/**
+ * KML
+ */
+$lang['kmlUrl'][0]                 = 'URL';
+$lang['kmlUrl'][1]                 = 'Geben Sie eine Url zu einer .kml-Datei (mit http://) ein.';
+$lang['kmlClickable'][0]           = 'Klickbar';
+$lang['kmlClickable'][1]           = 'Wenn aktiv, reagiert der Layer auf Mausklicks.';
+$lang['kmlPreserveViewport'][0]    = 'Anzeigebereich erhalten';
+$lang['kmlPreserveViewport'][1]    = 'Der Anzeigebereich wird durch den KML Layer nicht verändert.';
+$lang['kmlScreenOverlays'][0]      = 'Overlays zeigen';
+$lang['kmlScreenOverlays'][1]      = 'Die Overlays des Layers rendern.';
+$lang['kmlSuppressInfowindows'][0] = 'Infoblasen unterdrücken';
+$lang['kmlSuppressInfowindows'][1] = 'Unterdrückt die Anzeige von Infoblasen im Layer.';
