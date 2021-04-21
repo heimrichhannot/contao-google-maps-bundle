@@ -22,6 +22,7 @@ All notable changes to this project will be documented in this file.
 - added default values for aspect ratio (16:9)
 - fixed insert tag inclusion
 - added kml support (thanks @rabauss -> see [https://github.com/heimrichhannot/contao-google-maps-bundle/pull/7](https://github.com/heimrichhannot/contao-google-maps-bundle/pull/7))
+- added user better error message if no api key is set (see [https://github.com/heimrichhannot/contao-google-maps-bundle/issues/8](https://github.com/heimrichhannot/contao-google-maps-bundle/issues/8))
 
 ## [1.4.1] - 2020-04-15
 - fixed MapManager return value declaration

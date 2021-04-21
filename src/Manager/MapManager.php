@@ -119,6 +119,10 @@ class MapManager
         // compute API key
         static::$apiKey = $this->computeApiKey($mapConfig);
 
+        if (!static::$apiKey) {
+            throw new \Exception('No api key has been defined for the google map with config ID '.$mapConfig->id.'.');
+        }
+
         $templateData = $config;
         $map = new Map();
         $map->setVariable('map_'.$mapId.'_'.substr(md5(time().$mapId), 0, 8));
