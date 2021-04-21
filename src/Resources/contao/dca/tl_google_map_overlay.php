@@ -88,6 +88,8 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
             '{general_legend},title,type;{config_legend},titleMode,positioningMode,animation,markerType,clickEvent,zIndex;{publish_legend},published;',
         \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_INFO_WINDOW =>
             '{general_legend},title,type;{config_legend},positioningMode,infoWindowWidth,infoWindowHeight,infoWindowText,addRouting,zIndex;{publish_legend},published;',
+        \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_KML_LAYER =>
+            '{general_legend},title,type;{config_legend},kmlUrl,kmlClickable,kmlPreserveViewport,kmlScreenOverlays,kmlSuppressInfowindows,zIndex;{publish_legend},published;',
 
     ],
     'subpalettes' => [
@@ -354,6 +356,50 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
             'inputType' => 'text',
             'eval'      => ['rgxp' => 'digit', 'maxlength' => 10, 'tl_class' => 'w50', 'mandatory' => true],
             'sql'       => "int(10) unsigned NOT NULL default '0'"
+        ],
+        'kmlUrl'                 => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['kmlUrl'],
+            'exclude'   => true,
+            'search'    => true,
+            'inputType' => 'text',
+            'eval'      => ['rgxp' => 'url', 'decodeEntities' => true, 'maxlength' => 255, 'tl_class' => 'w50', 'mandatory' => true],
+            'sql'       => "varchar(255) NOT NULL default ''",
+        ],
+        'kmlClickable'           => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['kmlClickable'],
+            'exclude'   => true,
+            'filter'    => true,
+            'default'   => true,
+            'eval'      => ['tl_class' => 'clr m12'],
+            'inputType' => 'checkbox',
+            'sql'       => "char(1) NOT NULL default '1'",
+        ],
+        'kmlPreserveViewport'    => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['kmlPreserveViewport'],
+            'exclude'   => true,
+            'filter'    => true,
+            'default'   => false,
+            'eval'      => ['tl_class' => 'm12'],
+            'inputType' => 'checkbox',
+            'sql'       => "char(1) NOT NULL default ''",
+        ],
+        'kmlScreenOverlays'      => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['kmlScreenOverlays'],
+            'exclude'   => true,
+            'filter'    => true,
+            'default'   => true,
+            'eval'      => ['tl_class' => 'm12'],
+            'inputType' => 'checkbox',
+            'sql'       => "char(1) NOT NULL default '1'",
+        ],
+        'kmlSuppressInfowindows' => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['kmlSuppressInfowindows'],
+            'exclude'   => true,
+            'filter'    => true,
+            'default'   => false,
+            'inputType' => 'checkbox',
+            'eval'      => ['tl_class' => 'm12'],
+            'sql'       => "char(1) NOT NULL default ''",
         ],
         // publish
         'published'          => [

@@ -22,6 +22,7 @@ use Ivory\GoogleMap\Base\Point;
 use Ivory\GoogleMap\Base\Size;
 use Ivory\GoogleMap\Event\Event;
 use Ivory\GoogleMap\Event\MouseEvent;
+use Ivory\GoogleMap\Layer\KmlLayer;
 use Ivory\GoogleMap\Map;
 use Ivory\GoogleMap\Overlay\Icon;
 use Ivory\GoogleMap\Overlay\InfoWindow;
@@ -90,6 +91,13 @@ class OverlayManager
                 $infoWindow->setOpen(true);
 
                 $map->getOverlayManager()->addInfoWindow($infoWindow);
+
+                break;
+
+            case Overlay::TYPE_KML_LAYER:
+                $kmlLayer = $this->prepareKmlLayer($overlayConfig);
+
+                $map->getLayerManager()->addKmlLayer($kmlLayer);
 
                 break;
 
@@ -290,5 +298,28 @@ class OverlayManager
         }
 
         return $infoWindow;
+    }
+
+    protected function prepareKmlLayer(OverlayModel $overlayConfig)
+    {
+        $kmlLayer = new KmlLayer($overlayConfig->kmlUrl);
+
+        if ($overlayConfig->kmlClickable) {
+            $kmlLayer->setOption('clickable', (bool) $overlayConfig->kmlClickable);
+        }
+        if ($overlayConfig->kmlPreserveViewport) {
+            $kmlLayer->setOption('preserveViewport', (bool) $overlayConfig->kmlPreserveViewport);
+        }
+        if ($overlayConfig->kmlScreenOverlays) {
+            $kmlLayer->setOption('screenOverlays', (bool) $overlayConfig->kmlScreenOverlays);
+        }
+        if ($overlayConfig->kmlSuppressInfowindows) {
+            $kmlLayer->setOption('suppressInfoWindows', (bool) $overlayConfig->kmlSuppressInfowindows);
+        }
+        if ($overlayConfig->zIndex) {
+            $kmlLayer->setOption('zIndex', (int) $overlayConfig->zIndex);
+        }
+
+        return $kmlLayer;
     }
 }
