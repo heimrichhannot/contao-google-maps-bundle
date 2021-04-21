@@ -307,15 +307,19 @@ class OverlayManager
         if ($overlayConfig->kmlClickable) {
             $kmlLayer->setOption('clickable', (bool) $overlayConfig->kmlClickable);
         }
+
         if ($overlayConfig->kmlPreserveViewport) {
             $kmlLayer->setOption('preserveViewport', (bool) $overlayConfig->kmlPreserveViewport);
         }
+
         if ($overlayConfig->kmlScreenOverlays) {
             $kmlLayer->setOption('screenOverlays', (bool) $overlayConfig->kmlScreenOverlays);
         }
+
         if ($overlayConfig->kmlSuppressInfowindows) {
             $kmlLayer->setOption('suppressInfoWindows', (bool) $overlayConfig->kmlSuppressInfowindows);
         }
+
         if ($overlayConfig->zIndex) {
             $kmlLayer->setOption('zIndex', (int) $overlayConfig->zIndex);
         }

@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - fixed `EventDispatcher` interface
 - added default values for aspect ratio (16:9)
 - fixed insert tag inclusion
+- added kml support (thanks @rabauss -> see [https://github.com/heimrichhannot/contao-google-maps-bundle/pull/7](https://github.com/heimrichhannot/contao-google-maps-bundle/pull/7))
 
 ## [1.4.1] - 2020-04-15
 - fixed MapManager return value declaration
