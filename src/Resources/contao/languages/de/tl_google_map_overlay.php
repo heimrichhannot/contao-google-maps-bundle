@@ -112,7 +112,7 @@ $lang['show']   = ['Overlay Details', 'Overlay-Details ID %s anzeigen'];
  * KML
  */
 $lang['kmlUrl'][0]                 = 'URL';
-$lang['kmlUrl'][1]                 = 'Geben Sie eine Url zu einer .kml-Datei (mit http://) ein.';
+$lang['kmlUrl'][1]                 = 'Geben Sie eine Url zu einer .kml-Datei (mit http://) ein. Die URL muss absolut angegeben werden und öffentlich erreichbar sein für Google!';
 $lang['kmlClickable'][0]           = 'Klickbar';
 $lang['kmlClickable'][1]           = 'Wenn aktiv, reagiert der Layer auf Mausklicks.';
 $lang['kmlPreserveViewport'][0]    = 'Anzeigebereich erhalten';
