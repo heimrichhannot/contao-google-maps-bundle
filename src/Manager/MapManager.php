@@ -304,7 +304,7 @@ class MapManager
         }
 
         // styles
-        $map->setMapOption('styles', json_decode($mapConfig->styles, true));
+        $map->setMapOption('styles', json_decode(StringUtil::decodeEntities($mapConfig->styles), true));
     }
 
     public function setBehavior(Map $map, GoogleMapModel $mapConfig)
