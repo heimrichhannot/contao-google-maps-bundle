@@ -9,7 +9,7 @@
 namespace HeimrichHannot\GoogleMapsBundle\Manager;
 
 use Contao\Controller;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay;
@@ -27,12 +27,13 @@ use Ivory\GoogleMap\Map;
 use Ivory\GoogleMap\Overlay\Icon;
 use Ivory\GoogleMap\Overlay\InfoWindow;
 use Ivory\GoogleMap\Overlay\Marker;
+use Twig\Environment;
 
 class OverlayManager
 {
     const CACHE_KEY_PREFIX = 'googleMaps_overlay';
     /**
-     * @var ContaoFrameworkInterface
+     * @var ContaoFramework
      */
     protected $framework;
 
@@ -47,7 +48,7 @@ class OverlayManager
     protected $locationUtil;
 
     /**
-     * @var \Twig_Environment
+     * @var Environment
      */
     protected $twig;
 
@@ -57,11 +58,11 @@ class OverlayManager
     protected static $markerVariableMapping = [];
 
     public function __construct(
-        ContaoFrameworkInterface $framework,
+        ContaoFramework $framework,
         ModelUtil $modelUtil,
         LocationUtil $locationUtil,
         FileUtil $fileUtil,
-        \Twig_Environment $twig
+        Environment $twig
     ) {
         $this->framework = $framework;
         $this->modelUtil = $modelUtil;
@@ -76,7 +77,7 @@ class OverlayManager
 
         switch ($overlayConfig->type) {
             case Overlay::TYPE_MARKER:
-                list($marker, $events) = $this->prepareMarker($overlayConfig, $map);
+                [$marker, $events] = $this->prepareMarker($overlayConfig, $map);
 
                 $map->getOverlayManager()->addMarker($marker);
 

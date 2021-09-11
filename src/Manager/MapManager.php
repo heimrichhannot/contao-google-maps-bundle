@@ -128,7 +128,7 @@ class MapManager
         $map->setVariable('map_'.$mapId.'_'.substr(md5(time().$mapId), 0, 8));
 
         // apply map config
-        $htmlId = $mapConfig->htmlId ?: 'map_canvas_'.uniqid();
+        $htmlId = $mapConfig->htmlId ?: 'map_canvas_'.uniqid('', true);
         $map->setHtmlId($htmlId);
 
         $this->setVisualization($map, $mapConfig);
@@ -310,9 +310,9 @@ class MapManager
     public function setBehavior(Map $map, GoogleMapModel $mapConfig)
     {
         $map->addMapOptions([
-            'disableDoubleClickZoom' => $mapConfig->disableDoubleClickZoom ? true : false,
-            'draggable' => $mapConfig->draggable ? true : false,
-            'scrollwheel' => $mapConfig->scrollwheel ? true : false,
+            'disableDoubleClickZoom' => (bool) $mapConfig->disableDoubleClickZoom,
+            'draggable' => (bool) $mapConfig->draggable,
+            'scrollwheel' => (bool) $mapConfig->scrollwheel,
         ]);
     }
 

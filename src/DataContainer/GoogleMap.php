@@ -182,7 +182,7 @@ class GoogleMap extends Backend
                                 $arrModulep = \StringUtil::deserialize($objGroup->contao_google_maps_bundlep);
 
                                 if (\is_array($arrModulep) && \in_array('create', $arrModulep)) {
-                                    $arrModules = \StringUtil::deserialize($objGroup->contao_google_maps_bundles, true);
+                                    $arrModules = (array) \StringUtil::deserialize($objGroup->contao_google_maps_bundles, true);
                                     $arrModules[] = \Contao\Input::get('id');
 
                                     $database->prepare('UPDATE tl_user_group SET contao_google_maps_bundles=? WHERE id=?')->execute(
@@ -202,7 +202,7 @@ class GoogleMap extends Backend
                             $arrModulep = \StringUtil::deserialize($user->contao_google_maps_bundlep);
 
                             if (\is_array($arrModulep) && \in_array('create', $arrModulep)) {
-                                $arrModules = \StringUtil::deserialize($user->contao_google_maps_bundles, true);
+                                $arrModules = (array) \StringUtil::deserialize($user->contao_google_maps_bundles, true);
                                 $arrModules[] = \Contao\Input::get('id');
 
                                 $database->prepare('UPDATE tl_user SET contao_google_maps_bundles=? WHERE id=?')->execute(

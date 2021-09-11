@@ -10,7 +10,7 @@ namespace HeimrichHannot\GoogleMapsBundle\Event;
 
 use HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel;
 use Ivory\GoogleMap\Map;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Class GoogleMapBeforeRenderEvent.
