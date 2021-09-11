@@ -181,7 +181,7 @@ class MapManager
 
         /** @var BeforeRenderMapEvent $event */
         /** @noinspection PhpParamsInspection */
-        $event = $this->eventDispatcher->dispatch(new BeforeRenderMapEvent($template, $templateData, $map), BeforeRenderMapEvent::NAME, );
+        $event = $this->eventDispatcher->dispatch(new BeforeRenderMapEvent($template, $templateData, $map), BeforeRenderMapEvent::NAME);
 
         return $this->twig->render($event->getTemplate(), $event->getTemplateData());
     }
@@ -200,7 +200,7 @@ class MapManager
 
         /** @var BeforeRenderMapEvent $event */
         /** @noinspection PhpParamsInspection */
-        $event = $this->eventDispatcher->dispatch(new BeforeRenderMapEvent($template, $templateData, $map), BeforeRenderMapEvent::NAME, );
+        $event = $this->eventDispatcher->dispatch(new BeforeRenderMapEvent($template, $templateData, $map), BeforeRenderMapEvent::NAME);
 
         return $this->twig->render($template, $templateData);
     }
