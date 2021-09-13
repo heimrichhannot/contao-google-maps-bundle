@@ -5,7 +5,7 @@
   "license": "LGPL-3.0-or-later",
   "require": {
     "php": "^7.1 || ^8.0",
-    "contao/core-bundle": "^4.4",
+    "contao/core-bundle": "^4.9",
     "ivory/google-map-bundle": "^3.0",
     "heimrichhannot/contao-utils-bundle": "^2.0"
   },
