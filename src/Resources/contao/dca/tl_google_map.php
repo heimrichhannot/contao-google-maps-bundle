@@ -1,5 +1,15 @@
 <?php
 
+/*
+ * Copyright (c) 2021 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
+
+use HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap;
+use Ivory\GoogleMap\MapTypeId;
+use Contao\Controller;
+use Contao\System;
 $GLOBALS['TL_DCA']['tl_google_map'] = [
     'config'      => [
         'dataContainer'     => 'Table',
@@ -114,19 +124,19 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
     ],
     'subpalettes' => [
         // visualization
-        'sizeMode_' . \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::SIZE_MODE_ASPECT_RATIO           => 'aspectRatioX,aspectRatioY',
-        'sizeMode_' . \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::SIZE_MODE_STATIC                 => 'width,height',
+        'sizeMode_' . GoogleMap::SIZE_MODE_ASPECT_RATIO           => 'aspectRatioX,aspectRatioY',
+        'sizeMode_' . GoogleMap::SIZE_MODE_STATIC                 => 'width,height',
         'addClusterer'                                                                                           => 'clustererImg',
         // behavior
         'staticMapNoscript'                                                                                      => 'staticMapWidth,staticMapHeight',
         // positioning
-        'positioningMode_' . \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::POSITIONING_MODE_STANDARD => 'centerMode,zoom',
-        'positioningMode_' . \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::POSITIONING_MODE_BOUND    => 'boundMode',
+        'positioningMode_' . GoogleMap::POSITIONING_MODE_STANDARD => 'centerMode,zoom',
+        'positioningMode_' . GoogleMap::POSITIONING_MODE_BOUND    => 'boundMode',
         'boundMode_'
-        . \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::BOUND_MODE_COORDINATES                       => 'boundNorthEastLat,boundNorthEastLng,boundSouthWestLat,boundSouthWestLng',
-        'boundMode_' . \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::BOUND_MODE_AUTOMATIC            => '',
-        'centerMode_' . \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::CENTER_MODE_COORDINATE         => 'centerLat,centerLng',
-        'centerMode_' . \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::CENTER_MODE_STATIC_ADDRESS     => 'centerAddress',
+        . GoogleMap::BOUND_MODE_COORDINATES                       => 'boundNorthEastLat,boundNorthEastLng,boundSouthWestLat,boundSouthWestLng',
+        'boundMode_' . GoogleMap::BOUND_MODE_AUTOMATIC            => '',
+        'centerMode_' . GoogleMap::CENTER_MODE_COORDINATE         => 'centerLat,centerLng',
+        'centerMode_' . GoogleMap::CENTER_MODE_STATIC_ADDRESS     => 'centerAddress',
         // controls
         'addMapTypeControl'                                                                                      => 'mapTypeControlPos,mapTypeControlStyle',
         'addZoomControl'                                                                                         => 'zoomControlPos',
@@ -160,8 +170,8 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'default'   => 'base',
             'inputType' => 'select',
             'options'   => [
-                \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::MAP_TYPE_BASE,
-                \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::MAP_TYPE_RESPONSIVE,
+                GoogleMap::MAP_TYPE_BASE,
+                GoogleMap::MAP_TYPE_RESPONSIVE,
             ],
             'reference' => $GLOBALS['TL_LANG']['tl_google_map']['reference'],
             'eval'      => ['mandatory' => true, 'submitOnChange' => true],
@@ -191,20 +201,20 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'exclude'   => true,
             'filter'    => true,
             'inputType' => 'select',
-            'options'   => \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::TYPES,
+            'options'   => GoogleMap::TYPES,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map']['reference'],
             'eval'      => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true],
-            'sql'       => "varchar(64) NOT NULL default '" . \Ivory\GoogleMap\MapTypeId::ROADMAP . "'"
+            'sql'       => "varchar(64) NOT NULL default '" . MapTypeId::ROADMAP . "'"
         ],
         'sizeMode'               => [
             'label'     => &$GLOBALS['TL_LANG']['tl_google_map']['sizeMode'],
             'exclude'   => true,
             'filter'    => true,
             'inputType' => 'select',
-            'options'   => \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::SIZE_MODES,
+            'options'   => GoogleMap::SIZE_MODES,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map']['reference'],
             'eval'      => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
-            'sql'       => "varchar(64) NOT NULL default '" . \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::SIZE_MODE_ASPECT_RATIO . "'"
+            'sql'       => "varchar(64) NOT NULL default '" . GoogleMap::SIZE_MODE_ASPECT_RATIO . "'"
         ],
         'width'                  => [
             'label'     => &$GLOBALS['TL_LANG']['tl_google_map']['width'],
@@ -312,7 +322,7 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'exclude'   => true,
             'filter'    => true,
             'inputType' => 'select',
-            'options'   => \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::POSITIONING_MODES,
+            'options'   => GoogleMap::POSITIONING_MODES,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map']['reference'],
             'eval'      => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
             'sql'       => "varchar(64) NOT NULL default ''"
@@ -322,7 +332,7 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'exclude'   => true,
             'filter'    => true,
             'inputType' => 'select',
-            'options'   => \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::BOUND_MODES,
+            'options'   => GoogleMap::BOUND_MODES,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map']['reference'],
             'eval'      => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
             'sql'       => "varchar(64) NOT NULL default ''"
@@ -364,7 +374,7 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'exclude'   => true,
             'filter'    => true,
             'inputType' => 'select',
-            'options'   => \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::CENTER_MODES,
+            'options'   => GoogleMap::CENTER_MODES,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map']['reference'],
             'eval'      => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
             'sql'       => "varchar(64) NOT NULL default ''"
@@ -406,10 +416,10 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_google_map']['mapTypesAvailable'],
             'exclude'   => true,
             'inputType' => 'checkbox',
-            'options'   => \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::TYPES,
+            'options'   => GoogleMap::TYPES,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map']['reference'],
             'eval'      => ['mandatory' => true, 'multiple' => true, 'tl_class' => 'w50 autoheight'],
-            'sql'       => "varchar(255) NOT NULL default '" . serialize(\HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::TYPES) . "'",
+            'sql'       => "varchar(255) NOT NULL default '" . serialize(GoogleMap::TYPES) . "'",
         ],
         'addMapTypeControl'      => [
             'label'     => &$GLOBALS['TL_LANG']['tl_google_map']['addMapTypeControl'],
@@ -422,7 +432,7 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_google_map']['controlStyle'],
             'exclude'   => true,
             'inputType' => 'select',
-            'options'   => \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::MAP_CONTROL_STYLES,
+            'options'   => GoogleMap::MAP_CONTROL_STYLES,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map']['reference'],
             'eval'      => ['mandatory' => true, 'tl_class' => 'w50'],
             'sql'       => "varchar(16) NOT NULL default 'default'",
@@ -431,7 +441,7 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_google_map']['controlPos'],
             'exclude'   => true,
             'inputType' => 'radioTable',
-            'options'   => \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::POSITIONS,
+            'options'   => GoogleMap::POSITIONS,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map']['reference'],
             'eval'      => ['cols' => 3, 'tl_class' => 'google-maps-bundle w50 autoheight'],
             'sql'       => "varchar(16) NOT NULL default 'top_right'",
@@ -447,7 +457,7 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_google_map']['controlPos'],
             'exclude'   => true,
             'inputType' => 'radioTable',
-            'options'   => \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::POSITIONS,
+            'options'   => GoogleMap::POSITIONS,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map']['reference'],
             'eval'      => ['cols' => 3, 'tl_class' => 'google-maps-bundle w50 autoheight'],
             'sql'       => "varchar(16) NOT NULL default 'top_left'",
@@ -463,7 +473,7 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_google_map']['controlPos'],
             'exclude'   => true,
             'inputType' => 'radioTable',
-            'options'   => \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::POSITIONS,
+            'options'   => GoogleMap::POSITIONS,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map']['reference'],
             'eval'      => ['cols' => 3, 'tl_class' => 'google-maps-bundle w50 autoheight'],
             'sql'       => "varchar(16) NOT NULL default 'top_left'",
@@ -479,7 +489,7 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_google_map']['controlPos'],
             'exclude'   => true,
             'inputType' => 'radioTable',
-            'options'   => \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::POSITIONS,
+            'options'   => GoogleMap::POSITIONS,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map']['reference'],
             'eval'      => ['cols' => 3, 'tl_class' => 'google-maps-bundle w50 autoheight'],
             'sql'       => "varchar(16) NOT NULL default 'top_left'",
@@ -495,7 +505,7 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_google_map']['controlPos'],
             'exclude'   => true,
             'inputType' => 'radioTable',
-            'options'   => \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::POSITIONS,
+            'options'   => GoogleMap::POSITIONS,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map']['reference'],
             'eval'      => ['cols' => 3, 'tl_class' => 'google-maps-bundle w50 autoheight'],
             'sql'       => "varchar(16) NOT NULL default 'top_left'",
@@ -569,6 +579,6 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
     ]
 ];
 
-\Contao\Controller::loadDataContainer('tl_settings');
+Controller::loadDataContainer('tl_settings');
 System::getContainer()->get('huh.utils.dca')->addOverridableFields(['googlemaps_apiKey'], 'tl_settings', 'tl_google_map');
 $GLOBALS['TL_DCA']['tl_google_map']['fields']['googlemaps_apiKey']['sql'] = "varchar(255) NOT NULL default ''";

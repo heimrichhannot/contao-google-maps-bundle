@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * Copyright (c) 2021 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
+
+use Contao\Controller;
+use Contao\System;
 $dca = &$GLOBALS['TL_DCA']['tl_page'];
 
 /**
@@ -10,6 +18,6 @@ $dca['palettes']['root'] = str_replace('{global_legend', '{huh_google_maps_legen
 /**
  * Fields
  */
-\Contao\Controller::loadDataContainer('tl_settings');
+Controller::loadDataContainer('tl_settings');
 System::getContainer()->get('huh.utils.dca')->addOverridableFields(['googlemaps_apiKey'], 'tl_settings', 'tl_page');
 $GLOBALS['TL_DCA']['tl_page']['fields']['googlemaps_apiKey']['sql'] = "varchar(255) NOT NULL default ''";

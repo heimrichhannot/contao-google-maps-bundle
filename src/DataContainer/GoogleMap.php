@@ -17,6 +17,13 @@ use Ivory\GoogleMap\Control\ControlPosition;
 use Ivory\GoogleMap\Control\MapTypeControlStyle;
 use Ivory\GoogleMap\MapTypeId;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Contao\System;
+use Contao\Input;
+use Contao\CoreBundle\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
+use Contao\StringUtil;
+use Contao\Image;
 
 class GoogleMap extends Backend
 {
@@ -117,7 +124,7 @@ class GoogleMap extends Backend
 
     public static function getMapChoices()
     {
-        return \Contao\System::getContainer()->get('huh.utils.choice.model_instance')->getCachedChoices(
+        return System::getContainer()->get('huh.utils.choice.model_instance')->getCachedChoices(
             [
                 'dataContainer' => 'tl_google_map',
             ]
@@ -147,11 +154,11 @@ class GoogleMap extends Backend
             $GLOBALS['TL_DCA']['tl_google_map']['config']['closed'] = true;
         }
 
-        /** @var \Symfony\Component\HttpFoundation\Session\SessionInterface $objSession */
-        $objSession = \Contao\System::getContainer()->get('session');
+        /** @var SessionInterface $objSession */
+        $objSession = System::getContainer()->get('session');
 
         // Check current action
-        switch (\Contao\Input::get('act')) {
+        switch (Input::get('act')) {
             case 'create':
             case 'select':
                 // Allow
@@ -159,13 +166,13 @@ class GoogleMap extends Backend
 
             case 'edit':
                 // Dynamically add the record to the user profile
-                if (!\in_array(\Contao\Input::get('id'), $root)) {
-                    /** @var \Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface $sessionBag */
+                if (!\in_array(Input::get('id'), $root)) {
+                    /** @var AttributeBagInterface $sessionBag */
                     $sessionBag = $objSession->getBag('contao_backend');
 
                     $arrNew = $sessionBag->get('new_records');
 
-                    if (\is_array($arrNew['tl_google_map']) && \in_array(\Contao\Input::get('id'), $arrNew['tl_google_map'])) {
+                    if (\is_array($arrNew['tl_google_map']) && \in_array(Input::get('id'), $arrNew['tl_google_map'])) {
                         // Add the permissions on group level
                         if ('custom' != $user->inherit) {
                             $objGroup = $database->execute(
@@ -179,11 +186,11 @@ class GoogleMap extends Backend
                             );
 
                             while ($objGroup->next()) {
-                                $arrModulep = \StringUtil::deserialize($objGroup->contao_google_maps_bundlep);
+                                $arrModulep = StringUtil::deserialize($objGroup->contao_google_maps_bundlep);
 
                                 if (\is_array($arrModulep) && \in_array('create', $arrModulep)) {
-                                    $arrModules = (array) \StringUtil::deserialize($objGroup->contao_google_maps_bundles, true);
-                                    $arrModules[] = \Contao\Input::get('id');
+                                    $arrModules = (array) StringUtil::deserialize($objGroup->contao_google_maps_bundles, true);
+                                    $arrModules[] = Input::get('id');
 
                                     $database->prepare('UPDATE tl_user_group SET contao_google_maps_bundles=? WHERE id=?')->execute(
                                         serialize($arrModules),
@@ -199,11 +206,11 @@ class GoogleMap extends Backend
                                 ->limit(1)
                                 ->execute($user->id);
 
-                            $arrModulep = \StringUtil::deserialize($user->contao_google_maps_bundlep);
+                            $arrModulep = StringUtil::deserialize($user->contao_google_maps_bundlep);
 
                             if (\is_array($arrModulep) && \in_array('create', $arrModulep)) {
-                                $arrModules = (array) \StringUtil::deserialize($user->contao_google_maps_bundles, true);
-                                $arrModules[] = \Contao\Input::get('id');
+                                $arrModules = (array) StringUtil::deserialize($user->contao_google_maps_bundles, true);
+                                $arrModules[] = Input::get('id');
 
                                 $database->prepare('UPDATE tl_user SET contao_google_maps_bundles=? WHERE id=?')->execute(
                                     serialize($arrModules),
@@ -213,7 +220,7 @@ class GoogleMap extends Backend
                         }
 
                         // Add the new element to the user object
-                        $root[] = \Contao\Input::get('id');
+                        $root[] = Input::get('id');
                         $user->contao_google_maps_bundles = $root;
                     }
                 }
@@ -222,14 +229,14 @@ class GoogleMap extends Backend
             case 'copy':
             case 'delete':
             case 'show':
-                if (!\in_array(\Contao\Input::get('id'), $root)
-                    || ('delete' == \Contao\Input::get('act')
+                if (!\in_array(Input::get('id'), $root)
+                    || ('delete' == Input::get('act')
                         && !$user->hasAccess(
                             'delete',
                             'contao_google_maps_bundlep'
                         ))
                 ) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to '.\Contao\Input::get('act').' google_map ID '.\Contao\Input::get('id').'.');
+                    throw new AccessDeniedException('Not enough permissions to '.Input::get('act').' google_map ID '.Input::get('id').'.');
                 }
 
                 break;
@@ -239,7 +246,7 @@ class GoogleMap extends Backend
             case 'overrideAll':
                 $session = $objSession->all();
 
-                if ('deleteAll' == \Contao\Input::get('act') && !$user->hasAccess('delete', 'contao_google_maps_bundlep')) {
+                if ('deleteAll' == Input::get('act') && !$user->hasAccess('delete', 'contao_google_maps_bundlep')) {
                     $session['CURRENT']['IDS'] = [];
                 } else {
                     $session['CURRENT']['IDS'] = array_intersect($session['CURRENT']['IDS'], $root);
@@ -249,8 +256,8 @@ class GoogleMap extends Backend
                 break;
 
             default:
-                if (\strlen(\Contao\Input::get('act'))) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to '.\Contao\Input::get('act').' google_maps.');
+                if (\strlen(Input::get('act'))) {
+                    throw new AccessDeniedException('Not enough permissions to '.Input::get('act').' google_maps.');
                 }
 
                 break;
@@ -262,41 +269,41 @@ class GoogleMap extends Backend
         return $row['type'] !== static::MAP_TYPE_RESPONSIVE
             ? '<a href="'.$this->addToUrl(
                 $href.'&amp;id='.$row['id']
-            ).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label).'</a> '
-            : \Image::getHtml(
+            ).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label).'</a> '
+            : Image::getHtml(
                 preg_replace('/\.svg$/i', '_.svg', $icon)
             ).' ';
     }
 
     public function editHeader($row, $href, $label, $title, $icon, $attributes)
     {
-        return \Contao\BackendUser::getInstance()->canEditFieldsOf('tl_google_map')
+        return BackendUser::getInstance()->canEditFieldsOf('tl_google_map')
             ? '<a href="'.$this->addToUrl(
                 $href.'&amp;id='.$row['id']
-            ).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label).'</a> '
-            : \Image::getHtml(
+            ).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label).'</a> '
+            : Image::getHtml(
                 preg_replace('/\.svg$/i', '_.svg', $icon)
             ).' ';
     }
 
     public function copyArchive($row, $href, $label, $title, $icon, $attributes)
     {
-        return \Contao\BackendUser::getInstance()->hasAccess('create', 'contao_google_maps_bundlep')
+        return BackendUser::getInstance()->hasAccess('create', 'contao_google_maps_bundlep')
             ? '<a href="'.$this->addToUrl(
                 $href.'&amp;id='.$row['id']
-            ).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label).'</a> '
-            : \Image::getHtml(
+            ).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label).'</a> '
+            : Image::getHtml(
                 preg_replace('/\.svg$/i', '_.svg', $icon)
             ).' ';
     }
 
     public function deleteArchive($row, $href, $label, $title, $icon, $attributes)
     {
-        return \Contao\BackendUser::getInstance()->hasAccess('delete', 'contao_google_maps_bundlep')
+        return BackendUser::getInstance()->hasAccess('delete', 'contao_google_maps_bundlep')
             ? '<a href="'.$this->addToUrl(
                 $href.'&amp;id='.$row['id']
-            ).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label).'</a> '
-            : \Image::getHtml(
+            ).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label).'</a> '
+            : Image::getHtml(
                 preg_replace('/\.svg$/i', '_.svg', $icon)
             ).' ';
     }

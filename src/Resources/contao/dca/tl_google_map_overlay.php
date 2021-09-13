@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * Copyright (c) 2021 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
+
+use HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay;
+use Contao\System;
 $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
     'config'      => [
         'dataContainer'     => 'Table',
@@ -84,21 +92,21 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
             'published'
         ],
         'default'                                                     => '{general_legend},title,type;{publish_legend},published;',
-        \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_MARKER =>
+        Overlay::TYPE_MARKER =>
             '{general_legend},title,type;{config_legend},titleMode,positioningMode,animation,markerType,clickEvent,zIndex;{publish_legend},published;',
-        \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_INFO_WINDOW =>
+        Overlay::TYPE_INFO_WINDOW =>
             '{general_legend},title,type;{config_legend},positioningMode,infoWindowWidth,infoWindowHeight,infoWindowText,addRouting,zIndex;{publish_legend},published;',
-        \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_KML_LAYER =>
+        Overlay::TYPE_KML_LAYER =>
             '{general_legend},title,type;{config_legend},kmlUrl,kmlClickable,kmlPreserveViewport,kmlScreenOverlays,kmlSuppressInfowindows,zIndex;{publish_legend},published;',
 
     ],
     'subpalettes' => [
-        'titleMode_' . \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TITLE_MODE_CUSTOM_TEXT                => 'titleText',
-        'positioningMode_' . \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::POSITIONING_MODE_COORDINATE     => 'positioningLat,positioningLng',
-        'positioningMode_' . \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::POSITIONING_MODE_STATIC_ADDRESS => 'positioningAddress',
-        'markerType_' . \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::MARKER_TYPE_ICON                     => 'iconSrc,iconWidth,iconHeight,iconAnchorX,iconAnchorY',
-        'clickEvent_' . \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::CLICK_EVENT_LINK                     => 'url,target',
-        'clickEvent_' . \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::CLICK_EVENT_INFO_WINDOW              => 'infoWindowWidth,infoWindowHeight,infoWindowAnchorX,infoWindowAnchorY,infoWindowText,addRouting',
+        'titleMode_' . Overlay::TITLE_MODE_CUSTOM_TEXT                => 'titleText',
+        'positioningMode_' . Overlay::POSITIONING_MODE_COORDINATE     => 'positioningLat,positioningLng',
+        'positioningMode_' . Overlay::POSITIONING_MODE_STATIC_ADDRESS => 'positioningAddress',
+        'markerType_' . Overlay::MARKER_TYPE_ICON                     => 'iconSrc,iconWidth,iconHeight,iconAnchorX,iconAnchorY',
+        'clickEvent_' . Overlay::CLICK_EVENT_LINK                     => 'url,target',
+        'clickEvent_' . Overlay::CLICK_EVENT_INFO_WINDOW              => 'infoWindowWidth,infoWindowHeight,infoWindowAnchorX,infoWindowAnchorY,infoWindowText,addRouting',
         'addRouting'                                                                                           => 'routingAddress,routingTemplate',
         'published'                                                                                            => 'start,stop'
     ],
@@ -138,7 +146,7 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
             'exclude'   => true,
             'filter'    => true,
             'inputType' => 'select',
-            'options'   => \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPES,
+            'options'   => Overlay::TYPES,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['reference'],
             'eval'      => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
             'sql'       => "varchar(64) NOT NULL default ''"
@@ -149,7 +157,7 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
             'exclude'   => true,
             'filter'    => true,
             'inputType' => 'select',
-            'options'   => \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TITLE_MODES,
+            'options'   => Overlay::TITLE_MODES,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['reference'],
             'eval'      => ['tl_class' => 'w50', 'includeBlankOption' => true, 'submitOnChange' => true],
             'sql'       => "varchar(64) NOT NULL default ''"
@@ -167,7 +175,7 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
             'exclude'   => true,
             'filter'    => true,
             'inputType' => 'select',
-            'options'   => \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::POSITIONING_MODES,
+            'options'   => Overlay::POSITIONING_MODES,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['reference'],
             'eval'      => ['tl_class' => 'w50 clr', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
             'sql'       => "varchar(64) NOT NULL default ''"
@@ -201,7 +209,7 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
             'exclude'   => true,
             'filter'    => true,
             'inputType' => 'select',
-            'options'   => \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::ANIMATIONS,
+            'options'   => Overlay::ANIMATIONS,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['reference'],
             'eval'      => ['tl_class' => 'w50', 'includeBlankOption' => true],
             'sql'       => "varchar(64) NOT NULL default ''"
@@ -211,7 +219,7 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
             'exclude'   => true,
             'filter'    => true,
             'inputType' => 'select',
-            'options'   => \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::MARKER_TYPES,
+            'options'   => Overlay::MARKER_TYPES,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['reference'],
             'eval'      => ['tl_class' => 'w50 clr', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
             'sql'       => "varchar(64) NOT NULL default ''"
@@ -264,7 +272,7 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
             'exclude'   => true,
             'filter'    => true,
             'inputType' => 'select',
-            'options'   => \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::CLICK_EVENTS,
+            'options'   => Overlay::CLICK_EVENTS,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['reference'],
             'eval'      => ['includeBlankOption' => true, 'submitOnChange' => true, 'tl_class' => 'w50 clr'],
             'sql'       => "varchar(64) NOT NULL default ''",

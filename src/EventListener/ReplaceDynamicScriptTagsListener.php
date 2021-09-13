@@ -9,6 +9,7 @@
 namespace HeimrichHannot\GoogleMapsBundle\EventListener;
 
 use HeimrichHannot\GoogleMapsBundle\Manager\MapManager;
+use HeimrichHannot\PrivacyCenter\Manager\PrivacyCenterManager;
 
 class ReplaceDynamicScriptTagsListener
 {
@@ -32,7 +33,7 @@ class ReplaceDynamicScriptTagsListener
                     'typeof $2 !== \'undefined\' && $1$2', $mapApi);
 
                 // protect the code
-                $GLOBALS['TL_HEAD']['huhGoogleMaps'] = \HeimrichHannot\PrivacyCenter\Manager\PrivacyCenterManager::getInstance()->addProtectedCode(
+                $GLOBALS['TL_HEAD']['huhGoogleMaps'] = PrivacyCenterManager::getInstance()->addProtectedCode(
                     $mapApi,
                     ['google_maps'],
                     [

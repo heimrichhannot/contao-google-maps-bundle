@@ -13,6 +13,17 @@ use Contao\DataContainer;
 use HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel;
 use Ivory\GoogleMap\Overlay\Animation;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Contao\Config;
+use Contao\BackendUser;
+use Contao\Database;
+use Contao\Input;
+use Contao\CoreBundle\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Contao\System;
+use Contao\StringUtil;
+use Contao\Image;
+use Contao\Date;
+use Contao\Versions;
 
 class Overlay extends Backend
 {
@@ -87,7 +98,7 @@ class Overlay extends Backend
     public function listChildren($arrRow)
     {
         return '<div class="tl_content_left">'.($arrRow['title'] ?: $arrRow['id']).' <span style="color:#b3b3b3; padding-left:3px">['.
-            \Date::parse(\Contao\Config::get('datimFormat'), trim($arrRow['dateAdded'])).']</span></div>';
+            Date::parse(Config::get('datimFormat'), trim($arrRow['dateAdded'])).']</span></div>';
     }
 
     /**
@@ -117,8 +128,8 @@ class Overlay extends Backend
 
     public function checkPermission()
     {
-        $user = \Contao\BackendUser::getInstance();
-        $database = \Contao\Database::getInstance();
+        $user = BackendUser::getInstance();
+        $database = Database::getInstance();
 
         if ($user->isAdmin) {
             return;
@@ -131,25 +142,25 @@ class Overlay extends Backend
             $root = $user->contao_google_maps_bundles;
         }
 
-        $id = \strlen(\Contao\Input::get('id')) ? \Contao\Input::get('id') : CURRENT_ID;
+        $id = \strlen(Input::get('id')) ? Input::get('id') : CURRENT_ID;
 
         // Check current action
-        switch (\Contao\Input::get('act')) {
+        switch (Input::get('act')) {
             case 'paste':
                 // Allow
                 break;
 
             case 'create':
-                if (!\strlen(\Contao\Input::get('pid')) || !\in_array(\Contao\Input::get('pid'), $root)) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to create google_map_overlay items in google_map_overlay archive ID '.\Contao\Input::get('pid').'.');
+                if (!\strlen(Input::get('pid')) || !\in_array(Input::get('pid'), $root)) {
+                    throw new AccessDeniedException('Not enough permissions to create google_map_overlay items in google_map_overlay archive ID '.Input::get('pid').'.');
                 }
 
                 break;
 
             case 'cut':
             case 'copy':
-                if (!\in_array(\Contao\Input::get('pid'), $root)) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to '.\Contao\Input::get('act').' google_map_overlay item ID '.$id.' to google_map_overlay archive ID '.\Contao\Input::get('pid').'.');
+                if (!\in_array(Input::get('pid'), $root)) {
+                    throw new AccessDeniedException('Not enough permissions to '.Input::get('act').' google_map_overlay item ID '.$id.' to google_map_overlay archive ID '.Input::get('pid').'.');
                 }
             // no break STATEMENT HERE
 
@@ -163,11 +174,11 @@ class Overlay extends Backend
                     ->execute($id);
 
                 if ($objArchive->numRows < 1) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Invalid google_map_overlay item ID '.$id.'.');
+                    throw new AccessDeniedException('Invalid google_map_overlay item ID '.$id.'.');
                 }
 
                 if (!\in_array($objArchive->pid, $root)) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to '.\Contao\Input::get('act').' google_map_overlay item ID '.$id.' of google_map_overlay archive ID '.$objArchive->pid.'.');
+                    throw new AccessDeniedException('Not enough permissions to '.Input::get('act').' google_map_overlay item ID '.$id.' of google_map_overlay archive ID '.$objArchive->pid.'.');
                 }
 
                 break;
@@ -179,18 +190,18 @@ class Overlay extends Backend
             case 'cutAll':
             case 'copyAll':
                 if (!\in_array($id, $root)) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to access google_map_overlay archive ID '.$id.'.');
+                    throw new AccessDeniedException('Not enough permissions to access google_map_overlay archive ID '.$id.'.');
                 }
 
                 $objArchive = $database->prepare('SELECT id FROM tl_google_map_overlay WHERE pid=?')
                     ->execute($id);
 
                 if ($objArchive->numRows < 1) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Invalid google_map_overlay archive ID '.$id.'.');
+                    throw new AccessDeniedException('Invalid google_map_overlay archive ID '.$id.'.');
                 }
 
-                /** @var \Symfony\Component\HttpFoundation\Session\SessionInterface $session */
-                $session = \System::getContainer()->get('session');
+                /** @var SessionInterface $session */
+                $session = System::getContainer()->get('session');
 
                 $session = $session->all();
                 $session['CURRENT']['IDS'] = array_intersect($session['CURRENT']['IDS'], $objArchive->fetchEach('id'));
@@ -199,10 +210,10 @@ class Overlay extends Backend
                 break;
 
             default:
-                if (\strlen(\Contao\Input::get('act'))) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Invalid command "'.\Contao\Input::get('act').'".');
+                if (\strlen(Input::get('act'))) {
+                    throw new AccessDeniedException('Invalid command "'.Input::get('act').'".');
                 } elseif (!\in_array($id, $root)) {
-                    throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to access google_map_overlay archive ID '.$id.'.');
+                    throw new AccessDeniedException('Not enough permissions to access google_map_overlay archive ID '.$id.'.');
                 }
 
                 break;
@@ -211,10 +222,10 @@ class Overlay extends Backend
 
     public function toggleIcon($row, $href, $label, $title, $icon, $attributes)
     {
-        $user = \Contao\BackendUser::getInstance();
+        $user = BackendUser::getInstance();
 
-        if (\strlen(\Contao\Input::get('tid'))) {
-            $this->toggleVisibility(\Contao\Input::get('tid'), ('1' === \Contao\Input::get('state')), (@func_get_arg(12) ?: null));
+        if (\strlen(Input::get('tid'))) {
+            $this->toggleVisibility(Input::get('tid'), ('1' === Input::get('state')), (@func_get_arg(12) ?: null));
             $this->redirect($this->getReferer());
         }
 
@@ -229,17 +240,17 @@ class Overlay extends Backend
             $icon = 'invisible.svg';
         }
 
-        return '<a href="'.$this->addToUrl($href).'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label, 'data-state="'.($row['published'] ? 1 : 0).'"').'</a> ';
+        return '<a href="'.$this->addToUrl($href).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label, 'data-state="'.($row['published'] ? 1 : 0).'"').'</a> ';
     }
 
     public function toggleVisibility($intId, $blnVisible, \DataContainer $dc = null)
     {
-        $user = \Contao\BackendUser::getInstance();
-        $database = \Contao\Database::getInstance();
+        $user = BackendUser::getInstance();
+        $database = Database::getInstance();
 
         // Set the ID and action
-        \Contao\Input::setGet('id', $intId);
-        \Contao\Input::setGet('act', 'toggle');
+        Input::setGet('id', $intId);
+        Input::setGet('act', 'toggle');
 
         if ($dc) {
             $dc->id = $intId; // see #8043
@@ -259,7 +270,7 @@ class Overlay extends Backend
 
         // Check the field access
         if (!$user->hasAccess('tl_google_map_overlay::published', 'alexf')) {
-            throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to publish/unpublish google_map_overlay item ID '.$intId.'.');
+            throw new AccessDeniedException('Not enough permissions to publish/unpublish google_map_overlay item ID '.$intId.'.');
         }
 
         // Set the current record
@@ -273,7 +284,7 @@ class Overlay extends Backend
             }
         }
 
-        $objVersions = new \Versions('tl_google_map_overlay', $intId);
+        $objVersions = new Versions('tl_google_map_overlay', $intId);
         $objVersions->initialize();
 
         // Trigger the save_callback

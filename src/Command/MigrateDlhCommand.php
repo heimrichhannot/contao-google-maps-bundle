@@ -380,7 +380,7 @@ class MigrateDlhCommand extends AbstractLockedCommand
             $mapSize = StringUtil::deserialize($legacyMap->mapSize, true);
 
             if (\count($mapSize) > 2) {
-                $map->sizeMode = \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::SIZE_MODE_STATIC;
+                $map->sizeMode = GoogleMap::SIZE_MODE_STATIC;
 
                 $map->width = serialize([
                     'value' => preg_replace('/[^\d]/i', '', $mapSize[0]),
@@ -392,7 +392,7 @@ class MigrateDlhCommand extends AbstractLockedCommand
                     'unit' => 'px',
                 ]);
             } else {
-                $map->sizeMode = \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::SIZE_MODE_ASPECT_RATIO;
+                $map->sizeMode = GoogleMap::SIZE_MODE_ASPECT_RATIO;
                 $map->aspectRatioX = 16;
                 $map->aspectRatioY = 9;
             }
@@ -551,7 +551,7 @@ class MigrateDlhCommand extends AbstractLockedCommand
 
             // marker type
             switch ($overlay->markerType) {
-                case \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::MARKER_TYPE_ICON:
+                case Overlay::MARKER_TYPE_ICON:
                     $iconSize = StringUtil::deserialize($legacyOverlay->iconSize, true);
 
                     $overlay->iconWidth = ['value' => $iconSize[0], 'unit' => 'px'];

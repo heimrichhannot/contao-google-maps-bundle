@@ -1,11 +1,19 @@
 <?php
 
+/*
+ * Copyright (c) 2021 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
+
+use HeimrichHannot\GoogleMapsBundle\DataContainer\Module;
+
 $dca = &$GLOBALS['TL_DCA']['tl_module'];
 
 /**
  * Palettes
  */
-$dca['palettes'][\HeimrichHannot\GoogleMapsBundle\DataContainer\Module::MODULE_GOOGLE_MAP] =
+$dca['palettes'][Module::MODULE_GOOGLE_MAP] =
     '{type_legend},name,headline,type;{config_legend},googlemaps_map,googlemaps_skipHtml,googlemaps_skipCss,googlemaps_skipJs;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;';
 
 /**
