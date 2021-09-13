@@ -10,6 +10,8 @@ All notable changes to this project will be documented in this file.
 - Added: default values for aspect ratio (16:9)
 - Added: kml support (thanks @rabauss -> see [https://github.com/heimrichhannot/contao-google-maps-bundle/pull/7](https://github.com/heimrichhannot/contao-google-maps-bundle/pull/7))
 - Added: user better error message if no api key is set (see [https://github.com/heimrichhannot/contao-google-maps-bundle/issues/8](https://github.com/heimrichhannot/contao-google-maps-bundle/issues/8))
+- Added: php8 support (thanks @rabauss!)
+- [BREAKING] Removed: support for contao 4.4 and symfony 3 (thanks @rabauss!)
 - [BREAKING] Changed: DlhMigrationModifyMapEvent legacy map type to object
 - [BREAKING] Changed: DlhMigrationModifyOverlayEvent legacy map and legacyOverlay type to object
 - [BREAKING] Changed: removed mapGoogleJs variable from map template
