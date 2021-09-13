@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * Copyright (c) 2021 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
+
+use Ivory\GoogleMap\MapTypeId;
+use HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap;
+use Ivory\GoogleMap\Control\MapTypeControlStyle;
 $lang = &$GLOBALS['TL_LANG']['tl_google_map'];
 
 /**
@@ -104,25 +113,25 @@ $lang['start']        = ['Anzeigen ab', 'Google Map erst ab diesem Tag auf der W
 $lang['stop']         = ['Anzeigen bis', 'Google Map nur bis zu diesem Tag auf der Webseite anzeigen.'];
 
 $lang['reference'] = [
-    \Ivory\GoogleMap\MapTypeId::ROADMAP                                                  => 'Roadmap',
-    \Ivory\GoogleMap\MapTypeId::SATELLITE                                                => 'Satellit',
-    \Ivory\GoogleMap\MapTypeId::TERRAIN                                                  => 'Terrain',
-    \Ivory\GoogleMap\MapTypeId::HYBRID                                                   => 'Hybrid',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::SIZE_MODE_ASPECT_RATIO     => 'Seitenverhältnis',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::SIZE_MODE_STATIC           => 'Statisch',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::SIZE_MODE_CSS              => 'CSS',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::POSITIONING_MODE_STANDARD  => 'Standard',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::POSITIONING_MODE_BOUND     => 'Rahmen (Bounding)',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::BOUND_MODE_AUTOMATIC       => 'Automatisch',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::BOUND_MODE_COORDINATES     => 'Koordinaten',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::CENTER_MODE_COORDINATE     => 'Koordinate',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::CENTER_MODE_STATIC_ADDRESS => 'Adresse',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::CENTER_MODE_EXTERNAL       => 'Wird extern festgelegt (bspw. durch ein anderes Modul)',
-    \Ivory\GoogleMap\Control\MapTypeControlStyle::DEFAULT_                               => 'Standard',
-    \Ivory\GoogleMap\Control\MapTypeControlStyle::DROPDOWN_MENU                          => 'Dropdown-Menü',
-    \Ivory\GoogleMap\Control\MapTypeControlStyle::HORIZONTAL_BAR                         => 'Horizontale Bar',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::MAP_TYPE_BASE              => 'Basis-Konfiguration',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap::MAP_TYPE_RESPONSIVE        => 'Responsive-Konfiguration'
+    MapTypeId::ROADMAP                                                  => 'Roadmap',
+    MapTypeId::SATELLITE                                                => 'Satellit',
+    MapTypeId::TERRAIN                                                  => 'Terrain',
+    MapTypeId::HYBRID                                                   => 'Hybrid',
+    GoogleMap::SIZE_MODE_ASPECT_RATIO     => 'Seitenverhältnis',
+    GoogleMap::SIZE_MODE_STATIC           => 'Statisch',
+    GoogleMap::SIZE_MODE_CSS              => 'CSS',
+    GoogleMap::POSITIONING_MODE_STANDARD  => 'Standard',
+    GoogleMap::POSITIONING_MODE_BOUND     => 'Rahmen (Bounding)',
+    GoogleMap::BOUND_MODE_AUTOMATIC       => 'Automatisch',
+    GoogleMap::BOUND_MODE_COORDINATES     => 'Koordinaten',
+    GoogleMap::CENTER_MODE_COORDINATE     => 'Koordinate',
+    GoogleMap::CENTER_MODE_STATIC_ADDRESS => 'Adresse',
+    GoogleMap::CENTER_MODE_EXTERNAL       => 'Wird extern festgelegt (bspw. durch ein anderes Modul)',
+    MapTypeControlStyle::DEFAULT_                               => 'Standard',
+    MapTypeControlStyle::DROPDOWN_MENU                          => 'Dropdown-Menü',
+    MapTypeControlStyle::HORIZONTAL_BAR                         => 'Horizontale Bar',
+    GoogleMap::MAP_TYPE_BASE              => 'Basis-Konfiguration',
+    GoogleMap::MAP_TYPE_RESPONSIVE        => 'Responsive-Konfiguration'
 ];
 
 /**

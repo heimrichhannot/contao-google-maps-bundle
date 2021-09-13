@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class Module extends Backend
 {
-    const MODULE_GOOGLE_MAP = 'google_map';
+    public const MODULE_GOOGLE_MAP = 'google_map';
 
     public function __construct(ContainerInterface $container)
     {

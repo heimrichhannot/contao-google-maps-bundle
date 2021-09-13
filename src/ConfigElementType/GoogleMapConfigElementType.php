@@ -96,7 +96,7 @@ class GoogleMapConfigElementType implements ListConfigElementTypeInterface, Read
         }
 
         /* @noinspection PhpMethodParametersCountMismatchInspection */
-        $this->eventDispatcher->dispatch($event::NAME, $event);
+        $this->eventDispatcher->dispatch($event, $event::NAME);
 
         $item->setFormattedValue(
             $templateVariable,

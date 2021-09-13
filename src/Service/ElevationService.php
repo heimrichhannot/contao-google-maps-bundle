@@ -16,6 +16,7 @@ use Ivory\GoogleMap\Service\Base\Location\CoordinateLocation;
 use Ivory\GoogleMap\Service\Elevation\Request\PathElevationRequest;
 use Ivory\GoogleMap\Service\Elevation\Request\PositionalElevationRequest;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Ivory\GoogleMap\Service\Elevation\Response\ElevationResult;
 
 class ElevationService
 {
@@ -45,7 +46,7 @@ class ElevationService
     }
 
     /**
-     * @return \Ivory\GoogleMap\Service\Elevation\Response\ElevationResult[]
+     * @return ElevationResult[]
      */
     public function getElevation(array $data = [])
     {

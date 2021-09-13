@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * Copyright (c) 2021 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
+
+use HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay;
+use Ivory\GoogleMap\Overlay\Animation;
+
 $lang = &$GLOBALS['TL_LANG']['tl_google_map_overlay'];
 
 /**
@@ -72,23 +81,23 @@ $lang['stop'][1]      = 'Overlay nur bis zu diesem Tag auf der Webseite anzeigen
  * Reference
  */
 $lang['reference'] = [
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TITLE_MODE_TITLE_FIELD          => 'Titelfeld',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TITLE_MODE_CUSTOM_TEXT          => 'Eigener Text',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::POSITIONING_MODE_COORDINATE     => 'Koordinate',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::POSITIONING_MODE_STATIC_ADDRESS => 'Statische Adresse',
-    \Ivory\GoogleMap\Overlay\Animation::DROP                                                => 'Drop',
-    \Ivory\GoogleMap\Overlay\Animation::BOUNCE                                              => 'Bound',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_MARKER                     => 'Marker',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_INFO_WINDOW                => 'Infoblase',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_POLYLINE                   => 'Polyline',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_POLYGON                    => 'Polygon',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_CIRCLE                     => 'Kreis',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_RECTANGLE                  => 'Rechteck',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_GROUND_OVERLAY             => 'Ground-Overlay',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::TYPE_KML_LAYER                  => 'KML-Layer',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::MARKER_TYPE_SIMPLE              => 'Standard',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::MARKER_TYPE_ICON                => 'Individuelles Bild',
-    \HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay::CLICK_EVENT_LINK                => 'Link'
+    Overlay::TITLE_MODE_TITLE_FIELD          => 'Titelfeld',
+    Overlay::TITLE_MODE_CUSTOM_TEXT          => 'Eigener Text',
+    Overlay::POSITIONING_MODE_COORDINATE     => 'Koordinate',
+    Overlay::POSITIONING_MODE_STATIC_ADDRESS => 'Statische Adresse',
+    Animation::DROP                                                => 'Drop',
+    Animation::BOUNCE                                              => 'Bound',
+    Overlay::TYPE_MARKER                     => 'Marker',
+    Overlay::TYPE_INFO_WINDOW                => 'Infoblase',
+    Overlay::TYPE_POLYLINE                   => 'Polyline',
+    Overlay::TYPE_POLYGON                    => 'Polygon',
+    Overlay::TYPE_CIRCLE                     => 'Kreis',
+    Overlay::TYPE_RECTANGLE                  => 'Rechteck',
+    Overlay::TYPE_GROUND_OVERLAY             => 'Ground-Overlay',
+    Overlay::TYPE_KML_LAYER                  => 'KML-Layer',
+    Overlay::MARKER_TYPE_SIMPLE              => 'Standard',
+    Overlay::MARKER_TYPE_ICON                => 'Individuelles Bild',
+    Overlay::CLICK_EVENT_LINK                => 'Link'
 ];
 
 /**

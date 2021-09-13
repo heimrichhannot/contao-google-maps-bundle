@@ -12,9 +12,6 @@ use Contao\System;
 
 class LoadDataContainerListener
 {
-    /**
-     * @Hook("loadDataContainer")
-     */
     public function __invoke(string $table): void
     {
         switch ($table) {

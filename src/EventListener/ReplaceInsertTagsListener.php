@@ -22,9 +22,6 @@ class ReplaceInsertTagsListener
         $this->mapManager = $mapManager;
     }
 
-    /**
-     * @Hook("replaceInsertTags")
-     */
     public function __invoke(
         string $insertTag,
         bool $useCache,
