@@ -1,28 +1,30 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [2.0.0-beta] - 2020-06-17
-- works now with multiple maps on one page
-- added dry-run option to migration command
-- added content element and frontend module migration to migration command
-- added generic BeforeRenderMapEvent
-- changed migration command to not require installed delahaye/dlh_googlemaps module
-- refactored GoogleMapListConfigElementType to implement ListConfigElementTypeInterface
-- refactored GoogleMapReaderConfigElementType to implement ReaderConfigElementTypeInterface
-- refactored HookListener to ReplaceInsertTagsListener
-- [BREAKING] Change DlhMigrationModifyMapEvent legacy map type to object
-- [BREAKING] Change DlhMigrationModifyOverlayEvent legacy map and legacyOverlay type to object
-- [BREAKING] removed mapGoogleJs variable from map template
-- [BREAKING] renamed Bundle class to HeimrichHannotGoogleMapsBundle to reflect coding standards
-- enhanced warning MapManager::setCenter()
-- removed library overrides
-- fixed some deprecation notices
-- fixed `composer.json` twig dependency (thanks to fritzmg)
-- fixed `EventDispatcher` interface
-- added default values for aspect ratio (16:9)
-- fixed insert tag inclusion
-- added kml support (thanks @rabauss -> see [https://github.com/heimrichhannot/contao-google-maps-bundle/pull/7](https://github.com/heimrichhannot/contao-google-maps-bundle/pull/7))
-- added user better error message if no api key is set (see [https://github.com/heimrichhannot/contao-google-maps-bundle/issues/8](https://github.com/heimrichhannot/contao-google-maps-bundle/issues/8))
+## [2.0.0-beta] - 2021-09-13
+
+- Added: support for multiple maps on one page
+- Added: dry-run option to migration command
+- Added: content element and frontend module migration to migration command
+- Added: generic BeforeRenderMapEvent
+- Added: default values for aspect ratio (16:9)
+- Added: kml support (thanks @rabauss -> see [https://github.com/heimrichhannot/contao-google-maps-bundle/pull/7](https://github.com/heimrichhannot/contao-google-maps-bundle/pull/7))
+- Added: user better error message if no api key is set (see [https://github.com/heimrichhannot/contao-google-maps-bundle/issues/8](https://github.com/heimrichhannot/contao-google-maps-bundle/issues/8))
+- [BREAKING] Changed: DlhMigrationModifyMapEvent legacy map type to object
+- [BREAKING] Changed: DlhMigrationModifyOverlayEvent legacy map and legacyOverlay type to object
+- [BREAKING] Changed: removed mapGoogleJs variable from map template
+- [BREAKING] Changed: renamed Bundle class to HeimrichHannotGoogleMapsBundle to reflect coding standards
+- Changed: migration command to not require installed delahaye/dlh_googlemaps module
+- Changed: refactored GoogleMapListConfigElementType to implement ListConfigElementTypeInterface
+- Changed: refactored GoogleMapReaderConfigElementType to implement ReaderConfigElementTypeInterface
+- Changed: refactored HookListener to ReplaceInsertTagsListener
+- Changed: enhanced warning MapManager::setCenter()
+- Changed: removed library overrides
+- Fixed: some deprecation notices
+- Fixed: `composer.json` twig dependency (thanks to fritzmg)
+- Fixed: `EventDispatcher` interface
+- Fixed: insert tag inclusion
+- Fixed: decoding of styles (thanks @rabauss!)
 
 ## [1.4.1] - 2020-04-15
 - fixed MapManager return value declaration
