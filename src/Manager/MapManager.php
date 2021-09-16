@@ -128,7 +128,7 @@ class MapManager
         $map->setVariable('map_'.$mapId.'_'.substr(md5(time().$mapId), 0, 8));
 
         // apply map config
-        $htmlId = $mapConfig->htmlId ?: 'map_canvas_'.uniqid('', true);
+        $htmlId = $mapConfig->htmlId ?: 'map_canvas_'.uniqid();
         $map->setHtmlId($htmlId);
 
         $this->setVisualization($map, $mapConfig);
