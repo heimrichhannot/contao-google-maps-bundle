@@ -4,10 +4,16 @@
   "description": "This bundle offers functionality concerning the Google Maps v3 API. It acts as a contao wrapper for egeloen/ivory-google-map and egeloen/IvoryGoogleMapBundle.",
   "license": "LGPL-3.0-or-later",
   "require": {
-    "php": "^7.1 || ^8.0",
+    "php": "^7.1||^8.0",
     "contao/core-bundle": "^4.9",
+    "heimrichhannot/contao-utils-bundle": "^2.0",
     "ivory/google-map-bundle": "^3.0",
-    "heimrichhannot/contao-utils-bundle": "^2.0"
+    "symfony/config": "^4.4||^5.0",
+    "symfony/console": "^4.4||^5.0",
+    "symfony/dependency-injection": "^4.4||^5.0",
+    "symfony/event-dispatcher": "^4.4||^5.0",
+    "symfony/http-foundation": "^4.4||^5.0",
+    "symfony/http-kernel": "^4.4||^5.0"
   },
   "require-dev": {
     "contao/easy-coding-standard": "^3.4"

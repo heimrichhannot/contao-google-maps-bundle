@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [2.0.0-beta] - 2021-09-13
+## [2.0.0] - 2021-09-27
 
 - Added: support for multiple maps on one page
 - Added: dry-run option to migration command
@@ -27,6 +27,7 @@ All notable changes to this project will be documented in this file.
 - Fixed: `EventDispatcher` interface
 - Fixed: insert tag inclusion
 - Fixed: decoding of styles (thanks @rabauss!)
+- Added: symfony depencies
 
 ## [1.4.1] - 2020-04-15
 - fixed MapManager return value declaration
