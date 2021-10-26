@@ -9,6 +9,7 @@ use HeimrichHannot\GoogleMapsBundle\Manager\OverlayManager;
 use HeimrichHannot\GoogleMapsBundle\Model\OverlayModel;
 use HeimrichHannot\ListBundle\Event\ListBeforeParseItemsEvent;
 use HeimrichHannot\ListBundle\Event\ListBeforeRenderEvent;
+use HeimrichHannot\ListBundle\Model\ListConfigModel;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use Model\Collection;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -67,7 +68,7 @@ class ListBundleSubscriber implements EventSubscriberInterface
         }
 
         $mapId = $event->getListConfig()->itemMap;
-        $overlays = $this->transformItemsToOverlays($event->getItems());
+        $overlays = $this->transformItemsToOverlays($event->getItems(), $event->getListConfig());
         $templateData = $this->mapManager->prepareMap($mapId, $map->row(), $overlays);
 
         if (null === $templateData) {
@@ -112,14 +113,14 @@ class ListBundleSubscriber implements EventSubscriberInterface
         $event->setTemplateData($templateData);
     }
 
-    public function transformItemsToOverlays(array $items)
+    public function transformItemsToOverlays(array $items, ListConfigModel $configModel)
     {
         $eventDispatcher = $this->eventDispatcher;
-        $models = array_map(function ($item) use ($eventDispatcher) {
+        $models = array_map(function ($item) use ($eventDispatcher, $configModel) {
             $overlay = new OverlayModel();
             $overlay->setRow($item);
             /** @var GoogleMapsPrepareExternalItemEvent $event */
-            $event = $eventDispatcher->dispatch(new GoogleMapsPrepareExternalItemEvent($item, $overlay));
+            $event = $eventDispatcher->dispatch(new GoogleMapsPrepareExternalItemEvent($item, $overlay, $configModel));
             return $event->getOverlayModel();
         }, $items);
 

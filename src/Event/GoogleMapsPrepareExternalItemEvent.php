@@ -2,6 +2,7 @@
 
 namespace HeimrichHannot\GoogleMapsBundle\Event;
 
+use Contao\Model;
 use HeimrichHannot\GoogleMapsBundle\Model\OverlayModel;
 use Symfony\Contracts\EventDispatcher\Event;
 
@@ -16,11 +17,16 @@ class GoogleMapsPrepareExternalItemEvent extends Event
      * @var OverlayModel
      */
     private $overlayModel;
+    /**
+     * @var Model
+     */
+    private $configModel;
 
-    public function __construct(array $itemData, OverlayModel $overlayModel)
+    public function __construct(array $itemData, OverlayModel $overlayModel, Model $configModel)
     {
         $this->itemData = $itemData;
         $this->overlayModel = $overlayModel;
+        $this->configModel = $configModel;
     }
 
     /**
@@ -45,6 +51,14 @@ class GoogleMapsPrepareExternalItemEvent extends Event
     public function setOverlayModel(OverlayModel $overlayModel): void
     {
         $this->overlayModel = $overlayModel;
+    }
+
+    /**
+     * @return Model
+     */
+    public function getConfigModel(): Model
+    {
+        return $this->configModel;
     }
 
 
