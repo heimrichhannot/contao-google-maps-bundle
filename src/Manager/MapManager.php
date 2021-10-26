@@ -155,9 +155,9 @@ class MapManager
         return $templateData;
     }
 
-    public function render(int $mapId, array $config = [])
+    public function render(int $mapId, array $config = [], Collection $overlays = null)
     {
-        $templateData = $this->prepareMap($mapId, $config);
+        $templateData = $this->prepareMap($mapId, $config, $overlays);
 
         if (null === $templateData) {
             return null;
@@ -166,24 +166,7 @@ class MapManager
         /** @var Map $map */
         $map = $templateData['mapModel'];
 
-        $mapHelper = MapHelperBuilder::create()->build();
-
-        $listener = new MapRendererListener($templateData['mapConfigModel'], $this, $mapHelper);
-        $mapHelper->getEventDispatcher()->addListener('map.stylesheet', [$listener, 'renderStylesheet']);
-
-        $templateData['mapHtml'] = $mapHelper->renderHtml($map);
-        $templateData['mapCss'] = $mapHelper->renderStylesheet($map);
-        $templateData['mapJs'] = $mapHelper->renderJavascript($map);
-        $this->mapCollection->addMap($map, $mapId);
-
-        $template = $templateData['mapConfig']['template'] ?: 'gmap_map_default';
-        $template = System::getContainer()->get('huh.utils.template')->getTemplate($template);
-
-        /** @var BeforeRenderMapEvent $event */
-        /** @noinspection PhpParamsInspection */
-        $event = $this->eventDispatcher->dispatch(new BeforeRenderMapEvent($template, $templateData, $map), BeforeRenderMapEvent::NAME);
-
-        return $this->twig->render($event->getTemplate(), $event->getTemplateData());
+        return $this->renderMapObject($map, $mapId);
     }
 
     public function renderMapObject(Map $map, ?int $mapId = null)

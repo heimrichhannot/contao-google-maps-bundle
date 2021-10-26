@@ -1,5 +1,10 @@
 services:
 
+  HeimrichHannot\GoogleMapsBundle\EventSubscriber\:
+    resource: '../../EventSubscriber/*'
+    autowire: true
+    autoconfigure: true
+
   HeimrichHannot\GoogleMapBundle\ConfigElementType\GoogleMapConfigElementType:
     autowire: true
     tags: ['huh.list.config_element_type', 'huh.reader.config_element_type']

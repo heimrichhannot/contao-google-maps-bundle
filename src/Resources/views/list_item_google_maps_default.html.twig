@@ -1,0 +1,15 @@
+<div class="{{ cssClass }}">
+    <a id="list-item-{{ markerVariable }}" href="#">
+        {{ title|raw }}
+    </a>
+
+    <script type="text/javascript">
+        function trigger_{{ markerVariable }}(event) {
+            event.preventDefault();
+
+            new google.maps.event.trigger({{ markerVariable }}, 'click');
+        }
+
+        document.getElementById('list-item-{{ markerVariable }}').addEventListener('click', trigger_{{ markerVariable }});
+    </script>
+</div>
