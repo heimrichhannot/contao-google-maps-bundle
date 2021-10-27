@@ -1,6 +1,17 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.1.0] - 2020-10-27
+- Added: option to render [list](https://github.com/heimrichhannot/contao-list-bundle) as google map ([#14])
+- Added: GoogleMapsPrepareExternalItemEvent to customize Marker data from external sources (currently only implemented for Lists rendering added in this version)
+- Fixed: uneven script inclusion for consent bars
+- Fixed: marker click event info window option not working with empty offset fields
+
+> This version adds functionality previously provided by contao-google-maps-list-bundle. 
+> Please uninstall contao-google-maps-list-bundle bundle in order to update to this version as they are not compatible.
+> You need to update your list configs as the `HeimrichHannot\GoogleMapsListBundle\DefaultList` and `HeimrichHannot\GoogleMapsListBundle\DefaultItem` classes 
+> are no longer necessary and exist.
+
 ## [2.0.0] - 2021-09-27
 
 - Added: support for multiple maps on one page
@@ -113,3 +124,5 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - responsive map configuration
+
+[#14]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/14

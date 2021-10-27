@@ -16,20 +16,82 @@ This bundle adds google maps integration to [Contao](https://contao.org/de/). It
 - responsive support (mobile first), provide responsive configurations that will update the map upon reaching the value (greater than breakpoint)
 - [List bundle](https://github.com/heimrichhannot/contao-list-bundle) and [Reader bundle](https://github.com/heimrichhannot/contao-reader-bundle) support
 
-## Installation
+## Setup and usage
 
-0. Optional: If you have already google maps created with [delahaye/dlh_googlemaps](https://github.com/delahaye/dlh_googlemaps) refer to the section "Migrating from dlh_googlemaps".
-1. Set your Google API key (capable of Google Maps and Google Static Maps) if not already done in one of the following places (ascending priority):
+### Setup
+
+1. Install with contao manager or composer and update database afterwards
+
+       composer require heimrichhannot/contao-google-maps-bundle
+
+2. Optional: If you have already google maps created with [delahaye/dlh_googlemaps](https://github.com/delahaye/dlh_googlemaps) refer to the section "Migrating from dlh_googlemaps".
+3. Set your Google API key (capable of Google Maps and Google Static Maps) if not already done in one of the following places (ascending priority):
     - global Contao settings (`tl_settings`)
     - page root (`tl_page`)
     - Google Maps config (`tl_google_map`)
-2. Create a Google Map using the corresponding menu entry in Contao on the left.
-3. If necessary, create also overlays like markers, info windows, ... in the Google Map defined in 2. Think of a Google Map as an archive of overlays.
-4. Now you can integrate the map in your website using one of the following bukt-in ways:
+
+### Usage
+
+1. Create a Google Map using the corresponding menu entry in Contao on the left.
+2. Optional: create markers with the created google map configuration (markers are child entities of a map)
+4. Now you can integrate the map in your website using one of the following build-in ways:
     - Content element
     - Module
     - Insert tag (see below)
     - Twig function (see below)
+    - render a list as map, list config element or reader config element
+
+#### List and reader bundle
+
+For both list and reader bundle a config element is provided to add maps to the items.
+
+For lists you also get the option to render the complete list as map. 
+In your list configuration, check the `renderItemsAsMap` option and do the additional configuration.
+Typical, your list items don't have the correct fields added and filled to be used as markers on a maps.
+So you need to implement an event listener for the `GoogleMapsPrepareExternalItemEvent` 
+and create or update an overlay object that can be displayed on the map.
+
+```php
+class GoogleMapsSubscriber implements EventSubscriberInterface {
+
+    public static function getSubscribedEvents() {
+        return [GoogleMapsPrepareExternalItemEvent::class => 'onGoogleMapsPrepareExternalItemEvent',];
+    }
+
+    public function onGoogleMapsPrepareExternalItemEvent(GoogleMapsPrepareExternalItemEvent $event): void
+    {
+        if (!$event->getConfigModel() instanceof ListConfigModel) {
+            return;
+        }
+        
+        $item = (object)$event->getItemData();
+        
+        $overlay = new OverlayModel();
+        $overlay->title = $item->headline;
+        $overlay->type = Overlay::TYPE_MARKER;
+        if ($item->coordX && $item->coordX) {
+            $overlay->positioningMode = Overlay::POSITIONING_MODE_COORDINATE;
+            $overlay->positioningLat = trim($item->coordX);
+            $overlay->positioningLng = trim($item->coordX);
+        } elseif (!empty($item->address)) {
+            $overlay->positioningMode = Overlay::POSITIONING_MODE_STATIC_ADDRESS;
+            $overlay->positioningAddress = $item->address;
+        } else {
+            $event->setOverlayModel(null);
+            return;
+        }
+        $overlay->markerType = Overlay::MARKER_TYPE_SIMPLE;
+        $overlay->clickEvent = Overlay::CLICK_EVENT_INFO_WINDOW;
+        $overlay->infoWindowText = '<p><b>'.$item->headline.'</b></p>';
+        $overlay->published='1';
+        $event->setOverlayModel($overlay);
+    }
+}
+```
+
+
+
+
 
 ## Migrating from dlh_googlemaps
 
