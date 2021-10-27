@@ -1,7 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [2.1.0] - 2020-10-27
+## [2.1.1] - 2021-10-27
+- Fixed: return values in GoogleMapsPrepareExternalItemEvent
+
+## [2.1.0] - 2021-10-27
 - Added: option to render [list](https://github.com/heimrichhannot/contao-list-bundle) as google map ([#14])
 - Added: GoogleMapsPrepareExternalItemEvent to customize Marker data from external sources (currently only implemented for Lists rendering added in this version)
 - Fixed: uneven script inclusion for consent bars

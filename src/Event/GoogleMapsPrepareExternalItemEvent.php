@@ -38,9 +38,9 @@ class GoogleMapsPrepareExternalItemEvent extends Event
     }
 
     /**
-     * @return OverlayModel
+     * @return OverlayModel|null
      */
-    public function getOverlayModel(): OverlayModel
+    public function getOverlayModel(): ?OverlayModel
     {
         return $this->overlayModel;
     }
@@ -57,9 +57,9 @@ class GoogleMapsPrepareExternalItemEvent extends Event
     }
 
     /**
-     * @return Model|null
+     * @return Model
      */
-    public function getConfigModel(): ?Model
+    public function getConfigModel(): Model
     {
         return $this->configModel;
     }

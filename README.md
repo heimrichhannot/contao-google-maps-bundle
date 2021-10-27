@@ -47,6 +47,8 @@ For both list and reader bundle a config element is provided to add maps to the 
 
 For lists you also get the option to render the complete list as map. 
 In your list configuration, check the `renderItemsAsMap` option and do the additional configuration.
+You can use or adapt the bundled default template: `list_google_maps_default.html.twig` and `list_item_google_maps_default.html.twig`.
+
 Typical, your list items don't have the correct fields added and filled to be used as markers on a maps.
 So you need to implement an event listener for the `GoogleMapsPrepareExternalItemEvent` 
 and create or update an overlay object that can be displayed on the map.
