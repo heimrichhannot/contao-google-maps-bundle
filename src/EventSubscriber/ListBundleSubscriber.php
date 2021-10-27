@@ -115,15 +115,16 @@ class ListBundleSubscriber implements EventSubscriberInterface
 
     public function transformItemsToOverlays(array $items, ListConfigModel $configModel)
     {
-        $eventDispatcher = $this->eventDispatcher;
-        $models = array_map(function ($item) use ($eventDispatcher, $configModel) {
+        $models = [];
+        foreach ($items as $item) {
             $overlay = new OverlayModel();
             $overlay->setRow($item);
             /** @var GoogleMapsPrepareExternalItemEvent $event */
-            $event = $eventDispatcher->dispatch(new GoogleMapsPrepareExternalItemEvent($item, $overlay, $configModel));
-            return $event->getOverlayModel();
-        }, $items);
-
+            $event = $this->eventDispatcher->dispatch(new GoogleMapsPrepareExternalItemEvent($item, $overlay, $configModel));
+            if ($overlay = $event->getOverlayModel()) {
+                $models[] = $overlay;
+            }
+        }
         return new Collection($models, 'tl_google_map_overlay');
     }
 }

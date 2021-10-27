@@ -46,17 +46,20 @@ class GoogleMapsPrepareExternalItemEvent extends Event
     }
 
     /**
-     * @param OverlayModel $overlayModel
+     * Set the overlay model for the current item.
+     * Set null to skip adding a marker for the current item.
+     *
+     * @param OverlayModel|null $overlayModel
      */
-    public function setOverlayModel(OverlayModel $overlayModel): void
+    public function setOverlayModel(OverlayModel $overlayModel = null): void
     {
         $this->overlayModel = $overlayModel;
     }
 
     /**
-     * @return Model
+     * @return Model|null
      */
-    public function getConfigModel(): Model
+    public function getConfigModel(): ?Model
     {
         return $this->configModel;
     }
