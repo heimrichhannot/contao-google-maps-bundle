@@ -23,26 +23,29 @@ class ReplaceDynamicScriptTagsListener
         $this->mapManager = $mapManager;
     }
 
-    public function __invoke($buffer)
+    public function __invoke($buffer): string
     {
-        if ($mapApi = $this->mapManager->renderApi()) {
-            if (class_exists('HeimrichHannot\PrivacyCenterBundle\HeimrichHannotPrivacyCenterBundle')) {
-                // fix the code for the case more than 1 map is on the page and not the first one is clicked
-                $mapApi = preg_replace(
-                    '@(ivory_google_map_init_requirement\()(ivory_google_map_map_[^,]+)@i',
-                    'typeof $2 !== \'undefined\' && $1$2', $mapApi);
+        $mapApi = $this->mapManager->renderApi();
+        if (empty($mapApi)) {
+            return $buffer;
+        }
 
-                // protect the code
-                $GLOBALS['TL_HEAD']['huhGoogleMaps'] = PrivacyCenterManager::getInstance()->addProtectedCode(
-                    $mapApi,
-                    ['google_maps'],
-                    [
-                        'addPoster' => false,
-                    ]
-                );
-            } else {
-                $GLOBALS['TL_BODY']['huhGoogleMaps'] = $mapApi;
-            }
+        // fix the code for the case more than 1 map is on the page and not the first one is clicked
+        $mapApi = preg_replace(
+            '@(ivory_google_map_init_requirement\()(ivory_google_map_map_[^,]+)@i',
+            'typeof $2 !== \'undefined\' && $1$2', $mapApi);
+
+        if (class_exists('HeimrichHannot\PrivacyCenterBundle\HeimrichHannotPrivacyCenterBundle')) {
+            // protect the code
+            $GLOBALS['TL_BODY']['huhGoogleMaps'] = PrivacyCenterManager::getInstance()->addProtectedCode(
+                $mapApi,
+                ['google_maps'],
+                [
+                    'addPoster' => false,
+                ]
+            );
+        } else {
+            $GLOBALS['TL_BODY']['huhGoogleMaps'] = $mapApi;
         }
 
         return $buffer;

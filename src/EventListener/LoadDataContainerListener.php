@@ -8,6 +8,8 @@
 
 namespace HeimrichHannot\GoogleMapsBundle\EventListener;
 
+use Contao\Controller;
+use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\System;
 
 class LoadDataContainerListener
@@ -18,8 +20,9 @@ class LoadDataContainerListener
             case 'tl_list_config_element':
             case 'tl_reader_config_element':
                 $this->addElementFields($table);
-
                 break;
+            case 'tl_list_config':
+                $this->addListConfigFields($table);
         }
     }
 
@@ -65,6 +68,49 @@ class LoadDataContainerListener
                 'inputType' => 'checkbox',
                 'eval' => ['tl_class' => 'w50'],
                 'sql' => "char(1) NOT NULL default ''",
+            ],
+        ];
+
+        $dca['fields'] = array_merge($dca['fields'], $fields);
+    }
+
+    public function addListConfigFields(string $table): void
+    {
+        Controller::loadLanguageFile('tl_content');
+
+        $dca = &$GLOBALS['TL_DCA'][$table];
+
+        PaletteManipulator::create()
+            ->addLegend('google_maps_legend', 'sorting_legend', PaletteManipulator::POSITION_AFTER)
+            ->addField('renderItemsAsMap', 'google_maps_legend', PaletteManipulator::POSITION_APPEND)
+            ->applyToPalette('default', $table);
+
+        $dca['palettes']['__selector__'][] = 'renderItemsAsMap';
+        $dca['subpalettes']['renderItemsAsMap'] = 'itemMap,addMapControlList';
+
+        $fields = [
+            'renderItemsAsMap'  => [
+                'label'     => &$GLOBALS['TL_LANG']['tl_list_config']['renderItemsAsMap'],
+                'exclude'   => true,
+                'inputType' => 'checkbox',
+                'eval'      => ['tl_class' => 'w50', 'submitOnChange' => true],
+                'sql'       => "char(1) NOT NULL default ''"
+            ],
+            'itemMap'           => [
+                'label'            => &$GLOBALS['TL_LANG']['tl_content']['googlemaps_map'],
+                'exclude'          => true,
+                'filter'           => true,
+                'inputType'        => 'select',
+                'options_callback' => ['huh.google_maps.data_container.google_map', 'getMapChoices'],
+                'eval'             => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true, 'chosen' => true],
+                'sql'              => "int(10) unsigned NOT NULL default '0'"
+            ],
+            'addMapControlList' => [
+                'label'     => &$GLOBALS['TL_LANG']['tl_list_config']['addMapControlList'],
+                'exclude'   => true,
+                'inputType' => 'checkbox',
+                'eval'      => ['tl_class' => 'w50'],
+                'sql'       => "char(1) NOT NULL default ''"
             ],
         ];
 

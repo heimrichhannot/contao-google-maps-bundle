@@ -20,7 +20,8 @@
   },
   "conflict": {
     "twig/twig": "<1.38.0 || >=2.0 <2.7.0",
-    "ivory/google-map": "<3.0.4"
+    "ivory/google-map": "<3.0.4",
+    "heimrichhannot/contao-google-maps-list-bundle": "*"
   },
   "autoload": {
     "psr-4": {
