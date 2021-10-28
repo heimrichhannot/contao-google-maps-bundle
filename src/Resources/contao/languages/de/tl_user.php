@@ -17,4 +17,4 @@ $lang['contao_google_maps_bundlep'] = ['Archivrechte', 'Hier können Sie die Arc
 /**
  * Legends
  */
-$lang['contao-google-maps-bundle_legend'] = '-Archivrechte';
+$lang['contao-google-maps-bundle_legend'] = 'Google Maps Archivrechte';

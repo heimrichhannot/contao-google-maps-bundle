@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.2.1] - 2021-10-28
+- Fixed: missing labels for user right legends
+
 ## [2.2.0] - 2021-10-28
 - Changed: use GoogleMapsPrepareExternalItemEvent in list and reader config element ([#15])
 - Deprecated: ListGoogleMapBeforeRenderEvent (use GoogleMapsPrepareExternalItemEvent instead) ([#15])

@@ -17,4 +17,4 @@ $lang['contao_google_maps_bundlep'] = ['Archive permissions', 'Here you can defi
 /**
  * Legends
  */
-$lang['contao-google-maps-bundle_legend'] = ' permissions';
+$lang['contao-google-maps-bundle_legend'] = 'Google maps permissions';
