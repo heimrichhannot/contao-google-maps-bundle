@@ -13,6 +13,9 @@ use HeimrichHannot\ReaderBundle\Item\ItemInterface;
 use HeimrichHannot\ReaderBundle\Model\ReaderConfigElementModel;
 use Ivory\GoogleMap\Map;
 
+/**
+ * @deprecated Use GoogleMapsPrepareExternalItemEvent instead
+ */
 class ReaderGoogleMapBeforeRenderEvent extends GoogleMapBeforeRenderEvent
 {
     const NAME = 'huh.google_maps.event.reader_before_render';

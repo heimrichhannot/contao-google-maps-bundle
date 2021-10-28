@@ -9,9 +9,13 @@
 namespace HeimrichHannot\GoogleMapBundle\ConfigElementType;
 
 use Contao\Model;
+use HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap;
+use HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay;
+use HeimrichHannot\GoogleMapsBundle\Event\GoogleMapsPrepareExternalItemEvent;
 use HeimrichHannot\GoogleMapsBundle\Event\ListGoogleMapBeforeRenderEvent;
 use HeimrichHannot\GoogleMapsBundle\Event\ReaderGoogleMapBeforeRenderEvent;
 use HeimrichHannot\GoogleMapsBundle\Manager\MapManager;
+use HeimrichHannot\GoogleMapsBundle\Model\OverlayModel;
 use HeimrichHannot\ListBundle\ConfigElementType\ListConfigElementData;
 use HeimrichHannot\ListBundle\ConfigElementType\ListConfigElementTypeInterface;
 use HeimrichHannot\ListBundle\Item\ItemInterface as ListItemInterface;
@@ -73,9 +77,24 @@ class GoogleMapConfigElementType implements ListConfigElementTypeInterface, Read
      */
     protected function addToItemData(Model $configElement, $item): void
     {
+        $overlay = new OverlayModel();
+        $overlay->setRow($item->getRaw());
+
+        /** @var GoogleMapsPrepareExternalItemEvent $event */
+        $event = $this->eventDispatcher->dispatch(new GoogleMapsPrepareExternalItemEvent(
+                $item->getRaw(), $overlay, $configElement
+        ));
+
+        $collection = null;
+        $overlayModel = $event->getOverlayModel();
+
+        if ($overlayModel) {
+            $collection = new Model\Collection([$overlayModel], OverlayModel::getTable());
+        }
+
         $config = $this->arrayUtil->removePrefix('googlemaps_', $configElement->row());
 
-        $templateData = $this->mapManager->prepareMap($config['map'], $config);
+        $templateData = $this->mapManager->prepareMap($config['map'], $config, $collection);
 
         if (null === $templateData || !($templateData['mapModel'] instanceof Map)) {
             return;
@@ -84,6 +103,31 @@ class GoogleMapConfigElementType implements ListConfigElementTypeInterface, Read
         /** @var Map $map */
         $map = $templateData['mapModel'];
         $mapConfig = $templateData['mapConfigModel'];
+
+        if (GoogleMap::POSITIONING_MODE_STANDARD === $mapConfig->positioningMode
+            && GoogleMap::CENTER_MODE_EXTERNAL && $mapConfig->centerMode
+            && $overlayModel) {
+            switch ($overlayModel->type) {
+                case Overlay::TYPE_MARKER:
+                    if ($map->getOverlayManager()->hasMarkers()) {
+                        $marker = $map->getOverlayManager()->getMarkers()[0];
+                        $map->setCenter($marker->getPosition());
+                    }
+                    break;
+                case Overlay::TYPE_INFO_WINDOW:
+                    if ($map->getOverlayManager()->hasInfoWindows()) {
+                        $marker = $map->getOverlayManager()->getInfoWindows()[0];
+                        $map->setCenter($marker->getPosition());
+                    }
+                    break;
+                case Overlay::TYPE_CIRCLE:
+                    if ($map->getOverlayManager()->hasCircles()) {
+                        $marker = $map->getOverlayManager()->getCircles()[0];
+                        $map->setCenter($marker->getCenter());
+                    }
+                    break;
+            }
+        }
 
         if ($item instanceof ListItemInterface) {
             $event = new ListGoogleMapBeforeRenderEvent($item, $map, $mapConfig, $configElement);
@@ -95,7 +139,6 @@ class GoogleMapConfigElementType implements ListConfigElementTypeInterface, Read
             $templateVariable = $configElement->templateVariable ?: $configElement->name;
         }
 
-        /* @noinspection PhpMethodParametersCountMismatchInspection */
         $this->eventDispatcher->dispatch($event, $event::NAME);
 
         $item->setFormattedValue(

@@ -1,5 +1,9 @@
 # Upgrade notices
 
+## to 3.x
+- replaced ListGoogleMapBeforeRenderEvent with GoogleMapsPrepareExternalItemEvent
+- replaced ReaderGoogleMapBeforeRenderEvent with GoogleMapsPrepareExternalItemEvent
+
 ## to 2.1
 - Remove heimrichhannot/contao-google-maps-list-bundle dependency
 - Update your list configs to don't use `HeimrichHannot\GoogleMapsListBundle\DefaultList` and `HeimrichHannot\GoogleMapsListBundle\DefaultItem` anymore

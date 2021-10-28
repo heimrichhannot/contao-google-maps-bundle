@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2021-10-27
+- Changed: use GoogleMapsPrepareExternalItemEvent in list and reader config element
+- Deprecated: ListGoogleMapBeforeRenderEvent (use GoogleMapsPrepareExternalItemEvent instead)
+- Deprecated: ReaderGoogleMapBeforeRenderEvent (use GoogleMapsPrepareExternalItemEvent instead)
+
 ## [2.1.1] - 2021-10-27
 - Fixed: return values in GoogleMapsPrepareExternalItemEvent
 

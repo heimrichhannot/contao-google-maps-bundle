@@ -13,6 +13,9 @@ use HeimrichHannot\ListBundle\Item\ItemInterface;
 use HeimrichHannot\ListBundle\Model\ListConfigElementModel;
 use Ivory\GoogleMap\Map;
 
+/**
+ * @deprecated Use GoogleMapsPrepareExternalItemEvent instead
+ */
 class ListGoogleMapBeforeRenderEvent extends GoogleMapBeforeRenderEvent
 {
     const NAME = 'huh.google_maps.event.list_before_render';
