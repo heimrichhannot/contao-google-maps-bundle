@@ -267,8 +267,8 @@ class MapManager
             case GoogleMap::SIZE_MODE_CSS:
                 $map->setStylesheetOptions(
                     [
-                        'width' => 'auto',
-                        'height' => 'auto',
+                        'width' => '100%',
+                        'height' => '100%',
                     ]
                 );
 
