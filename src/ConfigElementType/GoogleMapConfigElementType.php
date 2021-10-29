@@ -143,7 +143,7 @@ class GoogleMapConfigElementType implements ListConfigElementTypeInterface, Read
 
         $item->setFormattedValue(
             $templateVariable,
-            $this->mapManager->renderMapObject($map)
+            $this->mapManager->renderMapObject($map, null, $templateData)
         );
     }
 }

@@ -75,7 +75,7 @@ class ListBundleSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $this->maps[$mapId] = $templateData['mapModel'];
+        $this->maps[$mapId] = $templateData;
 
         $markerVariableMapping = $this->overlayManager->getMarkerVariableMapping();
 
@@ -106,7 +106,7 @@ class ListBundleSubscriber implements EventSubscriberInterface
 
         $templateData = $event->getTemplateData();
 
-        $templateData['renderedMap'] = $this->mapManager->renderMapObject($this->maps[$mapId], $mapId);
+        $templateData['renderedMap'] = $this->mapManager->renderMapObject($this->maps[$mapId]['mapModel'], $mapId, $this->maps[$mapId]);
         // $this->mapManager->render($listConfig->itemMap, $map->row(), $overlays);
         $templateData['addMapControlList'] = (bool)$listConfig->addMapControlList;
 

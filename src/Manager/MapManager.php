@@ -17,6 +17,7 @@ use HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap;
 use HeimrichHannot\GoogleMapsBundle\Event\BeforeRenderMapEvent;
 use HeimrichHannot\GoogleMapsBundle\EventListener\MapRendererListener;
 use HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel;
+use HeimrichHannot\TwigSupportBundle\Renderer\TwigTemplateRenderer;
 use HeimrichHannot\UtilsBundle\File\FileUtil;
 use HeimrichHannot\UtilsBundle\Location\LocationUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
@@ -63,11 +64,6 @@ class MapManager
     protected $locationUtil;
 
     /**
-     * @var Environment
-     */
-    protected $twig;
-
-    /**
      * @var string
      */
     protected static $apiKey;
@@ -85,6 +81,10 @@ class MapManager
      * @var EventDispatcherInterface
      */
     private $eventDispatcher;
+    /**
+     * @var TwigTemplateRenderer
+     */
+    private $renderer;
 
     public function __construct(
         ContaoFramework $framework,
@@ -92,18 +92,18 @@ class MapManager
         ModelUtil $modelUtil,
         LocationUtil $locationUtil,
         FileUtil $fileUtil,
-        Environment $twig,
         MapCollection $mapCollection,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        TwigTemplateRenderer $renderer
     ) {
         $this->framework = $framework;
         $this->overlayManager = $overlayManager;
         $this->modelUtil = $modelUtil;
         $this->locationUtil = $locationUtil;
         $this->fileUtil = $fileUtil;
-        $this->twig = $twig;
         $this->mapCollection = $mapCollection;
         $this->eventDispatcher = $eventDispatcher;
+        $this->renderer = $renderer;
     }
 
     public function prepareMap(int $mapId, array $config = [], Collection $overlays = null): ?array
@@ -166,10 +166,10 @@ class MapManager
         /** @var Map $map */
         $map = $templateData['mapModel'];
 
-        return $this->renderMapObject($map, $mapId);
+        return $this->renderMapObject($map, $mapId, $templateData);
     }
 
-    public function renderMapObject(Map $map, ?int $mapId = null)
+    public function renderMapObject(Map $map, ?int $mapId = null, array $templateData = []): string
     {
         $mapHelper = MapHelperBuilder::create()->build();
 
@@ -185,7 +185,7 @@ class MapManager
         /** @noinspection PhpParamsInspection */
         $event = $this->eventDispatcher->dispatch(new BeforeRenderMapEvent($template, $templateData, $map), BeforeRenderMapEvent::NAME);
 
-        return $this->twig->render($template, $templateData);
+        return $this->renderer->render($template, $templateData);
     }
 
     public function renderHtml(int $mapId, array $config = [])
