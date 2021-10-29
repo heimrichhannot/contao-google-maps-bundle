@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.3.0] - 2021-10-29
+- Changed: use twig support bundle to render map
+- Fixed: template data not passed to maps renderer
+
 ## [2.2.2] - 2021-10-28
 - Fixed: maps sizing mode css not working
 
