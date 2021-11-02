@@ -8,8 +8,8 @@
 
 namespace HeimrichHannot\GoogleMapsBundle\EventListener;
 
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\StringUtil;
-use Contao\System;
 use HeimrichHannot\GoogleMapsBundle\Manager\MapManager;
 use HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel;
 use Ivory\GoogleMap\Event\Event;
@@ -31,12 +31,17 @@ class MapRendererListener
      * @var MapHelper
      */
     protected $mapHelper;
+    /**
+     * @var ContaoFramework
+     */
+    private $contaoFramework;
 
-    public function __construct(GoogleMapModel $model, MapManager $manager, MapHelper $mapHelper)
+    public function __construct(GoogleMapModel $model, MapManager $manager, MapHelper $mapHelper, ContaoFramework $contaoFramework)
     {
         $this->model = $model;
         $this->manager = $manager;
         $this->mapHelper = $mapHelper;
+        $this->contaoFramework = $contaoFramework;
     }
 
     public function renderStylesheet(MapEvent $event, string $eventName, EventDispatcherInterface $dispatcher)
@@ -51,7 +56,7 @@ class MapRendererListener
         });
 
         /** @var GoogleMapModel $adapter */
-        $adapter = System::getContainer()->get('contao.framework')->getAdapter(GoogleMapModel::class);
+        $adapter = $this->contaoFramework->getAdapter(GoogleMapModel::class);
 
         foreach ($responsiveSettings as $responsiveSetting) {
             if (empty($responsiveSetting['map']) || null === ($responsiveMapModel = $adapter->findByPk($responsiveSetting['map']))) {
