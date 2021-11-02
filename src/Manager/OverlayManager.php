@@ -14,6 +14,7 @@ use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay;
 use HeimrichHannot\GoogleMapsBundle\Model\OverlayModel;
+use HeimrichHannot\TwigSupportBundle\Renderer\TwigTemplateRenderer;
 use HeimrichHannot\UtilsBundle\File\FileUtil;
 use HeimrichHannot\UtilsBundle\Location\LocationUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
@@ -27,7 +28,6 @@ use Ivory\GoogleMap\Map;
 use Ivory\GoogleMap\Overlay\Icon;
 use Ivory\GoogleMap\Overlay\InfoWindow;
 use Ivory\GoogleMap\Overlay\Marker;
-use Twig\Environment;
 
 class OverlayManager
 {
@@ -48,27 +48,30 @@ class OverlayManager
     protected $locationUtil;
 
     /**
-     * @var Environment
-     */
-    protected $twig;
-
-    /**
      * @var array
      */
     protected static $markerVariableMapping = [];
+    /**
+     * @var TwigTemplateRenderer
+     */
+    private $templateRenderer;
+    /**
+     * @var FileUtil
+     */
+    private $fileUtil;
 
     public function __construct(
         ContaoFramework $framework,
         ModelUtil $modelUtil,
         LocationUtil $locationUtil,
         FileUtil $fileUtil,
-        Environment $twig
+        TwigTemplateRenderer $templateRenderer
     ) {
         $this->framework = $framework;
         $this->modelUtil = $modelUtil;
         $this->locationUtil = $locationUtil;
+        $this->templateRenderer = $templateRenderer;
         $this->fileUtil = $fileUtil;
-        $this->twig = $twig;
     }
 
     public function addOverlayToMap(Map $map, OverlayModel $overlayConfig, string $apiKey): void
@@ -114,13 +117,10 @@ class OverlayManager
 
         if ($overlayConfig->addRouting && $position) {
             $template = $overlayConfig->routingTemplate ?: 'gmap_routing_default';
-            $template = System::getContainer()->get('huh.utils.template')->getTemplate($template);
-
-            $routing = $this->twig->render($template, [
+            $routing = $this->templateRenderer->render($template, [
                 'lat' => $position->getLatitude(),
                 'lng' => $position->getLongitude(),
             ]);
-
             $infoWindow->setContent($infoWindow->getContent().$routing);
         }
     }
@@ -193,7 +193,7 @@ class OverlayManager
                 }
 
                 // anchor
-                $icon->setAnchor(new Point($overlayConfig->iconAnchorX, $overlayConfig->iconAnchorY));
+                $icon->setAnchor(new Point($overlayConfig->iconAnchorX ?? 0, $overlayConfig->iconAnchorY ?? 0));
 
                 // size
                 $width = StringUtil::deserialize($overlayConfig->iconWidth, true);

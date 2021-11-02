@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2021-11-02
+- Fixed: remaining template util usages
+- Fixed: error when custom overlay icon anchor position not set
+
 ## [2.3.0] - 2021-10-29
 - Changed: use twig support bundle to render map
 - Fixed: template data not passed to maps renderer

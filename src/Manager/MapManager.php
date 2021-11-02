@@ -17,6 +17,7 @@ use HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap;
 use HeimrichHannot\GoogleMapsBundle\Event\BeforeRenderMapEvent;
 use HeimrichHannot\GoogleMapsBundle\EventListener\MapRendererListener;
 use HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel;
+use HeimrichHannot\TwigSupportBundle\Filesystem\TwigTemplateLocator;
 use HeimrichHannot\TwigSupportBundle\Renderer\TwigTemplateRenderer;
 use HeimrichHannot\UtilsBundle\File\FileUtil;
 use HeimrichHannot\UtilsBundle\Location\LocationUtil;
@@ -85,6 +86,10 @@ class MapManager
      * @var TwigTemplateRenderer
      */
     private $renderer;
+    /**
+     * @var TwigTemplateLocator
+     */
+    private $templateLocator;
 
     public function __construct(
         ContaoFramework $framework,
@@ -94,7 +99,8 @@ class MapManager
         FileUtil $fileUtil,
         MapCollection $mapCollection,
         EventDispatcherInterface $eventDispatcher,
-        TwigTemplateRenderer $renderer
+        TwigTemplateRenderer $renderer,
+        TwigTemplateLocator $templateLocator
     ) {
         $this->framework = $framework;
         $this->overlayManager = $overlayManager;
@@ -104,6 +110,7 @@ class MapManager
         $this->mapCollection = $mapCollection;
         $this->eventDispatcher = $eventDispatcher;
         $this->renderer = $renderer;
+        $this->templateLocator = $templateLocator;
     }
 
     public function prepareMap(int $mapId, array $config = [], Collection $overlays = null): ?array
@@ -179,7 +186,7 @@ class MapManager
         $this->mapCollection->addMap($map, $mapId);
 
         $template = $templateData['mapConfig']['template'] ?: 'gmap_map_default';
-        $template = System::getContainer()->get('huh.utils.template')->getTemplate($template);
+        $template = $this->templateLocator->getTemplatePath($template);
 
         /** @var BeforeRenderMapEvent $event */
         /** @noinspection PhpParamsInspection */
