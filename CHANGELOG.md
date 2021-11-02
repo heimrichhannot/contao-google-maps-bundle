@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - 2021-11-02
+## [2.4.0] - 2021-11-02
 - Changed: some refactoring for contao 4.9
 - Fixed: remaining template util usages
 - Fixed: error when custom overlay icon anchor position not set
