@@ -1,35 +1,27 @@
 services:
-
-  HeimrichHannot\GoogleMapsBundle\EventSubscriber\:
-    resource: '../../EventSubscriber/*'
+  _defaults:
     autowire: true
     autoconfigure: true
 
-  HeimrichHannot\GoogleMapBundle\ConfigElementType\GoogleMapConfigElementType:
-    autowire: true
-    tags: ['huh.list.config_element_type', 'huh.reader.config_element_type']
+  HeimrichHannot\GoogleMapsBundle\:
+    resource: '../../{EventListener,EventSubscriber}/*'
 
-  HeimrichHannot\GoogleMapsBundle\Collection\MapCollection: ~
-
-  HeimrichHannot\GoogleMapsBundle\Manager\MapManager:
+  HeimrichHannot\GoogleMapsBundle\Manager\:
+    resource: '../../Manager/*'
     shared: false
-    autowire: true
+
   huh.google_maps.map_manager:
     alias: HeimrichHannot\GoogleMapsBundle\Manager\MapManager
     public: true
 
   huh.google_maps.overlay_manager:
-    class: HeimrichHannot\GoogleMapsBundle\Manager\OverlayManager
+    alias: HeimrichHannot\GoogleMapsBundle\Manager\OverlayManager
     public: true
-    shared: false
-    arguments:
-      - "@contao.framework"
-      - "@huh.utils.model"
-      - "@huh.utils.location"
-      - "@huh.utils.file"
-      - "@twig"
-  HeimrichHannot\GoogleMapsBundle\Manager\OverlayManager:
-    alias: 'huh.google_maps.overlay_manager'
+
+  HeimrichHannot\GoogleMapBundle\ConfigElementType\GoogleMapConfigElementType:
+    tags: ['huh.list.config_element_type', 'huh.reader.config_element_type']
+
+  HeimrichHannot\GoogleMapsBundle\Collection\MapCollection: ~
 
   huh.google_maps.data_container.google_map:
     class: HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap

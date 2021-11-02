@@ -8,8 +8,12 @@
 
 namespace HeimrichHannot\GoogleMapsBundle\EventListener;
 
+use Contao\CoreBundle\ServiceAnnotation\Hook;
 use HeimrichHannot\GoogleMapsBundle\Manager\MapManager;
 
+/**
+ * @Hook("replaceInsertTags")
+ */
 class ReplaceInsertTagsListener
 {
     /**

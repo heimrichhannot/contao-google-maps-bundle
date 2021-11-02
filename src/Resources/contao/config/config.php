@@ -32,16 +32,6 @@ $GLOBALS['FE_MOD']['maps'] = [
 ];
 
 /**
- * Hooks
- */
-$GLOBALS['TL_HOOKS']['replaceInsertTags']['huh_googlemaps'] = [
-    ReplaceInsertTagsListener::class, '__invoke'];
-$GLOBALS['TL_HOOKS']['replaceDynamicScriptTags']['huh_googlemaps'] = [
-    ReplaceDynamicScriptTagsListener::class, '__invoke'];
-$GLOBALS['TL_HOOKS']['loadDataContainer']['huh_googlemaps'] = [
-    LoadDataContainerListener::class, '__invoke'];
-
-/**
  * Models
  */
 $GLOBALS['TL_MODELS']['tl_google_map']         = 'HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel';

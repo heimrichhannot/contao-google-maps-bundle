@@ -180,6 +180,9 @@ class MapManager
     {
         $mapHelper = MapHelperBuilder::create()->build();
 
+        $listener = new MapRendererListener($templateData['mapConfigModel'], $this, $mapHelper);
+        $mapHelper->getEventDispatcher()->addListener('map.stylesheet', [$listener, 'renderStylesheet']);
+
         $templateData['mapHtml'] = $mapHelper->renderHtml($map);
         $templateData['mapCss'] = $mapHelper->renderStylesheet($map);
         $templateData['mapJs'] = $mapHelper->renderJavascript($map);

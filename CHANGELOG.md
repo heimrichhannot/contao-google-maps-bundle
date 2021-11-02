@@ -2,8 +2,10 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - 2021-11-02
+- Changed: some refactoring for contao 4.9
 - Fixed: remaining template util usages
 - Fixed: error when custom overlay icon anchor position not set
+- Fixed: `map.stylesheet` listener was removed in 2.1.0
 
 ## [2.3.0] - 2021-10-29
 - Changed: use twig support bundle to render map

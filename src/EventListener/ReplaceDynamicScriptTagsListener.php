@@ -8,9 +8,13 @@
 
 namespace HeimrichHannot\GoogleMapsBundle\EventListener;
 
+use Contao\CoreBundle\ServiceAnnotation\Hook;
 use HeimrichHannot\GoogleMapsBundle\Manager\MapManager;
 use HeimrichHannot\PrivacyCenter\Manager\PrivacyCenterManager;
 
+/**
+ * @Hook("replaceDynamicScriptTags")
+ */
 class ReplaceDynamicScriptTagsListener
 {
     /**

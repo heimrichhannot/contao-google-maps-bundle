@@ -10,8 +10,12 @@ namespace HeimrichHannot\GoogleMapsBundle\EventListener;
 
 use Contao\Controller;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
+use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\System;
 
+/**
+ * @Hook("loadDataContainer")
+ */
 class LoadDataContainerListener
 {
     public function __invoke(string $table): void
