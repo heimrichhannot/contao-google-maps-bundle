@@ -14,7 +14,8 @@ This bundle adds google maps integration to [Contao](https://contao.org/de/). It
 - insert tag and twig function
 - easy contao command based migration tool for [delahaye/dlh_googlemaps](https://github.com/delahaye/dlh_googlemaps) (courtesy to delahaye!)
 - responsive support (mobile first), provide responsive configurations that will update the map upon reaching the value (greater than breakpoint)
-- [List bundle](https://github.com/heimrichhannot/contao-list-bundle) and [Reader bundle](https://github.com/heimrichhannot/contao-reader-bundle) support
+- support for [List bundle](https://github.com/heimrichhannot/contao-list-bundle) and [Reader bundle](https://github.com/heimrichhannot/contao-reader-bundle)
+- support for [hofff/contao-consent-bridge](https://github.com/hofff/contao-consent-bridge)
 
 ## Setup and usage
 

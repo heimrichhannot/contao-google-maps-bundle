@@ -1,9 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.5.1] - 2022-02-01
+
+- Fixed: readme
+
 ## [2.5.0] - 2022-02-01
 
-- Added: support for [https://github.com/hofff/contao-consent-bridge](hofff/contao-consent-bridge), thanks @dmolineus!
+- Added: support for [hofff/contao-consent-bridge](https://github.com/hofff/contao-consent-bridge), thanks @dmolineus!
 
 ## [2.4.0] - 2021-11-02
 - Changed: some refactoring for contao 4.9
