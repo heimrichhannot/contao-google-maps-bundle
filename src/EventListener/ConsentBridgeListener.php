@@ -15,10 +15,6 @@ use Hofff\Contao\Consent\Bridge\ConsentId;
 use Hofff\Contao\Consent\Bridge\ConsentId\ConsentIdParser;
 use Hofff\Contao\Consent\Bridge\ConsentToolManager;
 
-use function current;
-use function is_numeric;
-use function preg_match;
-
 final class ConsentBridgeListener
 {
     /** @var ConsentToolManager */
@@ -118,14 +114,14 @@ final class ConsentBridgeListener
             $options[$consentTool->name()] = [];
 
             foreach ($toolOptions as $label => $consentId) {
-                $options[$consentTool->name()][$consentId->serialize()] = is_numeric($label)
+                $options[$consentTool->name()][$consentId->serialize()] = \is_numeric($label)
                     ? $consentId->toString()
                     : $label;
             }
         }
 
-        if (count($options) === 1) {
-            return current($options);
+        if (\count($options) === 1) {
+            return \current($options);
         }
 
         return $options;
@@ -162,7 +158,7 @@ final class ConsentBridgeListener
      */
     public function onParseTemplate(Template $template): void
     {
-        if (! preg_match('#^(ce|mod)_google_map#', $template->getName())) {
+        if (! \preg_match('#^(ce|mod)_google_map#', $template->getName())) {
             return;
         }
 

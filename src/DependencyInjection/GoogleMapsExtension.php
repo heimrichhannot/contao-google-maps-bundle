@@ -15,8 +15,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
-use function class_exists;
-
 class GoogleMapsExtension extends Extension
 {
     public function getAlias()
@@ -35,7 +33,7 @@ class GoogleMapsExtension extends Extension
         $loader->load('services.yml');
         $loader->load('twig.yml');
 
-        if (!class_exists(HofffContaoConsentBridgeBundle::class)) {
+        if (!\class_exists(HofffContaoConsentBridgeBundle::class)) {
             $container->removeDefinition(ConsentBridgeListener::class);
         }
     }
