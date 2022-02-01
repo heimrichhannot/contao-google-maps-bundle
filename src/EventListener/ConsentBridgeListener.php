@@ -52,19 +52,11 @@ final class ConsentBridgeListener
 
         switch ($table) {
             case 'tl_page':
-                $GLOBALS['TL_DCA']['tl_page']['fields']['googlemaps_consentId'] = [
-                    'exclude'   => true,
-                    'inputType' => 'select',
-                    'eval'      => [
-                        'tl_class'           => 'w50',
-                        'includeBlankOption' => true,
-                        'chosen'             => true,
-                    ],
-                    'sql' => [
-                        'type' => 'string',
-                        'default' => null,
-                        'notnull' => false
-                    ]
+                $this->dcaUtil->addOverridableFields(['googlemaps_consentId'], 'tl_settings', 'tl_page');
+                $GLOBALS['TL_DCA']['tl_page']['fields']['googlemaps_consentId']['sql'] = [
+                    'type'    => 'string',
+                    'default' => null,
+                    'notnull' => false,
                 ];
                 break;
 
@@ -107,7 +99,7 @@ final class ConsentBridgeListener
         }
 
         PaletteManipulator::create()
-            ->addField('googlemaps_consentId', 'hofff_consent_bridge_legend', PaletteManipulator::POSITION_APPEND)
+            ->addField('overrideGooglemaps_consentId', 'hofff_consent_bridge_legend', PaletteManipulator::POSITION_APPEND)
             ->applyToPalette('root', 'tl_page')
             ->applyToPalette('rootfallback', 'tl_page');
     }
@@ -207,8 +199,8 @@ final class ConsentBridgeListener
         $consentIdAsString = $this->dcaUtil->getOverridableProperty(
             'googlemaps_consentId',
             [
+                (object) ['googlemaps_consentId' => Config::get('googlemaps_consentId')],
                 ['tl_page', $objPage->rootId ?: $objPage->id],
-                (object) ['googlemaps_consentId' => Config::get('googlemaps_consentId')]
             ]
         );
 
