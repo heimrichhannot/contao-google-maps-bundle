@@ -13,6 +13,7 @@ use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
 use HeimrichHannot\GoogleMapsBundle\HeimrichHannotGoogleMapsBundle;
+use Hofff\Contao\Consent\Bridge\HofffContaoConsentBridgeBundle;
 use Ivory\GoogleMapBundle\IvoryGoogleMapBundle;
 
 class Plugin implements BundlePluginInterface
@@ -30,6 +31,10 @@ class Plugin implements BundlePluginInterface
 
         if (class_exists('HeimrichHannot\ListBundle\HeimrichHannotContaoListBundle')) {
             $loadAfterBundles[] = 'HeimrichHannot\ListBundle\HeimrichHannotContaoListBundle';
+        }
+        
+        if (class_exists(HofffContaoConsentBridgeBundle::class)) {
+            $loadAfterBundles[] = HofffContaoConsentBridgeBundle::class;
         }
 
         return [

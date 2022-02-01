@@ -1,0 +1,2 @@
+<?php
+/* The template is required so that the consent bridge renders a placeholder for the map It might contain extra markup */
