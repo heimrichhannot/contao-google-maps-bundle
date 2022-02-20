@@ -19,7 +19,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class MapRendererListener
 {
-    /** @var GoogleMapModel */
+    /** @var ?GoogleMapModel */
     protected $model;
 
     /**
@@ -36,7 +36,7 @@ class MapRendererListener
      */
     private $contaoFramework;
 
-    public function __construct(GoogleMapModel $model, MapManager $manager, MapHelper $mapHelper, ContaoFramework $contaoFramework)
+    public function __construct(?GoogleMapModel $model, MapManager $manager, MapHelper $mapHelper, ContaoFramework $contaoFramework)
     {
         $this->model = $model;
         $this->manager = $manager;
@@ -48,7 +48,7 @@ class MapRendererListener
     {
         $this->mapHelper->getEventDispatcher()->removeListener('map.stylesheet', [$this, 'renderStylesheet']);
 
-        $responsiveSettings = StringUtil::deserialize($this->model->responsive, true);
+        $responsiveSettings = $this->model ? StringUtil::deserialize($this->model->responsive, true) : [];
 
         // sort by breakpoint asc in order to maintain mobile first
         usort($responsiveSettings, function ($a, $b) {
@@ -73,7 +73,7 @@ class MapRendererListener
         $resizeEvent = new Event('window', 'resize', 'function(){
             var center = '.$event->getMap()->getVariable().'.getCenter();
             google.maps.event.trigger('.$event->getMap()->getVariable().', "resize");
-            '.$event->getMap()->getVariable().'.setCenter(center);  
+            '.$event->getMap()->getVariable().'.setCenter(center);
         }');
 
         $event->getMap()->getEventManager()->addDomEvent($resizeEvent);
@@ -89,12 +89,12 @@ class MapRendererListener
         $this->manager = $manager;
     }
 
-    public function getModel(): GoogleMapModel
+    public function getModel(): ?GoogleMapModel
     {
         return $this->model;
     }
 
-    public function setModel(GoogleMapModel $model): void
+    public function setModel(?GoogleMapModel $model): void
     {
         $this->model = $model;
     }
