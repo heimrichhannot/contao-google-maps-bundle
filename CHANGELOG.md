@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - 2022-03-14
 - Fixed: initialize MapRendererListener in service container
+- Fixed: twig dependency
 
 ## [2.5.1] - 2022-02-01
 - Fixed: readme
