@@ -1,10 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - 2022-03-14
+## [2.5.2] - 2022-03-14
 - Fixed: initialize MapRendererListener in service container
 - Fixed: twig dependency
 - Fixed: warnings in php 8+
+- Fixed: exception due missing patchwork/utf8 dependencies in contao 4.13 (replace calls with native php functions)
 
 ## [2.5.1] - 2022-02-01
 - Fixed: readme

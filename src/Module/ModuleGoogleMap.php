@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -14,7 +14,6 @@ use Contao\System;
 use HeimrichHannot\GoogleMapsBundle\Manager\MapManager;
 use HeimrichHannot\UtilsBundle\Arrays\ArrayUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
-use Patchwork\Utf8;
 
 class ModuleGoogleMap extends Module
 {
@@ -48,7 +47,7 @@ class ModuleGoogleMap extends Module
         if (TL_MODE == 'BE') {
             $objTemplate = new BackendTemplate('be_wildcard');
 
-            $objTemplate->wildcard = '### '.Utf8::strtoupper($GLOBALS['TL_LANG']['FMD'][$this->type][0]).' ###';
+            $objTemplate->wildcard = '### '.mb_strtoupper($GLOBALS['TL_LANG']['FMD'][$this->type][0]).' ###';
             $objTemplate->title = $this->headline;
 
             if (null !== ($map = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk('tl_google_map', $this->googlemaps_map))) {
