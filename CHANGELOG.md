@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2022-03-14
+- Fixed: tl_page rootfallback palette not supported
+- Fixed: warnings in php 8+
+
 ## [2.5.2] - 2022-03-14
 - Fixed: initialize MapRendererListener in service container
 - Fixed: twig dependency

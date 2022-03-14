@@ -143,6 +143,7 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
+            'flag' => 1,
             'options' => Overlay::TYPES,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['reference'],
             'eval' => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
