@@ -1,8 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [2.5.1] - 2022-02-01
+## [Unreleased] - 2022-03-14
+- Fixed: initialize MapRendererListener in service container
 
+## [2.5.1] - 2022-02-01
 - Fixed: readme
 
 ## [2.5.0] - 2022-02-01
