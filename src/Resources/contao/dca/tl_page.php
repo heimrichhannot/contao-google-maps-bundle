@@ -1,21 +1,27 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
 
 use Contao\Controller;
+use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\System;
+
 $dca = &$GLOBALS['TL_DCA']['tl_page'];
 
-/**
+/*
  * Palettes
  */
-$dca['palettes']['root'] = str_replace('{global_legend', '{huh_google_maps_legend},overrideGooglemaps_apiKey;{global_legend', $dca['palettes']['root']);
+PaletteManipulator::create()
+    ->addLegend('huh_google_maps_legend', 'global_legend', PaletteManipulator::POSITION_AFTER)
+    ->addField('overrideGooglemaps_apiKey', 'huh_google_maps_legend', PaletteManipulator::POSITION_APPEND)
+    ->applyToPalette('root', 'tl_page')
+    ->applyToPalette('rootfallback', 'tl_page');
 
-/**
+/*
  * Fields
  */
 Controller::loadDataContainer('tl_settings');
