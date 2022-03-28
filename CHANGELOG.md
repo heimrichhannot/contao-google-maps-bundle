@@ -1,10 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - 2022-03-14
+## [2.6.0] - 2022-03-14
 - Changed: minimum php dependency is now php 7.4
 - Changed: updated coordinate SQL data types ([#20], [@qzminski])
-- Fixed: dlh migration not compatible with doctrine 3 ([#20], [@qzminski])
+- Changed: refactored MigrateDlhCommand to Symfony Command and removed some deprecations
+- Fixed: MigrateDlhCommand not compatible with doctrine 3 ([#20], [@qzminski])
 - Fixed: tl_page rootfallback palette not supported
 - Fixed: warnings in php 8+
 

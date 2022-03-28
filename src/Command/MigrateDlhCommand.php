@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -10,13 +10,11 @@ namespace HeimrichHannot\GoogleMapsBundle\Command;
 
 use Contao\Config;
 use Contao\ContentModel;
-use Contao\CoreBundle\Command\AbstractLockedCommand;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Database;
 use Contao\ModuleModel;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\FetchMode;
 use HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap;
 use HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay;
 use HeimrichHannot\GoogleMapsBundle\Element\ContentGoogleMap;
@@ -25,6 +23,7 @@ use HeimrichHannot\GoogleMapsBundle\Event\DlhMigrationModifyOverlayEvent;
 use HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel;
 use HeimrichHannot\GoogleMapsBundle\Model\OverlayModel;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -32,114 +31,36 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class MigrateDlhCommand extends AbstractLockedCommand
+class MigrateDlhCommand extends Command
 {
-    /**
-     * @var bool
-     */
-    protected $dryRun = false;
-    /**
-     * @var array
-     */
-    protected $mapMapper = [];
-    /**
-     * @var SymfonyStyle
-     */
-    private $io;
+    protected static $defaultName = 'huh:google-maps:migrate-dlh';
+    protected static $defaultDescription = 'Migrates existing Maps created using delahaye/dlh_googlemaps.';
 
-    /**
-     * @var string
-     */
-    private $rootDir;
+    protected bool $dryRun = false;
 
-    /**
-     * @var bool
-     */
-    private $skipUnsupportedFieldWarnings;
+    protected array $mapMapper = [];
 
-    /**
-     * @var bool
-     */
-    private $cleanBeforeMigration;
+    private SymfonyStyle $io;
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $dispatcher;
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
-    /**
-     * @var ModelUtil
-     */
-    private $modelUtil;
-    /**
-     * @var Connection
-     */
-    private $connection;
+    private bool $skipUnsupportedFieldWarnings;
 
-    public function __construct(string $projectDir, ContaoFramework $framework, EventDispatcherInterface $eventDispatcher, ModelUtil $modelUtil, Connection $connection)
+    private bool $cleanBeforeMigration;
+
+    private EventDispatcherInterface $dispatcher;
+
+    private ContaoFramework $framework;
+
+    private ModelUtil $modelUtil;
+
+    private Connection $connection;
+
+    public function __construct(ContaoFramework $framework, EventDispatcherInterface $eventDispatcher, ModelUtil $modelUtil, Connection $connection)
     {
         parent::__construct();
-        $this->rootDir = $projectDir;
         $this->framework = $framework;
         $this->dispatcher = $eventDispatcher;
         $this->modelUtil = $modelUtil;
         $this->connection = $connection;
-    }
-
-    public function migrateFrontendModules()
-    {
-        $this->io->section('Migrate frontend modules');
-
-        $frontendModules = ModuleModel::findByType('dlh_googlemaps');
-
-        if (!$frontendModules) {
-            $this->io->text('Found no frontend modules');
-
-            return;
-        }
-
-        foreach ($frontendModules as $frontendModule) {
-            if ($this->io->isVerbose()) {
-                $this->io->text('Migration frontend module '.$frontendModule->name.' with ID '.$frontendModule->id);
-            }
-            $frontendModule->type = ContentGoogleMap::TYPE;
-            $frontendModule->googlemaps_skipCss = $frontendModule->dlh_googlemap_nocss;
-
-            if ($frontendModule->dlh_googlemap_static) {
-                $this->usernotice('Static maps in frontend modules are not supported. Please adjust config (ID '.$frontendModule->id.').');
-            }
-
-            if ($frontendModule->dlh_googlemap_zoom) {
-                $this->usernotice('Zoom in frontend modules is not supported. Please adjust config (ID '.$frontendModule->id.').');
-            }
-
-            if ($frontendModule->dlh_googlemap_size) {
-                $this->usernotice('Map size in frontend modules is not supported. Please adjust config (ID '.$frontendModule->id.').');
-            }
-
-            if ($frontendModule->dlh_googlemap_tabs) {
-                $this->usernotice('Tab/accordion setting in frontend modules is not supported. Please adjust config (ID '.$frontendModule->id.').');
-            }
-
-            if (isset($this->mapMapper[$frontendModule->dlh_googlemap])) {
-                $frontendModule->googlemaps_map = $this->mapMapper[$frontendModule->dlh_googlemap];
-            } elseif (!$this->dryRun) {
-                $this->usernotice('Map for content element with ID '.$frontendModule->id.' could not be found. Please adjust manually.');
-            }
-
-            if (!$this->dryRun) {
-                $frontendModule->save();
-            }
-        }
-        $this->io->text('<fg=green>Finished migration of frontend modules');
-    }
-
-    public function usernotice(string $message): void
-    {
-        $this->io->block($message, null, 'userwarning', '    ');
     }
 
     /**
@@ -148,8 +69,7 @@ class MigrateDlhCommand extends AbstractLockedCommand
     protected function configure()
     {
         $this
-            ->setName('huh:google-maps:migrate-dlh')
-            ->setDescription('Migrates existing Maps created using delahaye/dlh_googlemaps.')
+            ->setDescription(static::$defaultDescription)
             ->addOption('skip-unsupported-field-warnings', null, InputOption::VALUE_NONE, 'Skip warnings indicating that fields don\'t exist anymore in Google Maps v3.')
             ->addOption('skip-contentelements', null, InputOption::VALUE_NONE, 'Skip migration of content elements.')
             ->addOption('skip-frontendmodules', null, InputOption::VALUE_NONE, 'Skip migration of frontend modules.')
@@ -157,10 +77,7 @@ class MigrateDlhCommand extends AbstractLockedCommand
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Performs a run without making changes to the database.');
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function executeLocked(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->io = new SymfonyStyle($input, $output);
         $this->io->title('Migrate dlh_googlemaps');
@@ -180,8 +97,8 @@ class MigrateDlhCommand extends AbstractLockedCommand
         // clean
         if ($this->cleanBeforeMigration && $this->io->confirm('CAUTION: You set the parameter "clean-before-migration". This will delete ALL entries of tl_google_map and tl_google_map_overlay. Are you sure?')) {
             if (!$this->dryRun) {
-                Database::getInstance()->execute('DELETE FROM tl_google_map');
-                Database::getInstance()->execute('DELETE FROM tl_google_map_overlay');
+                $this->connection->executeStatement('DELETE FROM tl_google_map');
+                $this->connection->executeStatement('DELETE FROM tl_google_map_overlay');
             }
 
             $this->io->success('tl_google_map and tl_google_map_overlay cleaned successfully.');
@@ -251,7 +168,7 @@ class MigrateDlhCommand extends AbstractLockedCommand
 
         $legacyMaps = $this->connection->fetchAllAssociative('SELECT * FROM tl_dlh_googlemaps');
 
-        if (\count($legacyMaps) === 0) {
+        if (0 === \count($legacyMaps)) {
             $this->io->note('No existing maps found.');
 
             return;
@@ -398,8 +315,6 @@ class MigrateDlhCommand extends AbstractLockedCommand
                 $map->aspectRatioY = 9;
             }
 
-            /* @noinspection PhpParamsInspection */
-            /* @noinspection PhpMethodParametersCountMismatchInspection */
             $this->dispatcher->dispatch(new DlhMigrationModifyMapEvent(
                 $legacyMap,
                 $map
@@ -590,8 +505,6 @@ class MigrateDlhCommand extends AbstractLockedCommand
                 $overlay->infoWindowAnchorY = $infoWindowAnchor[1];
             }
 
-            /* @noinspection PhpParamsInspection */
-            /* @noinspection PhpMethodParametersCountMismatchInspection */
             $this->dispatcher->dispatch(new DlhMigrationModifyOverlayEvent(
                 $legacyOverlay,
                 $overlay,
@@ -652,5 +565,58 @@ class MigrateDlhCommand extends AbstractLockedCommand
             }
         }
         $this->io->text('<fg=green>Finished migration content elements');
+    }
+
+    private function migrateFrontendModules(): void
+    {
+        $this->io->section('Migrate frontend modules');
+
+        $frontendModules = ModuleModel::findByType('dlh_googlemaps');
+
+        if (!$frontendModules) {
+            $this->io->text('Found no frontend modules');
+
+            return;
+        }
+
+        foreach ($frontendModules as $frontendModule) {
+            if ($this->io->isVerbose()) {
+                $this->io->text('Migration frontend module '.$frontendModule->name.' with ID '.$frontendModule->id);
+            }
+            $frontendModule->type = ContentGoogleMap::TYPE;
+            $frontendModule->googlemaps_skipCss = $frontendModule->dlh_googlemap_nocss;
+
+            if ($frontendModule->dlh_googlemap_static) {
+                $this->usernotice('Static maps in frontend modules are not supported. Please adjust config (ID '.$frontendModule->id.').');
+            }
+
+            if ($frontendModule->dlh_googlemap_zoom) {
+                $this->usernotice('Zoom in frontend modules is not supported. Please adjust config (ID '.$frontendModule->id.').');
+            }
+
+            if ($frontendModule->dlh_googlemap_size) {
+                $this->usernotice('Map size in frontend modules is not supported. Please adjust config (ID '.$frontendModule->id.').');
+            }
+
+            if ($frontendModule->dlh_googlemap_tabs) {
+                $this->usernotice('Tab/accordion setting in frontend modules is not supported. Please adjust config (ID '.$frontendModule->id.').');
+            }
+
+            if (isset($this->mapMapper[$frontendModule->dlh_googlemap])) {
+                $frontendModule->googlemaps_map = $this->mapMapper[$frontendModule->dlh_googlemap];
+            } elseif (!$this->dryRun) {
+                $this->usernotice('Map for content element with ID '.$frontendModule->id.' could not be found. Please adjust manually.');
+            }
+
+            if (!$this->dryRun) {
+                $frontendModule->save();
+            }
+        }
+        $this->io->text('<fg=green>Finished migration of frontend modules');
+    }
+
+    private function usernotice(string $message): void
+    {
+        $this->io->block($message, null, 'userwarning', '    ');
     }
 }
