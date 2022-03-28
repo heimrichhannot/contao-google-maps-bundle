@@ -143,7 +143,6 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'flag' => 1,
             'options' => Overlay::TYPES,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['reference'],
             'eval' => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
@@ -184,7 +183,7 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
             'search' => true,
             'inputType' => 'text',
             'eval' => ['rgxp' => 'digit', 'maxlength' => 16, 'tl_class' => 'w50', 'mandatory' => true],
-            'sql' => "float(10,6) unsigned NOT NULL default '0.0'",
+            'sql' => "decimal(8,6) NOT NULL default '0.0'",
         ],
         'positioningLng' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['positioningLng'],
@@ -192,7 +191,7 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
             'search' => true,
             'inputType' => 'text',
             'eval' => ['rgxp' => 'digit', 'maxlength' => 16, 'tl_class' => 'w50', 'mandatory' => true],
-            'sql' => "float(10,6) unsigned NOT NULL default '0.0'",
+            'sql' => "decimal(9,6) NOT NULL default '0.0'",
         ],
         'positioningAddress' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['positioningAddress'],

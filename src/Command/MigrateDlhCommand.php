@@ -249,16 +249,17 @@ class MigrateDlhCommand extends AbstractLockedCommand
     {
         $this->io->section('Step 2: Migrating existing google maps...');
 
-        $result = $this->connection->query('SELECT * FROM tl_dlh_googlemaps');
-        $legacyMaps = $result->fetchAll(FetchMode::CUSTOM_OBJECT);
+        $legacyMaps = $this->connection->fetchAllAssociative('SELECT * FROM tl_dlh_googlemaps');
 
-        if (\count($legacyMaps) < 1) {
+        if (\count($legacyMaps) === 0) {
             $this->io->note('No existing maps found.');
 
             return;
         }
 
         foreach ($legacyMaps as $legacyMap) {
+            $legacyMap = (object) $legacyMap;
+
             $this->io->newLine();
             $this->io->writeln('<options=bold>Migrating dlh google map ID '.$legacyMap->id.' ("'.$legacyMap->title.'") ...</>');
 
@@ -399,10 +400,10 @@ class MigrateDlhCommand extends AbstractLockedCommand
 
             /* @noinspection PhpParamsInspection */
             /* @noinspection PhpMethodParametersCountMismatchInspection */
-            $this->dispatcher->dispatch(DlhMigrationModifyMapEvent::NAME, new DlhMigrationModifyMapEvent(
+            $this->dispatcher->dispatch(new DlhMigrationModifyMapEvent(
                 $legacyMap,
                 $map
-            ));
+            ), DlhMigrationModifyMapEvent::NAME);
 
             if (!$this->dryRun) {
                 $map->save();
@@ -421,9 +422,7 @@ class MigrateDlhCommand extends AbstractLockedCommand
     {
         $this->io->text('Migrating overlays of dlh google map ID '.$legacyMap->id.' ("'.$legacyMap->title.'") ...');
 
-        $stmt = $this->connection->prepare('SELECT * FROM tl_dlh_googlemaps_elements WHERE pid=?');
-        $stmt->execute([$legacyMap->id]);
-        $legacyOverlays = $stmt->fetchAll(FetchMode::CUSTOM_OBJECT);
+        $legacyOverlays = $this->connection->fetchAllAssociative('SELECT * FROM tl_dlh_googlemaps_elements WHERE pid=?', [$legacyMap->id]);
 
         if (\count($legacyOverlays) < 1) {
             $this->usernotice('No existing overlays for map found.');
@@ -432,6 +431,8 @@ class MigrateDlhCommand extends AbstractLockedCommand
         }
 
         foreach ($legacyOverlays as $legacyOverlay) {
+            $legacyOverlay = (object) $legacyOverlay;
+
             $this->io->text('Migrating dlh google map overlay ID '.$legacyOverlay->id.' ("'.$legacyOverlay->title.'") ...');
 
             $overlay = new OverlayModel();
@@ -591,12 +592,12 @@ class MigrateDlhCommand extends AbstractLockedCommand
 
             /* @noinspection PhpParamsInspection */
             /* @noinspection PhpMethodParametersCountMismatchInspection */
-            $this->dispatcher->dispatch(DlhMigrationModifyOverlayEvent::NAME, new DlhMigrationModifyOverlayEvent(
+            $this->dispatcher->dispatch(new DlhMigrationModifyOverlayEvent(
                 $legacyOverlay,
                 $overlay,
                 $legacyMap,
                 $map
-            ));
+            ), DlhMigrationModifyOverlayEvent::NAME);
 
             if (!$this->dryRun) {
                 $overlay->save();
@@ -609,7 +610,6 @@ class MigrateDlhCommand extends AbstractLockedCommand
     protected function migrateContentElements()
     {
         $this->io->section('Migrate content elements');
-
         $contentElements = ContentModel::findByType('dlh_googlemaps');
 
         if (!$contentElements) {
