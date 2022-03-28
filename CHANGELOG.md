@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - 2022-03-14
 - Changed: minimum php dependency is now php 7.4
+- Changed: updated coordinate SQL data types ([#20], [@qzminski])
+- Fixed: dlh migration not compatible with doctrine 3 ([#20], [@qzminski])
 - Fixed: tl_page rootfallback palette not supported
 - Fixed: warnings in php 8+
 
@@ -168,6 +170,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - responsive map configuration
 
+[#20]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/20
 [#15]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/15
 [#14]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/14
 [#11]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/11
@@ -176,3 +179,4 @@ All notable changes to this project will be documented in this file.
 [#7]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/7
 
 [@rabaus]: https://github.com/rabauss
+[@qzminski]: https://github.com/qzminski
