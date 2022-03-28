@@ -2,6 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - 2022-03-14
+- Changed: minimum php dependency is now php 7.4
 - Fixed: tl_page rootfallback palette not supported
 - Fixed: warnings in php 8+
 
