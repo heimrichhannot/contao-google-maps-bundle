@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -9,6 +9,9 @@
 namespace HeimrichHannot\GoogleMapBundle\ConfigElementType;
 
 use Contao\Model;
+use Contao\Model\Collection;
+use HeimrichHannot\ConfigElementTypeBundle\ConfigElementType\ConfigElementData;
+use HeimrichHannot\ConfigElementTypeBundle\ConfigElementType\ConfigElementResult;
 use HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap;
 use HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay;
 use HeimrichHannot\GoogleMapsBundle\Event\GoogleMapsPrepareExternalItemEvent;
@@ -28,7 +31,17 @@ use HeimrichHannot\UtilsBundle\Arrays\ArrayUtil;
 use Ivory\GoogleMap\Map;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class GoogleMapConfigElementType implements ListConfigElementTypeInterface, ReaderConfigElementTypeInterface
+if (class_exists(ReaderConfigElementTypeInterface::class) && class_exists(ListConfigElementTypeInterface::class)) {
+    abstract class AbstractGoogleMapConfigElementType implements ListConfigElementTypeInterface, ReaderConfigElementTypeInterface
+    {
+    }
+} else {
+    abstract class AbstractGoogleMapConfigElementType implements ListConfigElementTypeInterface
+    {
+    }
+}
+
+class GoogleMapConfigElementType extends AbstractGoogleMapConfigElementType
 {
     const TYPE = 'google_map';
     /**
@@ -72,32 +85,33 @@ class GoogleMapConfigElementType implements ListConfigElementTypeInterface, Read
     }
 
     /**
-     * @param ReaderConfigElementModel|ListConfigElementModel $configElement
-     * @param ListItemInterface|ReaderItemInterface           $item
+     * @throws \Exception
+     *
+     * @return ConfigElementResult
      */
-    protected function addToItemData(Model $configElement, $item): void
+    public function applyConfiguration(ConfigElementData $configElementData)
     {
         $overlay = new OverlayModel();
-        $overlay->setRow($item->getRaw());
+        $overlay->setRow($configElementData->getItemData());
 
         /** @var GoogleMapsPrepareExternalItemEvent $event */
         $event = $this->eventDispatcher->dispatch(new GoogleMapsPrepareExternalItemEvent(
-                $item->getRaw(), $overlay, $configElement
+            $configElementData->getItemData(), $overlay, $configElementData->getConfiguration()
         ));
 
         $collection = null;
         $overlayModel = $event->getOverlayModel();
 
         if ($overlayModel) {
-            $collection = new Model\Collection([$overlayModel], OverlayModel::getTable());
+            $collection = new Collection([$overlayModel], OverlayModel::getTable());
         }
 
-        $config = $this->arrayUtil->removePrefix('googlemaps_', $configElement->row());
+        $config = $this->arrayUtil->removePrefix('googlemaps_', $configElementData->getConfiguration()->row());
 
         $templateData = $this->mapManager->prepareMap($config['map'], $config, $collection);
 
         if (null === $templateData || !($templateData['mapModel'] instanceof Map)) {
-            return;
+            return new ConfigElementResult(ConfigElementResult::TYPE_NONE, null);
         }
 
         /** @var Map $map */
@@ -113,21 +127,43 @@ class GoogleMapConfigElementType implements ListConfigElementTypeInterface, Read
                         $marker = $map->getOverlayManager()->getMarkers()[0];
                         $map->setCenter($marker->getPosition());
                     }
+
                     break;
+
                 case Overlay::TYPE_INFO_WINDOW:
                     if ($map->getOverlayManager()->hasInfoWindows()) {
                         $marker = $map->getOverlayManager()->getInfoWindows()[0];
                         $map->setCenter($marker->getPosition());
                     }
+
                     break;
+
                 case Overlay::TYPE_CIRCLE:
                     if ($map->getOverlayManager()->hasCircles()) {
                         $marker = $map->getOverlayManager()->getCircles()[0];
                         $map->setCenter($marker->getCenter());
                     }
+
                     break;
             }
         }
+
+        return [$map, $mapConfig];
+
+        // Preperation for config element type:
+//        return new ConfigElementResult(
+//            ConfigElementResult::TYPE_FORMATTED_VALUE,
+//            $this->mapManager->renderMapObject($map, null, $templateData)
+//        );
+    }
+
+    /**
+     * @param ReaderConfigElementModel|ListConfigElementModel $configElement
+     * @param ListItemInterface|ReaderItemInterface           $item
+     */
+    protected function addToItemData(Model $configElement, $item): void
+    {
+        [$map, $mapConfig] = $this->applyConfiguration(new ConfigElementData($item->getRaw(), $configElement));
 
         if ($item instanceof ListItemInterface) {
             $event = new ListGoogleMapBeforeRenderEvent($item, $map, $mapConfig, $configElement);
