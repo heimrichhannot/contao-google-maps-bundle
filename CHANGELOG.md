@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.7.1] - 2022-04-14
+- HOTFIX: missing param in ConfigElementType
+
 ## [2.7.0] - 2022-04-11
 - Added: support for [entity finder](https://github.com/heimrichhannot/contao-utils-bundle/blob/master/docs/commands/entity_finder.md)
 - Changed: raised heimrichhannot/contao-utils-bundle dependency to 2.213

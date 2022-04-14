@@ -148,7 +148,7 @@ class GoogleMapConfigElementType extends AbstractGoogleMapConfigElementType
             }
         }
 
-        return [$map, $mapConfig];
+        return [$map, $mapConfig, $templateData];
 
         // Preperation for config element type:
 //        return new ConfigElementResult(
@@ -163,7 +163,7 @@ class GoogleMapConfigElementType extends AbstractGoogleMapConfigElementType
      */
     protected function addToItemData(Model $configElement, $item): void
     {
-        [$map, $mapConfig] = $this->applyConfiguration(new ConfigElementData($item->getRaw(), $configElement));
+        [$map, $mapConfig, $templateData] = $this->applyConfiguration(new ConfigElementData($item->getRaw(), $configElement));
 
         if ($item instanceof ListItemInterface) {
             $event = new ListGoogleMapBeforeRenderEvent($item, $map, $mapConfig, $configElement);
