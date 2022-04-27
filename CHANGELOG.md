@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.8.1] - 2022-04-27
+- Fixed: class loading issue in privacy center listener
+
 ## [2.8.0] - 2022-04-27
 - Changed: moved privacy center integration to own listener
 - Changed: added privacy center < 2.0 to conflicts
