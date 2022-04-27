@@ -1,8 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.8.0] - 2022-04-27
+- Changed: moved privacy center integration to own listener
+- Changed: added privacy center < 2.0 to conflicts
+
 ## [2.7.1] - 2022-04-14
-- HOTFIX: missing param in ConfigElementType
+- Fixed: missing param in ConfigElementType
 
 ## [2.7.0] - 2022-04-11
 - Added: support for [entity finder](https://github.com/heimrichhannot/contao-utils-bundle/blob/master/docs/commands/entity_finder.md)

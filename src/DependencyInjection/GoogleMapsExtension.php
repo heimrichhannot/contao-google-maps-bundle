@@ -9,6 +9,8 @@
 namespace HeimrichHannot\GoogleMapsBundle\DependencyInjection;
 
 use HeimrichHannot\GoogleMapsBundle\EventListener\ConsentBridgeListener;
+use HeimrichHannot\GoogleMapsBundle\EventListener\PrivacyCenterListener;
+use HeimrichHannot\PrivacyCenter\Manager\PrivacyCenterManager;
 use Hofff\Contao\Consent\Bridge\HofffContaoConsentBridgeBundle;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -34,6 +36,10 @@ class GoogleMapsExtension extends Extension
 
         if (!class_exists(HofffContaoConsentBridgeBundle::class)) {
             $container->removeDefinition(ConsentBridgeListener::class);
+        }
+
+        if (!class_exists(PrivacyCenterManager::class)) {
+            $container->removeDefinition(PrivacyCenterListener::class);
         }
     }
 }
