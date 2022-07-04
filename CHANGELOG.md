@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.8.2] - 2022-07-04
+- Added: github issue template
+- Fixed: migration always want to update schema ([#22])
+
 ## [2.8.1] - 2022-04-27
 - Fixed: class loading issue in privacy center listener
 
@@ -187,6 +191,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - responsive map configuration
 
+[#22]: https://github.com/heimrichhannot/contao-google-maps-bundle/issues/22
 [#20]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/20
 [#15]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/15
 [#14]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/14

@@ -343,7 +343,7 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'search' => true,
             'inputType' => 'text',
             'eval' => ['rgxp' => 'digit', 'maxlength' => 16, 'tl_class' => 'w50', 'mandatory' => true],
-            'sql' => "decimal(8,6) NOT NULL default '0.0'",
+            'sql' => "decimal(8,6) NOT NULL default '0.000000'",
         ],
         'boundNorthEastLng' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['boundNorthEastLng'],
@@ -351,7 +351,7 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'search' => true,
             'inputType' => 'text',
             'eval' => ['rgxp' => 'digit', 'maxlength' => 16, 'tl_class' => 'w50', 'mandatory' => true],
-            'sql' => "decimal(9,6) NOT NULL default '0.0'",
+            'sql' => "decimal(9,6) NOT NULL default '0.000000'",
         ],
         'boundSouthWestLat' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['boundSouthWestLat'],
@@ -359,7 +359,7 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'search' => true,
             'inputType' => 'text',
             'eval' => ['rgxp' => 'digit', 'maxlength' => 16, 'tl_class' => 'w50', 'mandatory' => true],
-            'sql' => "decimal(8,6) NOT NULL default '0.0'",
+            'sql' => "decimal(8,6) NOT NULL default '0.000000'",
         ],
         'boundSouthWestLng' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['boundSouthWestLng'],
@@ -367,7 +367,7 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'search' => true,
             'inputType' => 'text',
             'eval' => ['rgxp' => 'digit', 'maxlength' => 16, 'tl_class' => 'w50', 'mandatory' => true],
-            'sql' => "decimal(9,6) NOT NULL default '0.0'",
+            'sql' => "decimal(9,6) NOT NULL default '0.000000'",
         ],
         'centerMode' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['centerMode'],
@@ -385,7 +385,7 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'search' => true,
             'inputType' => 'text',
             'eval' => ['rgxp' => 'digit', 'maxlength' => 16, 'tl_class' => 'w50', 'mandatory' => true],
-            'sql' => "decimal(8,6) NOT NULL default '0.0'",
+            'sql' => "decimal(8,6) NOT NULL default '0.000000'",
         ],
         'centerLng' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['centerLng'],
@@ -393,7 +393,13 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'search' => true,
             'inputType' => 'text',
             'eval' => ['rgxp' => 'digit', 'maxlength' => 16, 'tl_class' => 'w50', 'mandatory' => true],
-            'sql' => "decimal(9,6) NOT NULL default '0.0'",
+            'sql' => [
+                'type' => 'decimal',
+                'precision' => 9,
+                'scale' => 6,
+                'default' => '0.000000',
+                'notnull' => true,
+            ],
         ],
         'centerAddress' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['centerAddress'],
