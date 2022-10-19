@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -28,6 +28,7 @@ use Ivory\GoogleMap\Map;
 use Ivory\GoogleMap\Overlay\Icon;
 use Ivory\GoogleMap\Overlay\InfoWindow;
 use Ivory\GoogleMap\Overlay\Marker;
+use Ivory\GoogleMap\Overlay\Polygon;
 
 class OverlayManager
 {
@@ -105,6 +106,13 @@ class OverlayManager
 
                 break;
 
+            case Overlay::TYPE_POLYGON:
+                $polygon = $this->preparePolygon($overlayConfig);
+
+                $map->getOverlayManager()->addPolygon($polygon);
+
+                break;
+
             default:
                 // TODO allow event subscribers
                 break;
@@ -168,6 +176,15 @@ class OverlayManager
     public static function setMarkerVariableMapping(array $markerVariableMapping): void
     {
         static::$markerVariableMapping = $markerVariableMapping;
+    }
+
+    public static function checkHex(string $hex): string
+    {
+        if ('' == trim($hex, '0..9A..Fa..f')) {
+            return '#'.$hex;
+        }
+
+        return '#000000';
     }
 
     protected function prepareMarker(OverlayModel $overlayConfig, Map $map)
@@ -326,5 +343,49 @@ class OverlayManager
         }
 
         return $kmlLayer;
+    }
+
+    protected function preparePolygon(OverlayModel $overlayConfig)
+    {
+        $polygon = new Polygon();
+
+        // position settings
+        $vertices = StringUtil::deserialize($overlayConfig->polygonVertices, true);
+        $verticesArray = [];
+
+        foreach ($vertices as $vertex) {
+            $verticesArray[] = new Coordinate($vertex['positioningLat'] ?? 0, $vertex['positioningLng'] ?? 0);
+        }
+
+        $polygon->setCoordinates($verticesArray);
+
+        // stroke settings
+        if ($overlayConfig->polygonStrokeWeight) {
+            $polygon->setOption('strokeWeight', (int) $overlayConfig->polygonStrokeWeight);
+        }
+
+        if ($overlayConfig->polygonStrokeColor) {
+            $polygon->setOption('strokeColor', self::checkHex($overlayConfig->polygonStrokeColor));
+        }
+
+        if ($overlayConfig->polygonStrokeOpacity) {
+            $polygon->setOption('strokeOpacity', (float) $overlayConfig->polygonStrokeOpacity);
+        }
+
+        // fill settings
+        if ($overlayConfig->polygonFillColor) {
+            $polygon->setOption('fillColor', self::checkHex($overlayConfig->polygonFillColor));
+        }
+
+        if ($overlayConfig->polygonFillOpacity) {
+            $polygon->setOption('fillOpacity', (float) $overlayConfig->polygonFillOpacity);
+        }
+
+        // other settings
+        if ($overlayConfig->zIndex) {
+            $polygon->setOption('zIndex', (int) $overlayConfig->zIndex);
+        }
+
+        return $polygon;
     }
 }

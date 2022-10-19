@@ -7,6 +7,7 @@
  */
 
 use Contao\System;
+use Doctrine\DBAL\Platforms\MySqlPlatform;
 use HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay;
 
 $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
@@ -96,6 +97,7 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
         Overlay::TYPE_MARKER => '{general_legend},title,type;{config_legend},titleMode,positioningMode,animation,markerType,clickEvent,zIndex;{publish_legend},published;',
         Overlay::TYPE_INFO_WINDOW => '{general_legend},title,type;{config_legend},positioningMode,infoWindowWidth,infoWindowHeight,infoWindowText,addRouting,zIndex;{publish_legend},published;',
         Overlay::TYPE_KML_LAYER => '{general_legend},title,type;{config_legend},kmlUrl,kmlClickable,kmlPreserveViewport,kmlScreenOverlays,kmlSuppressInfowindows,zIndex;{publish_legend},published;',
+        Overlay::TYPE_POLYGON => '{general_legend},title,type;{config_legend},polygonVertices,polygonStrokeColor,polygonStrokeOpacity,polygonFillColor,polygonFillOpacity,polygonStrokeWeight,zIndex;{publish_legend},published;',
     ],
     'subpalettes' => [
         'titleMode_'.Overlay::TITLE_MODE_CUSTOM_TEXT => 'titleText',
@@ -405,6 +407,55 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
             'inputType' => 'checkbox',
             'eval' => ['tl_class' => 'm12'],
             'sql' => "char(1) NOT NULL default ''",
+        ],
+        'polygonVertices' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['polygonVertices'],
+            'inputType' => 'group',
+            'palette' => ['positioningLat', 'positioningLng'],
+            'fields' => [
+                '&positioningLat' => [
+                    'eval' => ['mandatory' => true],
+                ],
+                '&positioningLng' => [
+                    'eval' => ['mandatory' => true],
+                ],
+            ],
+            'min' => 3,
+            'sql' => [
+                'type' => 'blob',
+                'length' => MySqlPlatform::LENGTH_LIMIT_BLOB,
+                'notnull' => false,
+            ],
+        ],
+        'polygonStrokeWeight' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['polygonStrokeWeight'],
+            'inputType' => 'text',
+            'eval' => ['maxlength' => 3, 'tl_class' => 'w50'],
+            'sql' => "varchar(3) NOT NULL default '2'",
+        ],
+        'polygonStrokeColor' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['polygonStrokeColor'],
+            'inputType' => 'text',
+            'eval' => ['maxlength' => 6, 'isHexColor' => true, 'colorpicker' => true, 'decodeEntities' => true, 'tl_class' => 'w50 wizard'],
+            'sql' => "varchar(6) NOT NULL default ''",
+        ],
+        'polygonStrokeOpacity' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['polygonStrokeOpacity'],
+            'inputType' => 'text',
+            'eval' => ['maxlength' => 3, 'tl_class' => 'w50'],
+            'sql' => "varchar(3) NOT NULL DEFAULT '1.0'",
+        ],
+        'polygonFillColor' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['polygonFillColor'],
+            'inputType' => 'text',
+            'eval' => ['maxlength' => 6, 'isHexColor' => true, 'colorpicker' => true, 'decodeEntities' => true, 'tl_class' => 'w50 wizard'],
+            'sql' => "varchar(6) NOT NULL default ''",
+        ],
+        'polygonFillOpacity' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['polygonFillOpacity'],
+            'inputType' => 'text',
+            'eval' => ['maxlength' => 3, 'tl_class' => 'w50'],
+            'sql' => "varchar(3) NOT NULL DEFAULT '0.6'",
         ],
         // publish
         'published' => [
