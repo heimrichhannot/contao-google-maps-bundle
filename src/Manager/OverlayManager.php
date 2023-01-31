@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2022 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -350,7 +350,7 @@ class OverlayManager
         $polygon = new Polygon();
 
         // position settings
-        $vertices = StringUtil::deserialize($overlayConfig->polygonVertices, true);
+        $vertices = StringUtil::deserialize($overlayConfig->pathCoordinates, true);
         $verticesArray = [];
 
         foreach ($vertices as $vertex) {
@@ -360,25 +360,25 @@ class OverlayManager
         $polygon->setCoordinates($verticesArray);
 
         // stroke settings
-        if ($overlayConfig->polygonStrokeWeight) {
-            $polygon->setOption('strokeWeight', (int) $overlayConfig->polygonStrokeWeight);
+        if ($overlayConfig->strokeWeight) {
+            $polygon->setOption('strokeWeight', (int) $overlayConfig->strokeWeight);
         }
 
-        if ($overlayConfig->polygonStrokeColor) {
-            $polygon->setOption('strokeColor', self::checkHex($overlayConfig->polygonStrokeColor));
+        if ($overlayConfig->strokeColor) {
+            $polygon->setOption('strokeColor', self::checkHex($overlayConfig->strokeColor));
         }
 
-        if ($overlayConfig->polygonStrokeOpacity) {
-            $polygon->setOption('strokeOpacity', (float) $overlayConfig->polygonStrokeOpacity);
+        if ($overlayConfig->strokeOpacity) {
+            $polygon->setOption('strokeOpacity', (float) $overlayConfig->strokeOpacity);
         }
 
         // fill settings
-        if ($overlayConfig->polygonFillColor) {
-            $polygon->setOption('fillColor', self::checkHex($overlayConfig->polygonFillColor));
+        if ($overlayConfig->fillColor) {
+            $polygon->setOption('fillColor', self::checkHex($overlayConfig->fillColor));
         }
 
-        if ($overlayConfig->polygonFillOpacity) {
-            $polygon->setOption('fillOpacity', (float) $overlayConfig->polygonFillOpacity);
+        if ($overlayConfig->fillOpacity) {
+            $polygon->setOption('fillOpacity', (float) $overlayConfig->fillOpacity);
         }
 
         // other settings

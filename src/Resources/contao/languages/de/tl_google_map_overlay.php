@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2022 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -69,6 +69,18 @@ $lang['routingTemplate'][0] = 'Template';
 $lang['routingTemplate'][1] = 'Wählen Sie hier bei Bedarf ein alternatives Routenplaner-Template aus.';
 $lang['zIndex'][0] = 'z-Index (CSS)';
 $lang['zIndex'][1] = 'Geben Sie hier bei Bedarf den gewünschten z-Index ein.';
+$lang['fillColor'][0] = 'Flächenfarbe';
+$lang['fillColor'][1] = 'Geben Sie die Flächenfarbe in Hexadezimal an.';
+$lang['pathCoordinates'][0] = 'Eckpunkte';
+$lang['pathCoordinates'][1] = 'Fügen Sie die Eckpunkte samt Koordinaten hinzu.';
+$lang['strokeWeight'][0] = 'Linienstärke';
+$lang['strokeWeight'][1] = 'Die Stärke der Linie in Pixeln';
+$lang['strokeColor'][0] = 'Linienfarbe';
+$lang['strokeColor'][1] = 'Die Farbe der Linie in Hexadezimal.';
+$lang['strokeOpacity'][0] = 'Liniendeckkraft';
+$lang['strokeOpacity'][1] = 'Geben Sie die Deckkraft der Linie im Bereich von 0 bis 1 an.';
+$lang['fillOpacity'][0] = 'Flächendeckkraft';
+$lang['fillOpacity'][1] = 'Geben Sie die Deckkraft der Fläche im Bereich von 0 bis 1 an.';
 
 $lang['published'][0] = 'Veröffentlichen';
 $lang['published'][1] = 'Wählen Sie diese Option zum Veröffentlichen.';
@@ -130,19 +142,3 @@ $lang['kmlScreenOverlays'][0] = 'Overlays zeigen';
 $lang['kmlScreenOverlays'][1] = 'Die Overlays des Layers rendern.';
 $lang['kmlSuppressInfowindows'][0] = 'Infoblasen unterdrücken';
 $lang['kmlSuppressInfowindows'][1] = 'Unterdrückt die Anzeige von Infoblasen im Layer.';
-
-/*
- * Polygon
- */
-$lang['polygonVertices'][0] = 'Eckpunkte';
-$lang['polygonVertices'][1] = 'Fügen Sie die Eckpunkte samt Koordinaten hinzu.';
-$lang['polygonStrokeWeight'][0] = 'Linienstärke';
-$lang['polygonStrokeWeight'][1] = 'Die Stärke der Linie in Pixeln';
-$lang['polygonStrokeColor'][0] = 'Linienfarbe';
-$lang['polygonStrokeColor'][1] = 'Die Farbe der Linie in Hexadezimal.';
-$lang['polygonStrokeOpacity'][0] = 'Liniendeckkraft';
-$lang['polygonStrokeOpacity'][1] = 'Geben Sie die Deckkraft der Linie im Bereich von 0 bis 1 an.';
-$lang['polygonFillColor'][0] = 'Flächenfarbe';
-$lang['polygonFillColor'][1] = 'Geben Sie die Flächenfarbe in Hexadezimal an.';
-$lang['polygonFillOpacity'][0] = 'Flächendeckkraft';
-$lang['polygonFillOpacity'][1] = 'Geben Sie die Deckkraft der Fläche im Bereich von 0 bis 1 an.';
