@@ -1,12 +1,13 @@
 <?php
 
 /*
- * Copyright (c) 2022 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
 
 use Contao\System;
+use Doctrine\DBAL\Platforms\MySqlPlatform;
 use HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay;
 
 $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
@@ -96,6 +97,7 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
         Overlay::TYPE_MARKER => '{general_legend},title,type;{config_legend},titleMode,positioningMode,animation,markerType,clickEvent,zIndex;{publish_legend},published;',
         Overlay::TYPE_INFO_WINDOW => '{general_legend},title,type;{config_legend},positioningMode,infoWindowWidth,infoWindowHeight,infoWindowText,addRouting,zIndex;{publish_legend},published;',
         Overlay::TYPE_KML_LAYER => '{general_legend},title,type;{config_legend},kmlUrl,kmlClickable,kmlPreserveViewport,kmlScreenOverlays,kmlSuppressInfowindows,zIndex;{publish_legend},published;',
+        Overlay::TYPE_POLYGON => '{general_legend},title,type;{config_legend},pathCoordinates,strokeColor,strokeOpacity,fillColor,fillOpacity,strokeWeight,zIndex;{publish_legend},published;',
     ],
     'subpalettes' => [
         'titleMode_'.Overlay::TITLE_MODE_CUSTOM_TEXT => 'titleText',
@@ -405,6 +407,44 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
             'inputType' => 'checkbox',
             'eval' => ['tl_class' => 'm12'],
             'sql' => "char(1) NOT NULL default ''",
+        ],
+        'pathCoordinates' => [
+            'inputType' => 'group',
+            'palette' => ['positioningLat', 'positioningLng'],
+            'fields' => [
+                '&positioningLat' => [
+                    'eval' => ['mandatory' => true],
+                ],
+                '&positioningLng' => [
+                    'eval' => ['mandatory' => true],
+                ],
+            ],
+            'min' => 3,
+            'sql' => [
+                'type' => 'blob',
+                'length' => MySqlPlatform::LENGTH_LIMIT_BLOB,
+                'notnull' => false,
+            ],
+        ],
+        'strokeWeight' => [
+            'inputType' => 'text',
+            'eval' => ['maxlength' => 3, 'tl_class' => 'w50'],
+            'sql' => "varchar(3) NOT NULL default '2'",
+        ],
+        'strokeColor' => [
+            'inputType' => 'text',
+            'eval' => ['maxlength' => 6, 'isHexColor' => true, 'colorpicker' => true, 'decodeEntities' => true, 'tl_class' => 'w50 wizard'],
+            'sql' => "varchar(6) NOT NULL default ''",
+        ],
+        'strokeOpacity' => [
+            'inputType' => 'text',
+            'eval' => ['maxlength' => 3, 'tl_class' => 'w50'],
+            'sql' => "varchar(3) NOT NULL DEFAULT '1.0'",
+        ],
+        'fillOpacity' => [
+            'inputType' => 'text',
+            'eval' => ['maxlength' => 3, 'tl_class' => 'w50'],
+            'sql' => "varchar(3) NOT NULL DEFAULT '0.6'",
         ],
         // publish
         'published' => [

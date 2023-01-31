@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -46,11 +46,16 @@ use Contao\Model;
  * @property string $kmlPreserveViewport
  * @property string $kmlScreenOverlays
  * @property string $kmlSuppressInfowindows
+ * @property string $pathCoordinates
+ * @property string $strokeWeight
+ * @property string $strokeColor
+ * @property string $strokeOpacity
+ * @property string $fillColor
+ * @property string $fillOpacity
  * @property string $zIndex
  * @property string $published
  * @property string $start
  * @property string $stop
- *
  */
 class OverlayModel extends Model
 {
