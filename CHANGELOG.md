@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.9.0] - 2023-01-31
+- Added: polygon creation ([#24])
+- Added: english translation ([#23])
+
 ## [2.8.2] - 2022-07-04
 - Added: github issue template
 - Fixed: migration always want to update schema ([#22])
@@ -191,6 +195,8 @@ All notable changes to this project will be documented in this file.
 ### Added
 - responsive map configuration
 
+[#24]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/24
+[#23]: https://github.com/heimrichhannot/contao-google-maps-bundle/issues/23
 [#22]: https://github.com/heimrichhannot/contao-google-maps-bundle/issues/22
 [#20]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/20
 [#15]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/15
