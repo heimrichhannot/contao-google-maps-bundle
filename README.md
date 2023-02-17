@@ -122,7 +122,6 @@ google_map_js | ID of the `tl_google_map` instance | {{ google_map_js(1) }}
 
 - Overlay types:
     - polyline
-    - polygon
     - circle
     - rectangle
     - ground_overlay
