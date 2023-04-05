@@ -1,43 +1,36 @@
 <?php
 
+/*
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace HeimrichHannot\GoogleMapsBundle\EventSubscriber;
 
 use Contao\Environment;
 use HeimrichHannot\GoogleMapsBundle\Event\GoogleMapsPrepareExternalItemEvent;
 use HeimrichHannot\GoogleMapsBundle\Manager\MapManager;
 use HeimrichHannot\GoogleMapsBundle\Manager\OverlayManager;
+use HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel;
 use HeimrichHannot\GoogleMapsBundle\Model\OverlayModel;
 use HeimrichHannot\ListBundle\Event\ListBeforeParseItemsEvent;
 use HeimrichHannot\ListBundle\Event\ListBeforeRenderEvent;
 use HeimrichHannot\ListBundle\Model\ListConfigModel;
-use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use Model\Collection;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ListBundleSubscriber implements EventSubscriberInterface
 {
-    private $mapManager;
-    /**
-     * @var ModelUtil
-     */
-    private $modelUtil;
-    /**
-     * @var OverlayManager
-     */
-    private $overlayManager;
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
+    private MapManager $mapManager;
+    private OverlayManager $overlayManager;
+    private EventDispatcherInterface $eventDispatcher;
+    private array $maps = [];
 
-    /** @var array  */
-    private $maps = [];
-
-    public function __construct(MapManager $mapManager, ModelUtil $modelUtil, OverlayManager $overlayManager, EventDispatcherInterface $eventDispatcher)
+    public function __construct(MapManager $mapManager, OverlayManager $overlayManager, EventDispatcherInterface $eventDispatcher)
     {
         $this->mapManager = $mapManager;
-        $this->modelUtil = $modelUtil;
         $this->overlayManager = $overlayManager;
         $this->eventDispatcher = $eventDispatcher;
     }
@@ -62,8 +55,8 @@ class ListBundleSubscriber implements EventSubscriberInterface
         if (!$event->getListConfig()->renderItemsAsMap) {
             return;
         }
-        if (null === ($map = $this->modelUtil->findModelInstanceByPk('tl_google_map',
-                $event->getListConfig()->itemMap))) {
+
+        if (null === ($map = GoogleMapModel::findByPk($event->getListConfig()->itemMap))) {
             return;
         }
 
@@ -83,7 +76,7 @@ class ListBundleSubscriber implements EventSubscriberInterface
 
         foreach ($event->getItems() as $item) {
             $item['markerVariable'] = $markerVariableMapping[$item['id']];
-            $item['markerHref']     = Environment::get('uri') . '#' . $markerVariableMapping[$item['id']];
+            $item['markerHref'] = Environment::get('uri').'#'.$markerVariableMapping[$item['id']];
 
             $items[] = $item;
         }
@@ -108,7 +101,7 @@ class ListBundleSubscriber implements EventSubscriberInterface
 
         $templateData['renderedMap'] = $this->mapManager->renderMapObject($this->maps[$mapId]['mapModel'], $mapId, $this->maps[$mapId]);
         // $this->mapManager->render($listConfig->itemMap, $map->row(), $overlays);
-        $templateData['addMapControlList'] = (bool)$listConfig->addMapControlList;
+        $templateData['addMapControlList'] = (bool) $listConfig->addMapControlList;
 
         $event->setTemplateData($templateData);
     }
@@ -116,15 +109,18 @@ class ListBundleSubscriber implements EventSubscriberInterface
     public function transformItemsToOverlays(array $items, ListConfigModel $configModel)
     {
         $models = [];
+
         foreach ($items as $item) {
             $overlay = new OverlayModel();
             $overlay->setRow($item);
             /** @var GoogleMapsPrepareExternalItemEvent $event */
             $event = $this->eventDispatcher->dispatch(new GoogleMapsPrepareExternalItemEvent($item, $overlay, $configModel));
+
             if ($overlay = $event->getOverlayModel()) {
                 $models[] = $overlay;
             }
         }
+
         return new Collection($models, 'tl_google_map_overlay');
     }
 }
