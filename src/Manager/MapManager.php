@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -14,7 +14,9 @@ use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\GoogleMapsBundle\Collection\MapCollection;
 use HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap;
+use HeimrichHannot\GoogleMapsBundle\Event\BeforeRenderApiEvent;
 use HeimrichHannot\GoogleMapsBundle\Event\BeforeRenderMapEvent;
+use HeimrichHannot\GoogleMapsBundle\EventListener\ApiRenderListener;
 use HeimrichHannot\GoogleMapsBundle\EventListener\MapRendererListener;
 use HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel;
 use HeimrichHannot\TwigSupportBundle\Filesystem\TwigTemplateLocator;
@@ -33,31 +35,21 @@ use Ivory\GoogleMap\Control\ZoomControl;
 use Ivory\GoogleMap\Helper\ApiHelper;
 use Ivory\GoogleMap\Helper\Builder\ApiHelperBuilder;
 use Ivory\GoogleMap\Helper\Builder\MapHelperBuilder;
+use Ivory\GoogleMap\Helper\Event\ApiEvents;
 use Ivory\GoogleMap\Map;
 use Ivory\GoogleMap\MapTypeId;
 use Ivory\GoogleMap\Overlay\MarkerClusterType;
 use Model\Collection;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Twig\Environment;
 
 class MapManager
 {
     const CACHE_KEY_PREFIX = 'googleMaps_map';
     const GOOGLE_MAPS_STATIC_URL = 'https://maps.googleapis.com/maps/api/staticmap';
-    /**
-     * @var ContaoFramework
-     */
-    protected $framework;
 
-    /**
-     * @var OverlayManager
-     */
-    protected $overlayManager;
-
-    /**
-     * @var ModelUtil
-     */
-    protected $modelUtil;
+    protected ContaoFramework $framework;
+    protected OverlayManager $overlayManager;
+    protected ModelUtil $modelUtil;
 
     /**
      * @var LocationUtil
@@ -74,10 +66,8 @@ class MapManager
      * @var Map[]
      */
     protected $maps = [];
-    /**
-     * @var MapCollection
-     */
-    private $mapCollection;
+
+    private MapCollection $mapCollection;
     /**
      * @var EventDispatcherInterface
      */
@@ -173,15 +163,34 @@ class MapManager
         /** @var Map $map */
         $map = $templateData['mapModel'];
 
-        return $this->renderMapObject($map, $mapId, $templateData);
+        return $this->renderMapObject($map, $mapId, $templateData['mapConfigModel'], $templateData);
     }
 
-    public function renderMapObject(Map $map, ?int $mapId = null, array $templateData = []): string
+    /**
+     * @param int|null $mapId The map id (the database id)
+     *
+     * @throws \HeimrichHannot\TwigSupportBundle\Exception\TemplateNotFoundException
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
+    public function renderMapObject(Map $map, ?int $mapId = null, $mapConfigModel = null, array $templateData = []): string
     {
+        if (\is_array($mapConfigModel) && empty($templateData)) {
+            $templateData = $mapConfigModel;
+            trigger_deprecation('heimrichhannot/contao-google-maps-bundle', '2.10.0', 'Passing templateData as third element to renderMapObject is deprecated since version 2.10.0. Please update your code accordingly.');
+        }
+
+        if (!($mapConfigModel instanceof GoogleMapModel)) {
+            $mapConfigModel = $templateData['mapConfigModel'] ?? null;
+        }
+
         $mapHelper = MapHelperBuilder::create()->build();
 
-        $listener = new MapRendererListener($templateData['mapConfigModel'], $this, $mapHelper, $this->framework);
-        $mapHelper->getEventDispatcher()->addListener('map.stylesheet', [$listener, 'renderStylesheet']);
+        if ($mapConfigModel) {
+            $listener = new MapRendererListener($templateData['mapConfigModel'], $this, $mapHelper, $this->framework);
+            $mapHelper->getEventDispatcher()->addListener('map.stylesheet', [$listener, 'renderStylesheet']);
+        }
 
         $templateData['mapHtml'] = $mapHelper->renderHtml($map);
         $templateData['mapCss'] = $mapHelper->renderStylesheet($map);
@@ -237,8 +246,21 @@ class MapManager
         } else {
             $language = $this->getLanguage();
         }
+
         /** @var ApiHelper $apiHelper */
-        $apiHelper = ApiHelperBuilder::create()->setLanguage($language)->setKey(static::$apiKey)->build();
+        $apiHelper = ApiHelperBuilder::create()
+            ->setLanguage($language)
+            ->setKey(static::$apiKey)
+            ->build();
+
+        $listener = new ApiRenderListener($apiHelper);
+        $apiHelper->getEventDispatcher()->addListener(ApiEvents::JAVASCRIPT, [$listener, 'onApiRender']);
+
+        $event = $this->eventDispatcher->dispatch(new BeforeRenderApiEvent($apiHelper, $this->mapCollection));
+
+        if ($event->getCode()) {
+            return $event->getCode();
+        }
 
         return $apiHelper->render($this->mapCollection->getMaps());
     }
@@ -359,7 +381,7 @@ class MapManager
                     $coordinates = $this->locationUtil->computeCoordinatesByString($mapConfig->centerAddress, static::$apiKey);
 
                     if (false === $coordinates) {
-                        trigger_error('Could no compute coordinates from address. Maybe your google API key is invalid or geocoding api is not enabled.', E_USER_WARNING);
+                        trigger_error('Could no compute coordinates from address. Maybe your google API key is invalid or geocoding api is not enabled.', \E_USER_WARNING);
                     }
 
                     if (\is_array($coordinates)) {

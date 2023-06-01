@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -19,22 +19,10 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class MapRendererListener
 {
-    /** @var GoogleMapModel */
-    protected $model;
-
-    /**
-     * @var MapManager
-     */
-    protected $manager;
-
-    /**
-     * @var MapHelper
-     */
-    protected $mapHelper;
-    /**
-     * @var ContaoFramework
-     */
-    private $contaoFramework;
+    protected GoogleMapModel $model;
+    protected MapManager $manager;
+    protected MapHelper $mapHelper;
+    protected ContaoFramework $contaoFramework;
 
     public function __construct(GoogleMapModel $model, MapManager $manager, MapHelper $mapHelper, ContaoFramework $contaoFramework)
     {
@@ -73,7 +61,7 @@ class MapRendererListener
         $resizeEvent = new Event('window', 'resize', 'function(){
             var center = '.$event->getMap()->getVariable().'.getCenter();
             google.maps.event.trigger('.$event->getMap()->getVariable().', "resize");
-            '.$event->getMap()->getVariable().'.setCenter(center);  
+            '.$event->getMap()->getVariable().'.setCenter(center);
         }');
 
         $event->getMap()->getEventManager()->addDomEvent($resizeEvent);

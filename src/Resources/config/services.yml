@@ -5,7 +5,7 @@ services:
 
   HeimrichHannot\GoogleMapsBundle\:
     resource: '../../{Command,EventListener,EventSubscriber}/*'
-    exclude: '../../EventListener/MapRendererListener.php'
+    exclude: '../../EventListener/{MapRendererListener.php,ApiRenderListener.php}'
 
   HeimrichHannot\GoogleMapsBundle\Manager\:
     resource: '../../Manager/*'

@@ -99,7 +99,12 @@ class ListBundleSubscriber implements EventSubscriberInterface
 
         $templateData = $event->getTemplateData();
 
-        $templateData['renderedMap'] = $this->mapManager->renderMapObject($this->maps[$mapId]['mapModel'], $mapId, $this->maps[$mapId]);
+        $templateData['renderedMap'] = $this->mapManager->renderMapObject(
+            $this->maps[$mapId]['mapModel'],
+            $mapId,
+            $this->maps[$mapId]['mapConfigModel'],
+            $this->maps[$mapId]
+        );
         // $this->mapManager->render($listConfig->itemMap, $map->row(), $overlays);
         $templateData['addMapControlList'] = (bool) $listConfig->addMapControlList;
 
