@@ -17,12 +17,13 @@ use HeimrichHannot\PrivacyCenterBundle\Script\ExternalScriptFile;
 use Ivory\GoogleMap\Helper\Event\ApiEvents;
 use Ivory\GoogleMap\Helper\Formatter\Formatter;
 use Ivory\GoogleMap\Helper\Renderer\ApiRenderer;
-use Ivory\GoogleMap\Helper\Renderer\Html\JavascriptTagRenderer;
+use Ivory\GoogleMap\Helper\Renderer\Utility\SourceRenderer;
 use Ivory\GoogleMap\Helper\Subscriber\ApiJavascriptSubscriber;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Contracts\Service\ServiceSubscriberInterface;
 
-class PrivacyCenterListener implements ServiceSubscriberInterface
+class PrivacyCenterListener implements ServiceSubscriberInterface, EventSubscriberInterface
 {
     private ContainerInterface $container;
 //    private ApiRenderer $apiRenderer;
@@ -38,29 +39,26 @@ class PrivacyCenterListener implements ServiceSubscriberInterface
 
     public function onApiRenderEvent(BeforeRenderApiEvent $event): void
     {
-        return;
-
         if (!$this->privacyCenterManager->isActivatedOnCurrentPage()) {
             return;
         }
 
-        $code = $event->getApiHelper()->render($event->getMapCollection()->getMaps());
         $listeners = $event->getApiHelper()->getEventDispatcher()->getListeners(ApiEvents::JAVASCRIPT);
         $apiSubscriber = null;
 
         foreach ($listeners as $listener) {
-            if ($listener instanceof ApiJavascriptSubscriber) {
-                $apiSubscriber = $listener;
+            if ($listener[0] instanceof ApiJavascriptSubscriber) {
+                $apiSubscriber = $listener[0];
 
                 break;
             }
         }
 
         if (!$apiSubscriber) {
-            $protectedCode = $this->protectedCodeGenerator->generateProtectedCode($code, ['google_maps']);
+            $protectedCode = $this->protectedCodeGenerator->generateProtectedCode($event->getCode(), ['google_maps']);
 
             if (empty($protectedCode)) {
-                $event->setCode($code);
+                $event->setCode($event->getCode());
             } else {
                 $event->setCode($protectedCode);
             }
@@ -69,22 +67,38 @@ class PrivacyCenterListener implements ServiceSubscriberInterface
         }
 
         $apiRenderer = $apiSubscriber->getApiRenderer();
-        $formatter = $apiRenderer->getFormatter();
-        $apiRenderer->getLoaderRenderer()->renderSource('ivory_google_map_init', $event->getApiHelper());
-
-        $script = new ExternalScriptFile('google_maps', );
-
-        $formatter = (new class() extends Formatter {
-        })();
-
+        $source = $apiRenderer->getLoaderRenderer()->renderSource('ivory_google_map_init', $event->getApiEvent()->getLibraries());
+        $script = new ExternalScriptFile('google_maps', $source);
         $this->privacyCenterManager->addProtectedScript($script);
 
-//        $event->setCode($this->javascriptTagRenderer->render($this->apiRenderer->render(
-//            $event->getCallbacks(),
-//            $event->getRequirements(),
-//            $event->getSources(),
-//            $event->getLibraries()
-//        )));
+        $sourceRenderer = $apiRenderer->getSourceRenderer();
+        $sourceRenderer = new class($sourceRenderer->getFormatter()) extends SourceRenderer {
+            public function render($name, $source = null, $variable = null, $newLine = true)
+            {
+                if ('ivory_google_map_init' === $name) {
+                    return '';
+                }
+
+                return parent::render($name, $source, $variable, $newLine);
+            }
+        };
+        $apiRenderer->setSourceRenderer($sourceRenderer);
+
+        $formatter = $apiRenderer->getFormatter();
+        $formatter = new class($formatter->isDebug(), $formatter->getIndentationStep()) extends Formatter {
+            public function renderCall($method, array $arguments = [], $semicolon = false, $newLine = false)
+            {
+                if ('ivory_google_map_init_source' === $method) {
+                    return '';
+                }
+
+                return parent::renderCall($method, $arguments, $semicolon, $newLine);
+            }
+        };
+        $apiRenderer->setFormatter($formatter);
+
+        $apiSubscriber->handle($event->getApiEvent(), ApiEvents::JAVASCRIPT, $event->getApiHelper()->getEventDispatcher());
+        $event->setCode($event->getApiEvent()->getCode());
     }
 
     /**
@@ -95,6 +109,8 @@ class PrivacyCenterListener implements ServiceSubscriberInterface
      */
     public function onReplaceDynamicScriptTags(string $buffer): string
     {
+        return $buffer;
+
         if (
             !class_exists(ProtectedCodeGenerator::class) ||
             !$this->container->has(ProtectedCodeGenerator::class) ||
@@ -129,6 +145,13 @@ class PrivacyCenterListener implements ServiceSubscriberInterface
     {
         return [
             '?'.ProtectedCodeGenerator::class,
+        ];
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return [
+            BeforeRenderApiEvent::class => 'onApiRenderEvent',
         ];
     }
 }

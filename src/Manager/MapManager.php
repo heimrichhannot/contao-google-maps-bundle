@@ -14,7 +14,6 @@ use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\GoogleMapsBundle\Collection\MapCollection;
 use HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap;
-use HeimrichHannot\GoogleMapsBundle\Event\BeforeRenderApiEvent;
 use HeimrichHannot\GoogleMapsBundle\Event\BeforeRenderMapEvent;
 use HeimrichHannot\GoogleMapsBundle\EventListener\ApiRenderListener;
 use HeimrichHannot\GoogleMapsBundle\EventListener\MapRendererListener;
@@ -253,14 +252,8 @@ class MapManager
             ->setKey(static::$apiKey)
             ->build();
 
-        $listener = new ApiRenderListener($apiHelper);
+        $listener = new ApiRenderListener($apiHelper, $this->eventDispatcher);
         $apiHelper->getEventDispatcher()->addListener(ApiEvents::JAVASCRIPT, [$listener, 'onApiRender']);
-
-        $event = $this->eventDispatcher->dispatch(new BeforeRenderApiEvent($apiHelper, $this->mapCollection));
-
-        if ($event->getCode()) {
-            return $event->getCode();
-        }
 
         return $apiHelper->render($this->mapCollection->getMaps());
     }

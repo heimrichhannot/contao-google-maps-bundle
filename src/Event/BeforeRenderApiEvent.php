@@ -8,20 +8,20 @@
 
 namespace HeimrichHannot\GoogleMapsBundle\Event;
 
-use HeimrichHannot\GoogleMapsBundle\Collection\MapCollection;
 use Ivory\GoogleMap\Helper\ApiHelper;
+use Ivory\GoogleMap\Helper\Event\ApiEvent;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class BeforeRenderApiEvent extends Event
 {
     private ?string $code = null;
     private ApiHelper $apiHelper;
-    private MapCollection $mapCollection;
+    private ApiEvent $event;
 
-    public function __construct(ApiHelper $apiHelper, MapCollection $mapCollection)
+    public function __construct(ApiHelper $apiHelper, ApiEvent $event)
     {
         $this->apiHelper = $apiHelper;
-        $this->mapCollection = $mapCollection;
+        $this->event = $event;
     }
 
     public function getCode(): ?string
@@ -42,8 +42,8 @@ class BeforeRenderApiEvent extends Event
         return $this->apiHelper;
     }
 
-    public function getMapCollection(): MapCollection
+    public function getApiEvent(): ApiEvent
     {
-        return $this->mapCollection;
+        return $this->event;
     }
 }
