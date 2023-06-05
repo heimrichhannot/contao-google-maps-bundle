@@ -75,7 +75,7 @@ class PrivacyCenterListener implements ServiceSubscriberInterface, EventSubscrib
         $sourceRenderer = new class($sourceRenderer->getFormatter()) extends SourceRenderer {
             public function render($name, $source = null, $variable = null, $newLine = true)
             {
-                if ('ivory_google_map_init' === $name) {
+                if ('ivory_google_map_init_source' === $name) {
                     return '';
                 }
 
