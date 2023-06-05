@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.10.1] - 2023-06-05
+Include the changes from 2.10.0
+
 ## [2.10.0] - 2023-06-05
 - Added: BeforeRenderApiEvent ([#28])
 - Changed: reworked privacy center listener ([#28])
