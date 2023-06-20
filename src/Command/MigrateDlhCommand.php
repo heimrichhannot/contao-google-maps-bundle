@@ -475,8 +475,8 @@ class MigrateDlhCommand extends Command
 
                     $iconAnchor = StringUtil::deserialize($legacyOverlay->iconAnchor, true);
 
-                    $overlay->iconAnchorX = ['value' => $iconAnchor[0], 'unit' => 'px'];
-                    $overlay->iconAnchorY = ['value' => $iconAnchor[1], 'unit' => 'px'];
+                    $overlay->iconAnchorX = (int) $iconAnchor[0];
+                    $overlay->iconAnchorY = (int) $iconAnchor[1];
 
                     break;
             }
