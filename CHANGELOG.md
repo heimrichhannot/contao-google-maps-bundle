@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.10.2] - 2023-06-20
+- Fixed: overlay anchor icon migration ([#29], [@JarekYaro])
+
 ## [2.10.1] - 2023-06-05
 Include the changes from 2.10.0
 
@@ -118,17 +121,19 @@ Include the changes from 2.10.0
 - Added: symfony depencies
 
 
-[#28]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/28
-[#24]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/24
-[#23]: https://github.com/heimrichhannot/contao-google-maps-bundle/issues/23
-[#22]: https://github.com/heimrichhannot/contao-google-maps-bundle/issues/22
-[#20]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/20
-[#15]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/15
-[#14]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/14
-[#11]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/11
-[#10]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/10
-[#8]: https://github.com/heimrichhannot/contao-google-maps-bundle/issues/8
 [#7]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/7
+[#8]: https://github.com/heimrichhannot/contao-google-maps-bundle/issues/8
+[#10]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/10
+[#11]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/11
+[#14]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/14
+[#15]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/15
+[#20]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/20
+[#22]: https://github.com/heimrichhannot/contao-google-maps-bundle/issues/22
+[#23]: https://github.com/heimrichhannot/contao-google-maps-bundle/issues/23
+[#24]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/24
+[#28]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/28
+[#29]: https://github.com/heimrichhannot/contao-google-maps-bundle/pull/29
 
-[@rabaus]: https://github.com/rabauss
+[@JarekYaro]: https://github.com/JarekYaro
 [@qzminski]: https://github.com/qzminski
+[@rabaus]: https://github.com/rabauss
