@@ -6,7 +6,7 @@
  * @license LGPL-3.0-or-later
  */
 
-namespace HeimrichHannot\GoogleMapBundle\ConfigElementType;
+namespace HeimrichHannot\GoogleMapsBundle\ConfigElementType;
 
 use Contao\Model;
 use Contao\Model\Collection;
