@@ -13,8 +13,9 @@ use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
 use HeimrichHannot\GoogleMapsBundle\HeimrichHannotGoogleMapsBundle;
+use HeimrichHannot\ListBundle\HeimrichHannotContaoListBundle;
+use HeimrichHannot\ReaderBundle\HeimrichHannotContaoReaderBundle;
 use Hofff\Contao\Consent\Bridge\HofffContaoConsentBridgeBundle;
-use Ivory\GoogleMapBundle\IvoryGoogleMapBundle;
 
 class Plugin implements BundlePluginInterface
 {
@@ -23,23 +24,13 @@ class Plugin implements BundlePluginInterface
      */
     public function getBundles(ParserInterface $parser)
     {
-        $loadAfterBundles = [ContaoCoreBundle::class, IvoryGoogleMapBundle::class];
-
-        if (class_exists('HeimrichHannot\ReaderBundle\HeimrichHannotContaoReaderBundle')) {
-            $loadAfterBundles[] = 'HeimrichHannot\ReaderBundle\HeimrichHannotContaoReaderBundle';
-        }
-
-        if (class_exists('HeimrichHannot\ListBundle\HeimrichHannotContaoListBundle')) {
-            $loadAfterBundles[] = 'HeimrichHannot\ListBundle\HeimrichHannotContaoListBundle';
-        }
-        
-        if (class_exists(HofffContaoConsentBridgeBundle::class)) {
-            $loadAfterBundles[] = HofffContaoConsentBridgeBundle::class;
-        }
-
         return [
-            BundleConfig::create(IvoryGoogleMapBundle::class)->setLoadAfter([ContaoCoreBundle::class]),
-            BundleConfig::create(HeimrichHannotGoogleMapsBundle::class)->setLoadAfter($loadAfterBundles),
+            BundleConfig::create(HeimrichHannotGoogleMapsBundle::class)->setLoadAfter([
+                ContaoCoreBundle::class,
+                HeimrichHannotContaoReaderBundle::class,
+                HeimrichHannotContaoListBundle::class,
+                HofffContaoConsentBridgeBundle::class,
+            ]),
         ];
     }
 }

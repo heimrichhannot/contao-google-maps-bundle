@@ -9,7 +9,7 @@
     "doctrine/dbal": "^2.11 || ^3.0",
     "heimrichhannot/contao-twig-support-bundle": "^0.2.16 || ^1.0",
     "heimrichhannot/contao-utils-bundle": "^2.213",
-    "ivory/google-map": "^3.0",
+    "ivory/google-map": "^3.0 || ^5.0 || ^6.0",
     "mvo/contao-group-widget": "^1.4",
     "symfony/config": "^4.4 || ^5.0",
     "symfony/console": "^4.4 || ^5.0",
