@@ -3,7 +3,7 @@
 ![](https://img.shields.io/packagist/v/heimrichhannot/contao-google-maps-bundle.svg)
 ![](https://img.shields.io/packagist/dt/heimrichhannot/contao-google-maps-bundle.svg)
 
-This bundle adds google maps integration to [Contao](https://contao.org/de/). It's based on [ivory/google-map](https://github.com/bresam/ivory-google-map) and [ivory/google-map-bundle](https://github.com/bresam/ivory-google-map-bundle).
+This bundle adds google maps integration to [Contao](https://contao.org/de/). It's based on [ivory/google-map](https://github.com/bresam/ivory-google-map).
 
 ## Features
 

@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.11.0] - 2024-04-25
+- Changed: replace the ivory/google-map-bundle dependency with ivory/google-map ([#30](https://github.com/heimrichhannot/contao-google-maps-bundle/pull/30))
+- Changed: allow newer ivory/google-map versions ([#30](https://github.com/heimrichhannot/contao-google-maps-bundle/pull/30))
+- Fixed: typo in namespace of GoogleMapConfigElementType ([#30](https://github.com/heimrichhannot/contao-google-maps-bundle/pull/30))
+
 ## [2.10.2] - 2023-06-20
 - Fixed: overlay anchor icon migration ([#29], [@JarekYaro])
 
