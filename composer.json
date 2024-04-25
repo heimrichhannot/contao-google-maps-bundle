@@ -1,7 +1,7 @@
 {
   "name": "heimrichhannot/contao-google-maps-bundle",
   "type": "contao-bundle",
-  "description": "This bundle offers functionality concerning the Google Maps v3 API. It acts as a contao wrapper for ivory/google-map-bundle.",
+  "description": "This bundle adds google maps integration to Contao.",
   "license": "LGPL-3.0-or-later",
   "require": {
     "php": "^7.4 || ^8.0",
