@@ -19,7 +19,7 @@ services:
     alias: HeimrichHannot\GoogleMapsBundle\Manager\OverlayManager
     public: true
 
-  HeimrichHannot\GoogleMapBundle\ConfigElementType\GoogleMapConfigElementType:
+  HeimrichHannot\GoogleMapsBundle\ConfigElementType\GoogleMapConfigElementType:
     tags: ['huh.list.config_element_type', 'huh.reader.config_element_type']
 
   HeimrichHannot\GoogleMapsBundle\Collection\MapCollection: ~
