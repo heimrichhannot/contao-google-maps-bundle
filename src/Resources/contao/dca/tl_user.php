@@ -18,7 +18,6 @@ $dca['palettes']['custom'] = str_replace('fop;', 'fop;{contao-google-maps-bundle
  * Fields
  */
 $dca['fields']['contao_google_maps_bundles'] = [
-    'label'      => &$GLOBALS['TL_LANG']['tl_user']['contao_google_maps_bundles'],
     'exclude'    => true,
     'inputType'  => 'checkbox',
     'foreignKey' => 'tl_google_map.title',
@@ -27,7 +26,6 @@ $dca['fields']['contao_google_maps_bundles'] = [
 ];
 
 $dca['fields']['contao_google_maps_bundlep'] = [
-    'label'     => &$GLOBALS['TL_LANG']['tl_user']['contao_google_maps_bundlep'],
     'exclude'   => true,
     'inputType' => 'checkbox',
     'options'   => ['create', 'delete'],
