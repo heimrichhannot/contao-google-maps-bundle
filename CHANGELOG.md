@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.11.1] - 2024-04-30
+- Fixed: exception in user groups configuration
+
 ## [2.11.0] - 2024-04-25
 - Changed: replace the ivory/google-map-bundle dependency with ivory/google-map ([#30](https://github.com/heimrichhannot/contao-google-maps-bundle/pull/30))
 - Changed: allow newer ivory/google-map versions ([#30](https://github.com/heimrichhannot/contao-google-maps-bundle/pull/30))
