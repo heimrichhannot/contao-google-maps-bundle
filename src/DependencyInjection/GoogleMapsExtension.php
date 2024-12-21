@@ -1,7 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * Copyright (c) 2022 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -19,15 +21,12 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class GoogleMapsExtension extends Extension
 {
-    public function getAlias()
+    public function getAlias(): string
     {
         return 'huh_google_maps';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 

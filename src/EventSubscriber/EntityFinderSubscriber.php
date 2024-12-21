@@ -1,7 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * Copyright (c) 2022 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -28,7 +30,7 @@ class EntityFinderSubscriber implements EventSubscriberInterface
     {
         switch ($event->getTable()) {
             case GoogleMapModel::getTable():
-                $map = GoogleMapModel::findByPk($event->getId());
+                $map = GoogleMapModel::findById($event->getId());
 
                 if ($map) {
                     if (!$event->isOnlyText()) {
@@ -57,7 +59,7 @@ class EntityFinderSubscriber implements EventSubscriberInterface
                 break;
 
             case OverlayModel::getTable():
-                $overlay = OverlayModel::findByPk($event->getId());
+                $overlay = OverlayModel::findById($event->getId());
 
                 if ($overlay) {
                     $event->addParent(GoogleMapModel::getTable(), $overlay->pid);

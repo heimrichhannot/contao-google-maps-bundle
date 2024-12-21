@@ -4,7 +4,7 @@ services:
     autoconfigure: true
 
   HeimrichHannot\GoogleMapsBundle\:
-    resource: '../../{Command,EventListener,EventSubscriber}/*'
+    resource: '../../{Command,Controller,EventListener,EventSubscriber,Security,Util}/*'
     exclude: '../../EventListener/{MapRendererListener.php,ApiRenderListener.php}'
 
   HeimrichHannot\GoogleMapsBundle\Manager\:
@@ -25,33 +25,33 @@ services:
   HeimrichHannot\GoogleMapsBundle\Collection\MapCollection: ~
 
   huh.google_maps.data_container.google_map:
-    class: HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap
+    class: HeimrichHannot\GoogleMapsBundle\EventListener\DataContainer\GoogleMapListener
     public: true
-    arguments:
-      - "@service_container"
+
   huh.google_maps.data_container.google_map_overlay:
-    class: HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay
+    class: HeimrichHannot\GoogleMapsBundle\EventListener\DataContainer\OverlayListener
     public: true
-    arguments:
-      - "@service_container"
+
   huh.google_maps.data_container.content:
-    class: HeimrichHannot\GoogleMapsBundle\DataContainer\Content
+    class: HeimrichHannot\GoogleMapsBundle\EventListener\DataContainer\ContentListener
     public: true
-    arguments:
-      - "@service_container"
+
+  huh.google_maps.data_container.map_wizard:
+    class: HeimrichHannot\GoogleMapsBundle\EventListener\DataContainer\MapWizardListener
+    public: true
+
   huh.google_maps.data_container.module:
-    class: HeimrichHannot\GoogleMapsBundle\DataContainer\Module
+    class: HeimrichHannot\GoogleMapsBundle\EventListener\DataContainer\ModuleListener
     public: true
-    arguments:
-      - "@service_container"
+
   huh.google_maps.data_container.reader_config_element:
-    class: HeimrichHannot\GoogleMapsBundle\DataContainer\ReaderConfigElement
+    class: HeimrichHannot\GoogleMapsBundle\EventListener\DataContainer\ReaderConfigElementListener
     public: true
-    arguments:
-      - "@service_container"
 
   huh.google_maps.service.elevation:
     class: HeimrichHannot\GoogleMapsBundle\Service\ElevationService
     public: true
-    arguments:
-      - "@service_container"
+
+  huh.google_maps.utils.dca:
+    alias: HeimrichHannot\GoogleMapsBundle\Util\DcaUtil
+    public: true

@@ -1,7 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -24,9 +26,6 @@ class Extension extends AbstractExtension
         $this->mapManager = $mapManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getFunctions()
     {
         $functions = [];
@@ -70,16 +69,13 @@ class Extension extends AbstractExtension
         return $this->mapManager->renderJs($mapId);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getName()
     {
         return 'huh_google_maps';
     }
 
     /**
-     * @return string[]
+     * @return array<string>
      */
     private function getMapping()
     {

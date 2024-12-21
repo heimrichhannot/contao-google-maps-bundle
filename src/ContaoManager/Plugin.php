@@ -1,7 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -19,10 +21,7 @@ use Hofff\Contao\Consent\Bridge\HofffContaoConsentBridgeBundle;
 
 class Plugin implements BundlePluginInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getBundles(ParserInterface $parser)
+    public function getBundles(ParserInterface $parser): array
     {
         return [
             BundleConfig::create(HeimrichHannotGoogleMapsBundle::class)->setLoadAfter([

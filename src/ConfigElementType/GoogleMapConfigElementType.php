@@ -1,7 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * Copyright (c) 2022 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -12,13 +14,14 @@ use Contao\Model;
 use Contao\Model\Collection;
 use HeimrichHannot\ConfigElementTypeBundle\ConfigElementType\ConfigElementData;
 use HeimrichHannot\ConfigElementTypeBundle\ConfigElementType\ConfigElementResult;
-use HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap;
-use HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay;
 use HeimrichHannot\GoogleMapsBundle\Event\GoogleMapsPrepareExternalItemEvent;
 use HeimrichHannot\GoogleMapsBundle\Event\ListGoogleMapBeforeRenderEvent;
 use HeimrichHannot\GoogleMapsBundle\Event\ReaderGoogleMapBeforeRenderEvent;
+use HeimrichHannot\GoogleMapsBundle\EventListener\DataContainer\GoogleMapListener;
+use HeimrichHannot\GoogleMapsBundle\EventListener\DataContainer\OverlayListener;
 use HeimrichHannot\GoogleMapsBundle\Manager\MapManager;
 use HeimrichHannot\GoogleMapsBundle\Model\OverlayModel;
+use HeimrichHannot\GoogleMapsBundle\Util\ArrayUtil;
 use HeimrichHannot\ListBundle\ConfigElementType\ListConfigElementData;
 use HeimrichHannot\ListBundle\ConfigElementType\ListConfigElementTypeInterface;
 use HeimrichHannot\ListBundle\Item\ItemInterface as ListItemInterface;
@@ -27,7 +30,6 @@ use HeimrichHannot\ReaderBundle\ConfigElementType\ReaderConfigElementData;
 use HeimrichHannot\ReaderBundle\ConfigElementType\ReaderConfigElementTypeInterface;
 use HeimrichHannot\ReaderBundle\Item\ItemInterface as ReaderItemInterface;
 use HeimrichHannot\ReaderBundle\Model\ReaderConfigElementModel;
-use HeimrichHannot\UtilsBundle\Arrays\ArrayUtil;
 use Ivory\GoogleMap\Map;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -44,23 +46,20 @@ if (class_exists(ReaderConfigElementTypeInterface::class) && class_exists(ListCo
 class GoogleMapConfigElementType extends AbstractGoogleMapConfigElementType
 {
     const TYPE = 'google_map';
+
     /**
      * @var MapManager
      */
     private $mapManager;
-    /**
-     * @var ArrayUtil
-     */
-    private $arrayUtil;
+
     /**
      * @var EventDispatcherInterface
      */
     private $eventDispatcher;
 
-    public function __construct(MapManager $mapManager, EventDispatcherInterface $eventDispatcher, ArrayUtil $arrayUtil)
+    public function __construct(MapManager $mapManager, EventDispatcherInterface $eventDispatcher)
     {
         $this->mapManager = $mapManager;
-        $this->arrayUtil = $arrayUtil;
         $this->eventDispatcher = $eventDispatcher;
     }
 
@@ -85,9 +84,9 @@ class GoogleMapConfigElementType extends AbstractGoogleMapConfigElementType
     }
 
     /**
-     * @throws \Exception
-     *
      * @return ConfigElementResult
+     *
+     * @throws \Exception
      */
     public function applyConfiguration(ConfigElementData $configElementData)
     {
@@ -96,7 +95,7 @@ class GoogleMapConfigElementType extends AbstractGoogleMapConfigElementType
 
         /** @var GoogleMapsPrepareExternalItemEvent $event */
         $event = $this->eventDispatcher->dispatch(new GoogleMapsPrepareExternalItemEvent(
-            $configElementData->getItemData(), $overlay, $configElementData->getConfiguration()
+            $configElementData->getItemData(), $overlay, $configElementData->getConfiguration(),
         ));
 
         $collection = null;
@@ -106,7 +105,7 @@ class GoogleMapConfigElementType extends AbstractGoogleMapConfigElementType
             $collection = new Collection([$overlayModel], OverlayModel::getTable());
         }
 
-        $config = $this->arrayUtil->removePrefix('googlemaps_', $configElementData->getConfiguration()->row());
+        $config = ArrayUtil::removePrefix('googlemaps_', $configElementData->getConfiguration()->row());
 
         $templateData = $this->mapManager->prepareMap($config['map'], $config, $collection);
 
@@ -118,11 +117,13 @@ class GoogleMapConfigElementType extends AbstractGoogleMapConfigElementType
         $map = $templateData['mapModel'];
         $mapConfig = $templateData['mapConfigModel'];
 
-        if (GoogleMap::POSITIONING_MODE_STANDARD === $mapConfig->positioningMode
-            && GoogleMap::CENTER_MODE_EXTERNAL && $mapConfig->centerMode
-            && $overlayModel) {
+        if (
+            GoogleMapListener::POSITIONING_MODE_STANDARD === $mapConfig->positioningMode
+            && GoogleMapListener::CENTER_MODE_EXTERNAL && $mapConfig->centerMode
+            && $overlayModel
+        ) {
             switch ($overlayModel->type) {
-                case Overlay::TYPE_MARKER:
+                case OverlayListener::TYPE_MARKER:
                     if ($map->getOverlayManager()->hasMarkers()) {
                         $marker = $map->getOverlayManager()->getMarkers()[0];
                         $map->setCenter($marker->getPosition());
@@ -130,7 +131,7 @@ class GoogleMapConfigElementType extends AbstractGoogleMapConfigElementType
 
                     break;
 
-                case Overlay::TYPE_INFO_WINDOW:
+                case OverlayListener::TYPE_INFO_WINDOW:
                     if ($map->getOverlayManager()->hasInfoWindows()) {
                         $marker = $map->getOverlayManager()->getInfoWindows()[0];
                         $map->setCenter($marker->getPosition());
@@ -138,7 +139,7 @@ class GoogleMapConfigElementType extends AbstractGoogleMapConfigElementType
 
                     break;
 
-                case Overlay::TYPE_CIRCLE:
+                case OverlayListener::TYPE_CIRCLE:
                     if ($map->getOverlayManager()->hasCircles()) {
                         $marker = $map->getOverlayManager()->getCircles()[0];
                         $map->setCenter($marker->getCenter());
@@ -150,11 +151,9 @@ class GoogleMapConfigElementType extends AbstractGoogleMapConfigElementType
 
         return [$map, $mapConfig, $templateData];
 
-        // Preperation for config element type:
-//        return new ConfigElementResult(
-//            ConfigElementResult::TYPE_FORMATTED_VALUE,
-//            $this->mapManager->renderMapObject($map, null, $templateData)
-//        );
+        // Preperation for config element type:        return new ConfigElementResult(
+        // ConfigElementResult::TYPE_FORMATTED_VALUE,
+        // $this->mapManager->renderMapObject($map, null, $templateData)        );
     }
 
     /**
@@ -179,7 +178,7 @@ class GoogleMapConfigElementType extends AbstractGoogleMapConfigElementType
 
         $item->setFormattedValue(
             $templateVariable,
-            $this->mapManager->renderMapObject($map, null, $templateData)
+            $this->mapManager->renderMapObject($map, null, $templateData),
         );
     }
 }

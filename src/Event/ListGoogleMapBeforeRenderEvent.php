@@ -1,7 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -42,9 +44,6 @@ class ListGoogleMapBeforeRenderEvent extends GoogleMapBeforeRenderEvent
 
     /**
      * ReaderGoogleMapBeforeRenderEvent constructor.
-     *
-     * @param $templateName
-     * @param array $templateData
      */
     public function __construct(ItemInterface $item, Map $map, GoogleMapModel $mapConfig, ListConfigElementModel $listConfigElement)
     {
@@ -59,9 +58,6 @@ class ListGoogleMapBeforeRenderEvent extends GoogleMapBeforeRenderEvent
         return $this->listConfigElement;
     }
 
-    /**
-     * @param ListConfigElementModel $readerConfigElement
-     */
     public function setReaderConfigElement(ListConfigElementModel $listConfigElement): void
     {
         $this->listConfigElement = $listConfigElement;

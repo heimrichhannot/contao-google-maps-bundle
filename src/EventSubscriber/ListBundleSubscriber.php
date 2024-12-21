@@ -1,7 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * Copyright (c) 2023 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -24,8 +26,11 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 class ListBundleSubscriber implements EventSubscriberInterface
 {
     private MapManager $mapManager;
+
     private OverlayManager $overlayManager;
+
     private EventDispatcherInterface $eventDispatcher;
+
     private array $maps = [];
 
     public function __construct(MapManager $mapManager, OverlayManager $overlayManager, EventDispatcherInterface $eventDispatcher)
@@ -56,7 +61,7 @@ class ListBundleSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if (null === ($map = GoogleMapModel::findByPk($event->getListConfig()->itemMap))) {
+        if (null === ($map = GoogleMapModel::findById($event->getListConfig()->itemMap))) {
             return;
         }
 
@@ -103,7 +108,7 @@ class ListBundleSubscriber implements EventSubscriberInterface
             $this->maps[$mapId]['mapModel'],
             $mapId,
             $this->maps[$mapId]['mapConfigModel'],
-            $this->maps[$mapId]
+            $this->maps[$mapId],
         );
         // $this->mapManager->render($listConfig->itemMap, $map->row(), $overlays);
         $templateData['addMapControlList'] = (bool) $listConfig->addMapControlList;
