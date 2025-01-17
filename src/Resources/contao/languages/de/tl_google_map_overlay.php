@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * Copyright (c) 2023 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
 
-use HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay;
+use HeimrichHannot\GoogleMapsBundle\EventListener\DataContainer\OverlayListener;
 use Ivory\GoogleMap\Overlay\Animation;
 
 $lang = &$GLOBALS['TL_LANG']['tl_google_map_overlay'];
@@ -93,23 +95,23 @@ $lang['stop'][1] = 'Overlay nur bis zu diesem Tag auf der Webseite anzeigen.';
  * Reference
  */
 $lang['reference'] = [
-    Overlay::TITLE_MODE_TITLE_FIELD => 'Titelfeld',
-    Overlay::TITLE_MODE_CUSTOM_TEXT => 'Eigener Text',
-    Overlay::POSITIONING_MODE_COORDINATE => 'Koordinate',
-    Overlay::POSITIONING_MODE_STATIC_ADDRESS => 'Statische Adresse',
+    OverlayListener::TITLE_MODE_TITLE_FIELD => 'Titelfeld',
+    OverlayListener::TITLE_MODE_CUSTOM_TEXT => 'Eigener Text',
+    OverlayListener::POSITIONING_MODE_COORDINATE => 'Koordinate',
+    OverlayListener::POSITIONING_MODE_STATIC_ADDRESS => 'Statische Adresse',
     Animation::DROP => 'Drop',
     Animation::BOUNCE => 'Bound',
-    Overlay::TYPE_MARKER => 'Marker',
-    Overlay::TYPE_INFO_WINDOW => 'Infoblase',
-    Overlay::TYPE_POLYLINE => 'Polyline',
-    Overlay::TYPE_POLYGON => 'Polygon',
-    Overlay::TYPE_CIRCLE => 'Kreis',
-    Overlay::TYPE_RECTANGLE => 'Rechteck',
-    Overlay::TYPE_GROUND_OVERLAY => 'Ground-Overlay',
-    Overlay::TYPE_KML_LAYER => 'KML-Layer',
-    Overlay::MARKER_TYPE_SIMPLE => 'Standard',
-    Overlay::MARKER_TYPE_ICON => 'Individuelles Bild',
-    Overlay::CLICK_EVENT_LINK => 'Link',
+    OverlayListener::TYPE_MARKER => 'Marker',
+    OverlayListener::TYPE_INFO_WINDOW => 'Infoblase',
+    OverlayListener::TYPE_POLYLINE => 'Polyline',
+    OverlayListener::TYPE_POLYGON => 'Polygon',
+    OverlayListener::TYPE_CIRCLE => 'Kreis',
+    OverlayListener::TYPE_RECTANGLE => 'Rechteck',
+    OverlayListener::TYPE_GROUND_OVERLAY => 'Ground-Overlay',
+    OverlayListener::TYPE_KML_LAYER => 'KML-Layer',
+    OverlayListener::MARKER_TYPE_SIMPLE => 'Standard',
+    OverlayListener::MARKER_TYPE_ICON => 'Individuelles Bild',
+    OverlayListener::CLICK_EVENT_LINK => 'Link',
 ];
 
 /*

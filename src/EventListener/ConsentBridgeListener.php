@@ -2,6 +2,12 @@
 
 declare(strict_types=1);
 
+/*
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace HeimrichHannot\GoogleMapsBundle\EventListener;
 
 use Contao\Config;
@@ -10,18 +16,23 @@ use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\DataContainer;
 use Contao\Template;
-use HeimrichHannot\UtilsBundle\Dca\DcaUtil;
+use HeimrichHannot\GoogleMapsBundle\Util\DcaUtil;
 use Hofff\Contao\Consent\Bridge\ConsentId;
 use Hofff\Contao\Consent\Bridge\ConsentId\ConsentIdParser;
 use Hofff\Contao\Consent\Bridge\ConsentToolManager;
 
 final class ConsentBridgeListener
 {
-    /** @var ConsentToolManager */
+    /**
+     * @var ConsentToolManager
+     */
     private $consentToolManager;
 
-    /** @var ConsentIdParser */
+    /**
+     * @var ConsentIdParser
+     */
     private $consentIdParser;
+
     /**
      * @var DcaUtil
      */
@@ -30,19 +41,19 @@ final class ConsentBridgeListener
     public function __construct(ConsentToolManager $consentManager, ConsentIdParser $consentIdParser, DcaUtil $dcaUtil)
     {
         $this->consentToolManager = $consentManager;
-        $this->consentIdParser    = $consentIdParser;
-        $this->dcaUtil            = $dcaUtil;
+        $this->consentIdParser = $consentIdParser;
+        $this->dcaUtil = $dcaUtil;
     }
 
     /**
-     * Adjust the data containers for the consent bridge support. High priority required so that the service tags
-     * can be applied.
+     * Adjust the data containers for the consent bridge support. High priority
+     * required so that the service tags can be applied.
      *
      * @Hook("loadDataContainer", priority=255)
      */
     public function onLoadDataContainer(string $table): void
     {
-        if ($this->consentToolManager->consentTools() === []) {
+        if ([] === $this->consentToolManager->consentTools()) {
             return;
         }
 
@@ -50,7 +61,7 @@ final class ConsentBridgeListener
             case 'tl_page':
                 $this->dcaUtil->addOverridableFields(['googlemaps_consentId'], 'tl_settings', 'tl_page');
                 $GLOBALS['TL_DCA']['tl_page']['fields']['googlemaps_consentId']['sql'] = [
-                    'type'    => 'string',
+                    'type' => 'string',
                     'default' => null,
                     'notnull' => false,
                 ];
@@ -58,12 +69,11 @@ final class ConsentBridgeListener
 
             case 'tl_settings':
                 $GLOBALS['TL_DCA']['tl_settings']['fields']['googlemaps_consentId'] = [
-                    'exclude'   => true,
                     'inputType' => 'select',
-                    'eval'      => [
-                        'tl_class'           => 'w50',
+                    'eval' => [
+                        'tl_class' => 'w50',
                         'includeBlankOption' => true,
-                        'chosen'             => true,
+                        'chosen' => true,
                     ],
                 ];
 
@@ -76,13 +86,14 @@ final class ConsentBridgeListener
      */
     public function onLoadSettings(DataContainer $table): void
     {
-        if ($this->consentToolManager->consentTools() === []) {
+        if ([] === $this->consentToolManager->consentTools()) {
             return;
         }
 
         PaletteManipulator::create()
             ->addField('googlemaps_consentId', 'huh_google_maps_legend', PaletteManipulator::POSITION_APPEND)
-            ->applyToPalette('default', 'tl_settings');
+            ->applyToPalette('default', 'tl_settings')
+        ;
     }
 
     /**
@@ -90,14 +101,15 @@ final class ConsentBridgeListener
      */
     public function onLoadPage(DataContainer $table): void
     {
-        if ($this->consentToolManager->consentTools() === []) {
+        if ([] === $this->consentToolManager->consentTools()) {
             return;
         }
 
         PaletteManipulator::create()
             ->addField('overrideGooglemaps_consentId', 'hofff_consent_bridge_legend', PaletteManipulator::POSITION_APPEND)
             ->applyToPalette('root', 'tl_page')
-            ->applyToPalette('rootfallback', 'tl_page');
+            ->applyToPalette('rootfallback', 'tl_page')
+        ;
     }
 
     /**
@@ -110,26 +122,26 @@ final class ConsentBridgeListener
         $options = [];
 
         foreach ($this->consentToolManager->consentTools() as $consentTool) {
-            $toolOptions                   = $consentTool->consentIdOptions();
+            $toolOptions = $consentTool->consentIdOptions();
             $options[$consentTool->name()] = [];
 
             foreach ($toolOptions as $label => $consentId) {
-                $options[$consentTool->name()][$consentId->serialize()] = \is_numeric($label)
+                $options[$consentTool->name()][$consentId->serialize()] = is_numeric($label)
                     ? $consentId->toString()
                     : $label;
             }
         }
 
-        if (\count($options) === 1) {
-            return \current($options);
+        if (1 === \count($options)) {
+            return current($options);
         }
 
         return $options;
     }
 
     /**
-     * Adjust the generated map api. Priority -1 ensures it's called after the ReplaceDynamicScriptTagsListener
-     * listener.
+     * Adjust the generated map api. Priority -1 ensures it's called after the
+     * ReplaceDynamicScriptTagsListener listener.
      *
      * @Hook("replaceDynamicScriptTags", priority=-1)
      */
@@ -139,15 +151,15 @@ final class ConsentBridgeListener
             return $buffer;
         }
 
-        $consentId   = $this->determineConsentId();
+        $consentId = $this->determineConsentId();
         $consentTool = $this->consentToolManager->activeConsentTool();
-        if ($consentTool === null || $consentId === null) {
+        if (null === $consentTool || null === $consentId) {
             return $buffer;
         }
 
         $GLOBALS['TL_BODY']['huhGoogleMaps'] = $consentTool->renderRaw(
             $GLOBALS['TL_BODY']['huhGoogleMaps'],
-            $consentId
+            $consentId,
         );
 
         return $buffer;
@@ -158,13 +170,13 @@ final class ConsentBridgeListener
      */
     public function onParseTemplate(Template $template): void
     {
-        if (! \preg_match('#^(ce|mod)_google_map#', $template->getName())) {
+        if (!preg_match('#^(ce|mod)_google_map#', $template->getName())) {
             return;
         }
 
         $consentTool = $this->consentToolManager->activeConsentTool();
-        $consentId   = $this->determineConsentId();
-        if ($consentTool === null || $consentId === null) {
+        $consentId = $this->determineConsentId();
+        if (null === $consentTool || null === $consentId) {
             return;
         }
 
@@ -172,7 +184,7 @@ final class ConsentBridgeListener
             $template->renderedMap,
             $consentId,
             null,
-            'google_map_consent_placeholder'
+            'google_map_consent_placeholder',
         );
     }
 
@@ -181,10 +193,10 @@ final class ConsentBridgeListener
         global $objPage;
         static $consentId = null;
 
-        if ($consentId === false) {
+        if (false === $consentId) {
             return null;
         }
-        if ($consentId !== null) {
+        if (null !== $consentId) {
             return $consentId;
         }
 
@@ -192,13 +204,10 @@ final class ConsentBridgeListener
             return null;
         }
 
-        $consentIdAsString = $this->dcaUtil->getOverridableProperty(
-            'googlemaps_consentId',
-            [
-                (object) ['googlemaps_consentId' => Config::get('googlemaps_consentId')],
-                ['tl_page', $objPage->rootId ?: $objPage->id],
-            ]
-        );
+        $consentIdAsString = $this->dcaUtil->getOverridableProperty('googlemaps_consentId', [
+            (object) ['googlemaps_consentId' => Config::get('googlemaps_consentId')],
+            ['tl_page', $objPage->rootId ?: $objPage->id],
+        ]);
 
         if (!$consentIdAsString) {
             $consentId = false;

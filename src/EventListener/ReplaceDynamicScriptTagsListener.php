@@ -1,7 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * Copyright (c) 2022 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -34,8 +36,8 @@ class ReplaceDynamicScriptTagsListener
             return $buffer;
         }
 
-        // fix the code for the case more than 1 map is on the page and not the first one is clicked
-        // and add to body variable
+        // fix the code for the case more than 1 map is on the page and not the first one
+        // is clicked and add to body variable
         $GLOBALS['TL_BODY']['huhGoogleMaps'] = preg_replace(
             '@(ivory_google_map_init_requirement\()(ivory_google_map_map_[^,]+)@i',
             'typeof $2 !== \'undefined\' && $1$2', $mapApi);

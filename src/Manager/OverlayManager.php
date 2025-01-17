@@ -1,23 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * Copyright (c) 2023 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\GoogleMapsBundle\Manager;
 
-use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\InsertTag\InsertTagParser;
+use Contao\FragmentTemplate;
 use Contao\StringUtil;
-use Contao\System;
-use HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay;
+use HeimrichHannot\GoogleMapsBundle\EventListener\DataContainer\OverlayListener;
 use HeimrichHannot\GoogleMapsBundle\Model\OverlayModel;
-use HeimrichHannot\TwigSupportBundle\Renderer\TwigTemplateRenderer;
-use HeimrichHannot\UtilsBundle\File\FileUtil;
-use HeimrichHannot\UtilsBundle\Location\LocationUtil;
-use HeimrichHannot\UtilsBundle\Model\ModelUtil;
+use HeimrichHannot\GoogleMapsBundle\Util\LocationUtil;
+use HeimrichHannot\UtilsBundle\Util\FileUtil;
+use HeimrichHannot\UtilsBundle\Util\ModelUtil;
 use Ivory\GoogleMap\Base\Coordinate;
 use Ivory\GoogleMap\Base\Point;
 use Ivory\GoogleMap\Base\Size;
@@ -29,50 +30,45 @@ use Ivory\GoogleMap\Overlay\Icon;
 use Ivory\GoogleMap\Overlay\InfoWindow;
 use Ivory\GoogleMap\Overlay\Marker;
 use Ivory\GoogleMap\Overlay\Polygon;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class OverlayManager
 {
     const CACHE_KEY_PREFIX = 'googleMaps_overlay';
-    /**
-     * @var ContaoFramework
-     */
-    protected $framework;
+
+    const CACHE_TIME = 86400;
+
+    protected ContaoFramework $framework;
+
+    protected ModelUtil $modelUtil;
+
+    protected LocationUtil $locationUtil;
 
     /**
-     * @var ModelUtil
+     * @var string
      */
-    protected $modelUtil;
-
-    /**
-     * @var LocationUtil
-     */
-    protected $locationUtil;
+    protected static $apiKey;
 
     /**
      * @var array
      */
     protected static $markerVariableMapping = [];
-    /**
-     * @var TwigTemplateRenderer
-     */
-    private $templateRenderer;
-    /**
-     * @var FileUtil
-     */
-    private $fileUtil;
 
-    public function __construct(
-        ContaoFramework $framework,
-        ModelUtil $modelUtil,
-        LocationUtil $locationUtil,
-        FileUtil $fileUtil,
-        TwigTemplateRenderer $templateRenderer
-    ) {
+    private FileUtil $fileUtil;
+
+    private InsertTagParser $insertTagParser;
+
+    private CacheInterface $cache;
+
+    public function __construct(ContaoFramework $framework, ModelUtil $modelUtil, LocationUtil $locationUtil, FileUtil $fileUtil, InsertTagParser $insertTagParser, CacheInterface $cache)
+    {
         $this->framework = $framework;
         $this->modelUtil = $modelUtil;
         $this->locationUtil = $locationUtil;
-        $this->templateRenderer = $templateRenderer;
         $this->fileUtil = $fileUtil;
+        $this->insertTagParser = $insertTagParser;
+        $this->cache = $cache;
     }
 
     public function addOverlayToMap(Map $map, OverlayModel $overlayConfig, string $apiKey): void
@@ -80,7 +76,7 @@ class OverlayManager
         $this->apiKey = $apiKey;
 
         switch ($overlayConfig->type) {
-            case Overlay::TYPE_MARKER:
+            case OverlayListener::TYPE_MARKER:
                 [$marker, $events] = $this->prepareMarker($overlayConfig, $map);
 
                 $map->getOverlayManager()->addMarker($marker);
@@ -91,7 +87,7 @@ class OverlayManager
 
                 break;
 
-            case Overlay::TYPE_INFO_WINDOW:
+            case OverlayListener::TYPE_INFO_WINDOW:
                 $infoWindow = $this->prepareInfoWindow($overlayConfig);
                 $infoWindow->setOpen(true);
 
@@ -99,14 +95,14 @@ class OverlayManager
 
                 break;
 
-            case Overlay::TYPE_KML_LAYER:
+            case OverlayListener::TYPE_KML_LAYER:
                 $kmlLayer = $this->prepareKmlLayer($overlayConfig);
 
                 $map->getLayerManager()->addKmlLayer($kmlLayer);
 
                 break;
 
-            case Overlay::TYPE_POLYGON:
+            case OverlayListener::TYPE_POLYGON:
                 $polygon = $this->preparePolygon($overlayConfig);
 
                 $map->getOverlayManager()->addPolygon($polygon);
@@ -119,16 +115,20 @@ class OverlayManager
         }
     }
 
-    public function addRoutingToInfoWindow(InfoWindow $infoWindow, OverlayModel $overlayConfig)
+    public function addRoutingToInfoWindow(InfoWindow $infoWindow, OverlayModel $overlayConfig): void
     {
         $position = $infoWindow->getPosition();
 
         if ($overlayConfig->addRouting && $position) {
-            $template = $overlayConfig->routingTemplate ?: 'gmap_routing_default';
-            $routing = $this->templateRenderer->render($template, [
+            $templateName = $overlayConfig->routingTemplate ?: 'gmap_routing_default';
+
+            $template = new FragmentTemplate($templateName);
+            $template->setData([
                 'lat' => $position->getLatitude(),
                 'lng' => $position->getLongitude(),
             ]);
+
+            $routing = $template->parse();
             $infoWindow->setContent($infoWindow->getContent().$routing);
         }
     }
@@ -138,29 +138,37 @@ class OverlayManager
      *
      * @throws \Exception
      */
-    public function setPositioning($overlay, OverlayModel $overlayConfig)
+    public function setPositioning($overlay, OverlayModel $overlayConfig): void
     {
         switch ($overlayConfig->positioningMode) {
-            case Overlay::POSITIONING_MODE_COORDINATE:
-                $overlay->setPosition(new Coordinate($overlayConfig->positioningLat, $overlayConfig->positioningLng));
+            case OverlayListener::POSITIONING_MODE_COORDINATE:
+                $overlay->setPosition(new Coordinate((float) $overlayConfig->positioningLat, (float) $overlayConfig->positioningLng));
 
                 break;
 
-            case Overlay::POSITIONING_MODE_STATIC_ADDRESS:
-                if (!($coordinates = System::getContainer()->get('huh.utils.cache.database')->getValue(static::CACHE_KEY_PREFIX.$overlayConfig->positioningAddress))) {
-                    $coordinates = $this->locationUtil->computeCoordinatesByString($overlayConfig->positioningAddress, $this->apiKey);
+            case OverlayListener::POSITIONING_MODE_STATIC_ADDRESS:
+                $coordinates = $this->cache->get(
+                    static::CACHE_KEY_PREFIX.$overlayConfig->positioningAddress,
+                    function (ItemInterface $item) use ($overlayConfig) {
+                        $item->expiresAfter(static::CACHE_TIME);
 
-                    if (\is_array($coordinates)) {
-                        $coordinates = serialize($coordinates);
-                        System::getContainer()->get('huh.utils.cache.database')->cacheValue(static::CACHE_KEY_PREFIX.$overlayConfig->positioningAddress, $coordinates);
-                    }
-                }
+                        $coordinates = $this->locationUtil->computeCoordinatesByString($overlayConfig->positioningAddress, $this->apiKey);
+
+                        if (false === $coordinates) {
+                            trigger_error('Could not compute coordinates from address. Maybe your Google API key is invalid or geocoding API is not enabled.', E_USER_WARNING);
+
+                            return null;
+                        }
+
+                        return \is_array($coordinates) ? serialize($coordinates) : null;
+                    },
+                );
 
                 if (\is_string($coordinates)) {
                     $coordinates = StringUtil::deserialize($coordinates, true);
 
-                    if (isset($coordinates['lat']) && isset($coordinates['lng'])) {
-                        $overlay->setPosition(new Coordinate($coordinates['lat'], $coordinates['lng']));
+                    if (isset($coordinates['lat'], $coordinates['lng'])) {
+                        $overlay->setPosition(new Coordinate((float) $coordinates['lat'], (float) $coordinates['lng']));
                     }
                 }
 
@@ -180,7 +188,7 @@ class OverlayManager
 
     public static function checkHex(string $hex): string
     {
-        if ('' == trim($hex, '0..9A..Fa..f')) {
+        if ('' === trim($hex, '0..9A..Fa..f')) {
             return '#'.$hex;
         }
 
@@ -196,10 +204,10 @@ class OverlayManager
         static::$markerVariableMapping[$overlayConfig->id] = $marker->getVariable();
 
         switch ($overlayConfig->markerType) {
-            case Overlay::MARKER_TYPE_SIMPLE:
+            case OverlayListener::MARKER_TYPE_SIMPLE:
                 break;
 
-            case Overlay::MARKER_TYPE_ICON:
+            case OverlayListener::MARKER_TYPE_ICON:
                 $icon = new Icon();
 
                 // image file
@@ -237,12 +245,12 @@ class OverlayManager
 
         // title
         switch ($overlayConfig->titleMode) {
-            case Overlay::TITLE_MODE_TITLE_FIELD:
+            case OverlayListener::TITLE_MODE_TITLE_FIELD:
                 $marker->setOption('title', $overlayConfig->title);
 
                 break;
 
-            case Overlay::TITLE_MODE_CUSTOM_TEXT:
+            case OverlayListener::TITLE_MODE_CUSTOM_TEXT:
                 $marker->setOption('title', $overlayConfig->titleText);
 
                 break;
@@ -253,26 +261,24 @@ class OverlayManager
             $marker->addOptions(['clickable' => true]);
 
             switch ($overlayConfig->clickEvent) {
-                case Overlay::CLICK_EVENT_LINK:
-                    /** @var Controller $controller */
-                    $controller = $this->framework->getAdapter(Controller::class);
-                    $url = $controller->replaceInsertTags($overlayConfig->url);
+                case OverlayListener::CLICK_EVENT_LINK:
+                    $url = $this->insertTagParser->replace($overlayConfig->url);
 
                     $event = new Event(
                         $marker->getVariable(),
                         'click',
                         "function() {
                             var win = window.open('".$url."', '".($overlayConfig->target ? '_blank' : '_self')."');
-                        }"
+                        }",
                     );
 
                     $events[] = $event;
 
                     break;
 
-                case Overlay::CLICK_EVENT_INFO_WINDOW:
+                case OverlayListener::CLICK_EVENT_INFO_WINDOW:
                     $infoWindow = $this->prepareInfoWindow($overlayConfig);
-                    $infoWindow->setPixelOffset(new Size(($overlayConfig->infoWindowAnchorX ?? 0), $overlayConfig->infoWindowAnchorY ?? 0));
+                    $infoWindow->setPixelOffset(new Size($overlayConfig->infoWindowAnchorX ?? 0, $overlayConfig->infoWindowAnchorY ?? 0));
                     $infoWindow->setOpenEvent(MouseEvent::CLICK);
                     // caution: this autoOpen is different from the one in dlh google maps
                     $infoWindow->setAutoOpen(true);
@@ -307,7 +313,7 @@ class OverlayManager
 
         if (!empty($sizing)) {
             $infoWindow->setContent(
-                '<div class="wrapper" style="'.implode(' ', $sizing).'">'.$infoWindow->getContent().'</div>'
+                '<div class="wrapper" style="'.implode(' ', $sizing).'">'.$infoWindow->getContent().'</div>',
             );
         }
 
@@ -354,7 +360,7 @@ class OverlayManager
         $verticesArray = [];
 
         foreach ($vertices as $vertex) {
-            $verticesArray[] = new Coordinate($vertex['positioningLat'] ?? 0, $vertex['positioningLng'] ?? 0);
+            $verticesArray[] = new Coordinate((float) ($vertex['positioningLat'] ?? 0), (float) ($vertex['positioningLng'] ?? 0));
         }
 
         $polygon->setCoordinates($verticesArray);

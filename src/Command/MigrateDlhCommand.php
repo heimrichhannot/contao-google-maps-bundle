@@ -1,7 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * Copyright (c) 2022 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -13,16 +15,16 @@ use Contao\ContentModel;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Database;
 use Contao\ModuleModel;
+use Contao\PageModel;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
-use HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap;
-use HeimrichHannot\GoogleMapsBundle\DataContainer\Overlay;
-use HeimrichHannot\GoogleMapsBundle\Element\ContentGoogleMap;
 use HeimrichHannot\GoogleMapsBundle\Event\DlhMigrationModifyMapEvent;
 use HeimrichHannot\GoogleMapsBundle\Event\DlhMigrationModifyOverlayEvent;
+use HeimrichHannot\GoogleMapsBundle\EventListener\DataContainer\ContentListener;
+use HeimrichHannot\GoogleMapsBundle\EventListener\DataContainer\GoogleMapListener;
+use HeimrichHannot\GoogleMapsBundle\EventListener\DataContainer\OverlayListener;
 use HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel;
 use HeimrichHannot\GoogleMapsBundle\Model\OverlayModel;
-use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\InputInterface;
@@ -34,6 +36,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class MigrateDlhCommand extends Command
 {
     protected static $defaultName = 'huh:google-maps:migrate-dlh';
+
     protected static $defaultDescription = 'Migrates existing Maps created using delahaye/dlh_googlemaps.';
 
     protected bool $dryRun = false;
@@ -50,23 +53,17 @@ class MigrateDlhCommand extends Command
 
     private ContaoFramework $framework;
 
-    private ModelUtil $modelUtil;
-
     private Connection $connection;
 
-    public function __construct(ContaoFramework $framework, EventDispatcherInterface $eventDispatcher, ModelUtil $modelUtil, Connection $connection)
+    public function __construct(ContaoFramework $framework, EventDispatcherInterface $eventDispatcher, Connection $connection)
     {
         parent::__construct();
         $this->framework = $framework;
         $this->dispatcher = $eventDispatcher;
-        $this->modelUtil = $modelUtil;
         $this->connection = $connection;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription(static::$defaultDescription)
@@ -74,10 +71,11 @@ class MigrateDlhCommand extends Command
             ->addOption('skip-contentelements', null, InputOption::VALUE_NONE, 'Skip migration of content elements.')
             ->addOption('skip-frontendmodules', null, InputOption::VALUE_NONE, 'Skip migration of frontend modules.')
             ->addOption('clean-before-migration', null, InputOption::VALUE_NONE, 'Deletes ALL entries of tl_google_map and tl_google_map_overlay. Use with Caution.')
-            ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Performs a run without making changes to the database.');
+            ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Performs a run without making changes to the database.')
+        ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->io = new SymfonyStyle($input, $output);
         $this->io->title('Migrate dlh_googlemaps');
@@ -123,7 +121,7 @@ class MigrateDlhCommand extends Command
         return 0;
     }
 
-    protected function migrateApiKeys()
+    protected function migrateApiKeys(): void
     {
         $this->io->section('Step 1: Migrating existing API key...');
 
@@ -140,13 +138,16 @@ class MigrateDlhCommand extends Command
 
         $globalApiKey = Config::get('googlemaps_apiKey');
 
-        if (null !== ($pages = $this->modelUtil->findAllModelInstances('tl_page'))) {
+        /** @var GoogleMapModel $configAdapter */
+        $pageAdapter = $this->framework->getAdapter(PageModel::class);
+
+        if (null !== ($pages = $pageAdapter->findAll())) {
             foreach ($pages as $page) {
                 if (!($apiKey = $page->dlh_googlemaps_apikey)) {
                     continue;
                 }
 
-                if ($page->googlemaps_apiKey && $page->overrideGooglemaps_apiKey && $page->googlemaps_apiKey != $apiKey) {
+                if ($page->googlemaps_apiKey && $page->overrideGooglemaps_apiKey && $page->googlemaps_apiKey !== $apiKey) {
                     $this->io->caution('An api key has been found in the field "dlh_googlemaps_apikey" in page ID '.$page->id.', but it couldn\'t be migrated because a differing api key is already set in the field "googlemaps_apiKey".');
                 } elseif ($globalApiKey && $apiKey !== $globalApiKey) {
                     $page->overrideGooglemaps_apiKey = true;
@@ -162,7 +163,7 @@ class MigrateDlhCommand extends Command
         }
     }
 
-    protected function migrateMaps()
+    protected function migrateMaps(): void
     {
         $this->io->section('Step 2: Migrating existing google maps...');
 
@@ -234,11 +235,11 @@ class MigrateDlhCommand extends Command
             ];
 
             foreach ($legacyFields as $legacyField) {
-                if (\in_array($legacyField, $skipFields)) {
+                if (\in_array($legacyField, $skipFields, true)) {
                     continue;
                 }
 
-                if (\in_array($legacyField, $removedFields)) {
+                if (\in_array($legacyField, $removedFields, true)) {
                     if ($legacyMap->{$legacyField} && !$this->skipUnsupportedFieldWarnings) {
                         $this->usernotice('The field "'.$legacyField.'" which is different from NULL in the current google map is not used in Google Maps v3 anymore or not supported by this bundle. Please refer to https://developers.google.com/maps/documentation/javascript for further information.');
                     }
@@ -246,22 +247,22 @@ class MigrateDlhCommand extends Command
                     continue;
                 }
 
-                if (\in_array($legacyField, array_keys($messageFields))) {
+                if (\in_array($legacyField, array_keys($messageFields), true)) {
                     $this->usernotice($messageFields[$legacyField]);
                 }
 
                 $newField = $legacyField;
                 $legacyValue = $legacyMap->{$legacyField};
 
-                if (\in_array($legacyField, $fieldsToLower)) {
+                if (\in_array($legacyField, $fieldsToLower, true)) {
                     $legacyValue = strtolower($legacyValue);
                 }
 
-                if (\in_array($legacyField, array_keys($fieldsMappings))) {
+                if (\in_array($legacyField, array_keys($fieldsMappings), true)) {
                     $newField = $fieldsMappings[$legacyField];
                 }
 
-                if (\in_array($legacyField, array_keys($fieldsMappings))) {
+                if (\in_array($legacyField, array_keys($fieldsMappings), true)) {
                     $newField = $fieldsMappings[$legacyField];
                 }
 
@@ -269,10 +270,10 @@ class MigrateDlhCommand extends Command
             }
 
             // positioning
-            $map->positioningMode = GoogleMap::POSITIONING_MODE_STANDARD;
+            $map->positioningMode = GoogleMapListener::POSITIONING_MODE_STANDARD;
 
             if ($legacyMap->geocoderAddress) {
-                $map->centerMode = GoogleMap::CENTER_MODE_STATIC_ADDRESS;
+                $map->centerMode = GoogleMapListener::CENTER_MODE_STATIC_ADDRESS;
 
                 $address = $legacyMap->geocoderAddress;
 
@@ -282,7 +283,7 @@ class MigrateDlhCommand extends Command
 
                 $map->centerAddress = $address;
             } else {
-                $map->centerMode = GoogleMap::CENTER_MODE_COORDINATE;
+                $map->centerMode = GoogleMapListener::CENTER_MODE_COORDINATE;
 
                 if (strpos($legacyMap->center, ',')) {
                     $coordinates = explode(',', $legacyMap->center);
@@ -298,7 +299,7 @@ class MigrateDlhCommand extends Command
             $mapSize = StringUtil::deserialize($legacyMap->mapSize, true);
 
             if (\count($mapSize) > 2) {
-                $map->sizeMode = GoogleMap::SIZE_MODE_STATIC;
+                $map->sizeMode = GoogleMapListener::SIZE_MODE_STATIC;
 
                 $map->width = serialize([
                     'value' => preg_replace('/[^\d]/i', '', $mapSize[0]),
@@ -310,14 +311,14 @@ class MigrateDlhCommand extends Command
                     'unit' => 'px',
                 ]);
             } else {
-                $map->sizeMode = GoogleMap::SIZE_MODE_ASPECT_RATIO;
+                $map->sizeMode = GoogleMapListener::SIZE_MODE_ASPECT_RATIO;
                 $map->aspectRatioX = 16;
                 $map->aspectRatioY = 9;
             }
 
             $this->dispatcher->dispatch(new DlhMigrationModifyMapEvent(
                 $legacyMap,
-                $map
+                $map,
             ), DlhMigrationModifyMapEvent::NAME);
 
             if (!$this->dryRun) {
@@ -333,7 +334,7 @@ class MigrateDlhCommand extends Command
         }
     }
 
-    protected function migrateOverlays(object $legacyMap, GoogleMapModel $map)
+    protected function migrateOverlays(object $legacyMap, GoogleMapModel $map): void
     {
         $this->io->text('Migrating overlays of dlh google map ID '.$legacyMap->id.' ("'.$legacyMap->title.'") ...');
 
@@ -392,11 +393,11 @@ class MigrateDlhCommand extends Command
             ];
 
             foreach ($legacyFields as $legacyField) {
-                if (\in_array($legacyField, $skipFields)) {
+                if (\in_array($legacyField, $skipFields, true)) {
                     continue;
                 }
 
-                if (\in_array($legacyField, $removedFields)) {
+                if (\in_array($legacyField, $removedFields, true)) {
                     if ($legacyOverlay->{$legacyField} && !$this->skipUnsupportedFieldWarnings) {
                         $this->usernotice('The field "'.$legacyField.'" which is different from NULL in the current google map is not used in Google Maps v3 anymore or not supported by this bundle. Please refer to https://developers.google.com/maps/documentation/javascript for further information.');
                     }
@@ -404,47 +405,47 @@ class MigrateDlhCommand extends Command
                     continue;
                 }
 
-                if (\in_array($legacyField, array_keys($messageFields))) {
+                if (\in_array($legacyField, array_keys($messageFields), true)) {
                     $this->usernotice($messageFields[$legacyField]);
                 }
 
                 $newField = $legacyField;
                 $legacyValue = $legacyOverlay->{$legacyField};
 
-                if (\in_array($legacyField, $fieldsToLower)) {
+                if (\in_array($legacyField, $fieldsToLower, true)) {
                     $legacyValue = strtolower($legacyValue);
                 }
 
-                if (\in_array($legacyField, array_keys($fieldsMappings))) {
+                if (\in_array($legacyField, array_keys($fieldsMappings), true)) {
                     $newField = $fieldsMappings[$legacyField];
                 }
 
-                if (\in_array($legacyField, array_keys($fieldsMappings))) {
+                if (\in_array($legacyField, array_keys($fieldsMappings), true)) {
                     $newField = $fieldsMappings[$legacyField];
                 }
 
                 $overlay->{$newField} = $legacyValue;
             }
 
-            if ('none' == $overlay->clickEvent) {
+            if ('none' === $overlay->clickEvent) {
                 $overlay->clickEvent = '';
             }
 
             if ($legacyOverlay->markerShowTitle) {
-                $overlay->titleMode = Overlay::TITLE_MODE_TITLE_FIELD;
+                $overlay->titleMode = OverlayListener::TITLE_MODE_TITLE_FIELD;
             }
 
-            if ('LINK' == $legacyOverlay->markerAction && $legacyOverlay->linkTitle) {
-                $overlay->titleMode = Overlay::TITLE_MODE_CUSTOM_TEXT;
+            if ('LINK' === $legacyOverlay->markerAction && $legacyOverlay->linkTitle) {
+                $overlay->titleMode = OverlayListener::TITLE_MODE_CUSTOM_TEXT;
             }
 
-            if ('INFO' == $legacyOverlay->markerAction) {
+            if ('INFO' === $legacyOverlay->markerAction) {
                 $overlay->clickEvent = 'infowindow';
             }
 
             // positioning
             if ($legacyOverlay->singleCoords) {
-                $overlay->positioningMode = Overlay::POSITIONING_MODE_COORDINATE;
+                $overlay->positioningMode = OverlayListener::POSITIONING_MODE_COORDINATE;
 
                 if (strpos($legacyOverlay->singleCoords, ',')) {
                     $coordinates = explode(',', str_replace(' ', '', $legacyOverlay->singleCoords));
@@ -455,7 +456,7 @@ class MigrateDlhCommand extends Command
                     }
                 }
             } else {
-                $overlay->positioningMode = Overlay::POSITIONING_MODE_STATIC_ADDRESS;
+                $overlay->positioningMode = OverlayListener::POSITIONING_MODE_STATIC_ADDRESS;
                 $address = $legacyOverlay->geocoderAddress;
 
                 if ($legacyOverlay->geocoderCountry) {
@@ -467,7 +468,7 @@ class MigrateDlhCommand extends Command
 
             // marker type
             switch ($overlay->markerType) {
-                case Overlay::MARKER_TYPE_ICON:
+                case OverlayListener::MARKER_TYPE_ICON:
                     $iconSize = StringUtil::deserialize($legacyOverlay->iconSize, true);
 
                     $overlay->iconWidth = ['value' => $iconSize[0], 'unit' => 'px'];
@@ -481,8 +482,7 @@ class MigrateDlhCommand extends Command
                     break;
             }
 
-            // info window
-            // sizing
+            // info window sizing
             $infoWindowSize = StringUtil::deserialize($legacyOverlay->infoWindowSize, true);
 
             if (\count($infoWindowSize) > 2) {
@@ -509,7 +509,7 @@ class MigrateDlhCommand extends Command
                 $legacyOverlay,
                 $overlay,
                 $legacyMap,
-                $map
+                $map,
             ), DlhMigrationModifyOverlayEvent::NAME);
 
             if (!$this->dryRun) {
@@ -520,7 +520,7 @@ class MigrateDlhCommand extends Command
         }
     }
 
-    protected function migrateContentElements()
+    protected function migrateContentElements(): void
     {
         $this->io->section('Migrate content elements');
         $contentElements = ContentModel::findByType('dlh_googlemaps');
@@ -535,7 +535,7 @@ class MigrateDlhCommand extends Command
             if ($this->io->isVerbose()) {
                 $this->io->text('Migration content element with ID '.$contentElement->id);
             }
-            $contentElement->type = ContentGoogleMap::TYPE;
+            $contentElement->type = ContentListener::ELEMENT_GOOGLE_MAP;
             $contentElement->googlemaps_skipCss = $contentElement->dlh_googlemap_nocss;
 
             if ($contentElement->dlh_googlemap_static) {
@@ -583,7 +583,7 @@ class MigrateDlhCommand extends Command
             if ($this->io->isVerbose()) {
                 $this->io->text('Migration frontend module '.$frontendModule->name.' with ID '.$frontendModule->id);
             }
-            $frontendModule->type = ContentGoogleMap::TYPE;
+            $frontendModule->type = ContentListener::ELEMENT_GOOGLE_MAP;
             $frontendModule->googlemaps_skipCss = $frontendModule->dlh_googlemap_nocss;
 
             if ($frontendModule->dlh_googlemap_static) {

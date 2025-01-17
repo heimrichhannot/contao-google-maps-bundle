@@ -2,52 +2,31 @@
 
 declare(strict_types=1);
 
-use Contao\EasyCodingStandard\Sniffs\ContaoFrameworkClassAliasSniff;
+use Contao\EasyCodingStandard\Fixer\TypeHintOrderFixer;
 use PhpCsFixer\Fixer\Comment\HeaderCommentFixer;
-use PhpCsFixer\Fixer\Import\GlobalNamespaceImportFixer;
-use PhpCsFixer\Fixer\Phpdoc\PhpdocTypesFixer;
-use SlevomatCodingStandard\Sniffs\Namespaces\ReferenceUsedNamesOnlySniff;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use PhpCsFixer\Fixer\Whitespace\MethodChainingIndentationFixer;
+use SlevomatCodingStandard\Sniffs\TypeHints\DisallowArrayTypeHintSyntaxSniff;
+use Symplify\EasyCodingStandard\Config\ECSConfig;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
-    $services = $containerConfigurator->services();
+return static function (ECSConfig $ecsConfig): void {
+    $ecsConfig->sets([__DIR__.'/tools/ecs/vendor/contao/easy-coding-standard/config/contao.php']);
+
     $date = date('Y');
-    $services
-        ->set(HeaderCommentFixer::class)
-        ->call(
-            'configure',
-            [
-                [
-                    'header' => "Copyright (c) $date Heimrich & Hannot GmbH\n\n@license LGPL-3.0-or-later",
-                ]
-            ]
-        );
+    $ecsConfig->skip([
+        MethodChainingIndentationFixer::class => [
+            '*/DependencyInjection/Configuration.php',
+            '*/Resources/config/*.php',
+        ],
+        TypeHintOrderFixer::class,
+        DisallowArrayTypeHintSyntaxSniff::class => ['*Model.php'],
+        '*/templates/*.html5',
+    ]);
+    
+    $ecsConfig->ruleWithConfiguration(HeaderCommentFixer::class, [
+        'header' => "Copyright (c) $date Heimrich & Hannot GmbH\n\n@license LGPL-3.0-or-later",
+    ]);
 
-    $services
-        ->set(GlobalNamespaceImportFixer::class)
-        ->call('configure', [[
-                                 'import_classes' => false,
-                                 'import_constants' => false,
-                                 'import_functions' => false,
-                             ]])
-    ;
-
-    $services
-        ->set(PhpdocTypesFixer::class)
-        ->call('configure', [[
-                                 'groups' => ['simple', 'meta'],
-                             ]])
-    ;
-
-    $services
-        ->set(ReferenceUsedNamesOnlySniff::class)
-        ->property('searchAnnotations', true)
-        ->property('allowFullyQualifiedNameForCollidingClasses', true)
-        ->property('allowFullyQualifiedGlobalClasses', true)
-        ->property('allowFullyQualifiedGlobalFunctions', true)
-        ->property('allowFullyQualifiedGlobalConstants', true)
-        ->property('allowPartialUses', false)
-    ;
-
-    $services->set(ContaoFrameworkClassAliasSniff::class);
+    $ecsConfig->parallel();
+    $ecsConfig->lineEnding("\n");
+    $ecsConfig->cacheDirectory(sys_get_temp_dir().'/ecs_default_cache');
 };

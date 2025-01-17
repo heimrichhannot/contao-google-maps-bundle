@@ -69,20 +69,20 @@ class GoogleMapsSubscriber implements EventSubscriberInterface {
         
         $overlay = new OverlayModel();
         $overlay->title = $item->headline;
-        $overlay->type = Overlay::TYPE_MARKER;
+        $overlay->type = OverlayListener::TYPE_MARKER;
         if ($item->coordX && $item->coordX) {
-            $overlay->positioningMode = Overlay::POSITIONING_MODE_COORDINATE;
+            $overlay->positioningMode = OverlayListener::POSITIONING_MODE_COORDINATE;
             $overlay->positioningLat = trim($item->coordX);
             $overlay->positioningLng = trim($item->coordX);
         } elseif (!empty($item->address)) {
-            $overlay->positioningMode = Overlay::POSITIONING_MODE_STATIC_ADDRESS;
+            $overlay->positioningMode = OverlayListener::POSITIONING_MODE_STATIC_ADDRESS;
             $overlay->positioningAddress = $item->address;
         } else {
             $event->setOverlayModel(null);
             return;
         }
-        $overlay->markerType = Overlay::MARKER_TYPE_SIMPLE;
-        $overlay->clickEvent = Overlay::CLICK_EVENT_INFO_WINDOW;
+        $overlay->markerType = OverlayListener::MARKER_TYPE_SIMPLE;
+        $overlay->clickEvent = OverlayListener::CLICK_EVENT_INFO_WINDOW;
         $overlay->infoWindowText = '<p><b>'.$item->headline.'</b></p>';
         $overlay->published='1';
         $event->setOverlayModel($overlay);

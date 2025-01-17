@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace HeimrichHannot\GoogleMapsBundle\Event;
 
 use Contao\Model;
@@ -8,15 +16,16 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class GoogleMapsPrepareExternalItemEvent extends Event
 {
-
     /**
      * @var array
      */
     private $itemData;
+
     /**
      * @var OverlayModel
      */
     private $overlayModel;
+
     /**
      * @var Model
      */
@@ -29,40 +38,27 @@ class GoogleMapsPrepareExternalItemEvent extends Event
         $this->configModel = $configModel;
     }
 
-    /**
-     * @return array
-     */
     public function getItemData(): array
     {
         return $this->itemData;
     }
 
-    /**
-     * @return OverlayModel|null
-     */
     public function getOverlayModel(): ?OverlayModel
     {
         return $this->overlayModel;
     }
 
     /**
-     * Set the overlay model for the current item.
-     * Set null to skip adding a marker for the current item.
-     *
-     * @param OverlayModel|null $overlayModel
+     * Set the overlay model for the current item. Set null to skip adding a marker
+     * for the current item.
      */
-    public function setOverlayModel(OverlayModel $overlayModel = null): void
+    public function setOverlayModel(?OverlayModel $overlayModel = null): void
     {
         $this->overlayModel = $overlayModel;
     }
 
-    /**
-     * @return Model
-     */
     public function getConfigModel(): Model
     {
         return $this->configModel;
     }
-
-
 }

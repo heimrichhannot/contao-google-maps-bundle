@@ -1,7 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * Copyright (c) 2023 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -10,19 +12,19 @@ namespace HeimrichHannot\GoogleMapsBundle\Manager;
 
 use Contao\Config;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\FragmentTemplate;
+use Contao\Model\Collection;
 use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\GoogleMapsBundle\Collection\MapCollection;
-use HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap;
 use HeimrichHannot\GoogleMapsBundle\Event\BeforeRenderMapEvent;
 use HeimrichHannot\GoogleMapsBundle\EventListener\ApiRenderListener;
+use HeimrichHannot\GoogleMapsBundle\EventListener\DataContainer\GoogleMapListener;
 use HeimrichHannot\GoogleMapsBundle\EventListener\MapRendererListener;
 use HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel;
-use HeimrichHannot\TwigSupportBundle\Filesystem\TwigTemplateLocator;
-use HeimrichHannot\TwigSupportBundle\Renderer\TwigTemplateRenderer;
-use HeimrichHannot\UtilsBundle\File\FileUtil;
-use HeimrichHannot\UtilsBundle\Location\LocationUtil;
-use HeimrichHannot\UtilsBundle\Model\ModelUtil;
+use HeimrichHannot\GoogleMapsBundle\Util\LocationUtil;
+use HeimrichHannot\UtilsBundle\Util\FileUtil;
+use HeimrichHannot\UtilsBundle\Util\ModelUtil;
 use Ivory\GoogleMap\Base\Bound;
 use Ivory\GoogleMap\Base\Coordinate;
 use Ivory\GoogleMap\Control\FullscreenControl;
@@ -38,59 +40,51 @@ use Ivory\GoogleMap\Helper\Event\ApiEvents;
 use Ivory\GoogleMap\Map;
 use Ivory\GoogleMap\MapTypeId;
 use Ivory\GoogleMap\Overlay\MarkerClusterType;
-use Model\Collection;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class MapManager
 {
     const CACHE_KEY_PREFIX = 'googleMaps_map';
+
+    const CACHE_TIME = 86400;
+
     const GOOGLE_MAPS_STATIC_URL = 'https://maps.googleapis.com/maps/api/staticmap';
 
     protected ContaoFramework $framework;
+
     protected OverlayManager $overlayManager;
+
     protected ModelUtil $modelUtil;
 
-    /**
-     * @var LocationUtil
-     */
-    protected $locationUtil;
+    protected LocationUtil $locationUtil;
 
     /**
      * @var string
      */
     protected static $apiKey;
+
     /**
      * Collections of all maps on a page.
      *
-     * @var Map[]
+     * @var array<Map>
      */
     protected $maps = [];
 
-    private MapCollection $mapCollection;
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
-    /**
-     * @var TwigTemplateRenderer
-     */
-    private $renderer;
-    /**
-     * @var TwigTemplateLocator
-     */
-    private $templateLocator;
+    private FileUtil $fileUtil;
 
-    public function __construct(
-        ContaoFramework $framework,
-        OverlayManager $overlayManager,
-        ModelUtil $modelUtil,
-        LocationUtil $locationUtil,
-        FileUtil $fileUtil,
-        MapCollection $mapCollection,
-        EventDispatcherInterface $eventDispatcher,
-        TwigTemplateRenderer $renderer,
-        TwigTemplateLocator $templateLocator
-    ) {
+    private MapCollection $mapCollection;
+
+    private EventDispatcherInterface $eventDispatcher;
+
+    private CacheInterface $cache;
+
+    public function __construct(ContaoFramework $framework, OverlayManager $overlayManager, ModelUtil $modelUtil, LocationUtil $locationUtil, FileUtil $fileUtil, MapCollection $mapCollection, EventDispatcherInterface $eventDispatcher, CacheInterface $cache)
+    {
         $this->framework = $framework;
         $this->overlayManager = $overlayManager;
         $this->modelUtil = $modelUtil;
@@ -98,11 +92,10 @@ class MapManager
         $this->fileUtil = $fileUtil;
         $this->mapCollection = $mapCollection;
         $this->eventDispatcher = $eventDispatcher;
-        $this->renderer = $renderer;
-        $this->templateLocator = $templateLocator;
+        $this->cache = $cache;
     }
 
-    public function prepareMap(int $mapId, array $config = [], Collection $overlays = null): ?array
+    public function prepareMap(int $mapId, array $config = [], ?Collection $overlays = null): ?array
     {
         if (!$mapId) {
             return null;
@@ -151,7 +144,7 @@ class MapManager
         return $templateData;
     }
 
-    public function render(int $mapId, array $config = [], Collection $overlays = null)
+    public function render(int $mapId, array $config = [], ?Collection $overlays = null)
     {
         $templateData = $this->prepareMap($mapId, $config, $overlays);
 
@@ -168,10 +161,9 @@ class MapManager
     /**
      * @param int|null $mapId The map id (the database id)
      *
-     * @throws \HeimrichHannot\TwigSupportBundle\Exception\TemplateNotFoundException
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function renderMapObject(Map $map, ?int $mapId = null, $mapConfigModel = null, array $templateData = []): string
     {
@@ -196,14 +188,15 @@ class MapManager
         $templateData['mapJs'] = $mapHelper->renderJavascript($map);
         $this->mapCollection->addMap($map, $mapId);
 
-        $template = $templateData['mapConfig']['template'] ?: 'gmap_map_default';
-        $template = $this->templateLocator->getTemplatePath($template);
+        $templateName = $templateData['mapConfig']['template'] ?: 'gmap_map_default';
 
-        /** @var BeforeRenderMapEvent $event */
-        /** @noinspection PhpParamsInspection */
-        $event = $this->eventDispatcher->dispatch(new BeforeRenderMapEvent($template, $templateData, $map), BeforeRenderMapEvent::NAME);
+        $event = new BeforeRenderMapEvent($templateName, $templateData, $map);
+        $this->eventDispatcher->dispatch($event, BeforeRenderMapEvent::NAME);
 
-        return $this->renderer->render($template, $templateData);
+        $template = new FragmentTemplate($event->getTemplate());
+        $template->setData($event->getTemplateData());
+
+        return $template->parse();
     }
 
     public function renderHtml(int $mapId, array $config = [])
@@ -250,7 +243,8 @@ class MapManager
         $apiHelper = ApiHelperBuilder::create()
             ->setLanguage($language)
             ->setKey(static::$apiKey)
-            ->build();
+            ->build()
+        ;
 
         $listener = new ApiRenderListener($apiHelper, $this->eventDispatcher);
         $apiHelper->getEventDispatcher()->addListener(ApiEvents::JAVASCRIPT, [$listener, 'onApiRender']);
@@ -258,43 +252,43 @@ class MapManager
         return $apiHelper->render($this->mapCollection->getMaps());
     }
 
-    public function setVisualization(Map $map, GoogleMapModel $mapConfig)
+    public function setVisualization(Map $map, GoogleMapModel $mapConfig): void
     {
         $map->setMapOption('mapTypeId', $mapConfig->mapType ?: MapTypeId::ROADMAP);
 
         switch ($mapConfig->sizeMode) {
-            case GoogleMap::SIZE_MODE_ASPECT_RATIO:
+            case GoogleMapListener::SIZE_MODE_ASPECT_RATIO:
                 $map->setStylesheetOptions(
                     [
                         'width' => '100%',
                         'height' => '100%',
                         'padding-bottom' => (100 * (int) $mapConfig->aspectRatioY / (int) $mapConfig->aspectRatioX).'%',
-                    ]
+                    ],
                 );
 
                 break;
 
-            case GoogleMap::SIZE_MODE_STATIC:
+            case GoogleMapListener::SIZE_MODE_STATIC:
                 $width = StringUtil::deserialize($mapConfig->width, true);
                 $height = StringUtil::deserialize($mapConfig->height, true);
 
-                if (isset($width['value']) && isset($width['unit']) && isset($height['value']) && isset($height['unit'])) {
+                if (isset($width['value'], $width['unit'], $height['value'], $height['unit'])) {
                     $map->setStylesheetOptions(
                         [
                             'width' => $width['value'].$width['unit'],
                             'height' => $height['value'].$height['unit'],
-                        ]
+                        ],
                     );
                 }
 
                 break;
 
-            case GoogleMap::SIZE_MODE_CSS:
+            case GoogleMapListener::SIZE_MODE_CSS:
                 $map->setStylesheetOptions(
                     [
                         'width' => '100%',
                         'height' => '100%',
-                    ]
+                    ],
                 );
 
                 break;
@@ -315,7 +309,7 @@ class MapManager
         $map->setMapOption('styles', json_decode(StringUtil::decodeEntities($mapConfig->styles), true));
     }
 
-    public function setBehavior(Map $map, GoogleMapModel $mapConfig)
+    public function setBehavior(Map $map, GoogleMapModel $mapConfig): void
     {
         $map->addMapOptions([
             'disableDoubleClickZoom' => (bool) $mapConfig->disableDoubleClickZoom,
@@ -324,16 +318,16 @@ class MapManager
         ]);
     }
 
-    public function setPositioning(Map $map, GoogleMapModel $mapConfig)
+    public function setPositioning(Map $map, GoogleMapModel $mapConfig): void
     {
         switch ($mapConfig->positioningMode) {
-            case GoogleMap::POSITIONING_MODE_STANDARD:
+            case GoogleMapListener::POSITIONING_MODE_STANDARD:
                 $map->setMapOption('zoom', (int) $mapConfig->zoom ?: 3);
                 $this->setCenter($map, $mapConfig);
 
                 break;
 
-            case GoogleMap::POSITIONING_MODE_BOUND:
+            case GoogleMapListener::POSITIONING_MODE_BOUND:
                 $map->setAutoZoom(true);
                 $this->setBound($map, $mapConfig);
 
@@ -341,19 +335,19 @@ class MapManager
         }
     }
 
-    public function setBound(Map $map, GoogleMapModel $mapConfig)
+    public function setBound(Map $map, GoogleMapModel $mapConfig): void
     {
         $southWest = new Coordinate();
         $northEast = new Coordinate();
 
         switch ($mapConfig->boundMode) {
-            case GoogleMap::BOUND_MODE_COORDINATES:
-                $southWest = new Coordinate($mapConfig->boundSouthWestLat, $mapConfig->boundSouthWestLng);
-                $northEast = new Coordinate($mapConfig->boundNorthEastLat, $mapConfig->boundNorthEastLng);
+            case GoogleMapListener::BOUND_MODE_COORDINATES:
+                $southWest = new Coordinate((float) $mapConfig->boundSouthWestLat, (float) $mapConfig->boundSouthWestLng);
+                $northEast = new Coordinate((float) $mapConfig->boundNorthEastLat, (float) $mapConfig->boundNorthEastLng);
 
                 break;
 
-            case GoogleMap::BOUND_MODE_AUTOMATIC:
+            case GoogleMapListener::BOUND_MODE_AUTOMATIC:
                 // TODO compute by pins
                 break;
         }
@@ -361,33 +355,37 @@ class MapManager
         $map->setBound(new Bound($southWest, $northEast));
     }
 
-    public function setCenter(Map $map, GoogleMapModel $mapConfig)
+    public function setCenter(Map $map, GoogleMapModel $mapConfig): void
     {
         switch ($mapConfig->centerMode) {
-            case GoogleMap::CENTER_MODE_COORDINATE:
-                $map->setCenter(new Coordinate($mapConfig->centerLat, $mapConfig->centerLng));
+            case GoogleMapListener::CENTER_MODE_COORDINATE:
+                $map->setCenter(new Coordinate((float) $mapConfig->centerLat, (float) $mapConfig->centerLng));
 
                 break;
 
-            case GoogleMap::CENTER_MODE_STATIC_ADDRESS:
-                if (!($coordinates = System::getContainer()->get('huh.utils.cache.database')->getValue(static::CACHE_KEY_PREFIX.$mapConfig->centerAddress))) {
-                    $coordinates = $this->locationUtil->computeCoordinatesByString($mapConfig->centerAddress, static::$apiKey);
+            case GoogleMapListener::CENTER_MODE_STATIC_ADDRESS:
+                $coordinates = $this->cache->get(
+                    static::CACHE_KEY_PREFIX.$mapConfig->centerAddress,
+                    function (ItemInterface $item) use ($mapConfig) {
+                        $item->expiresAfter(static::CACHE_TIME);
 
-                    if (false === $coordinates) {
-                        trigger_error('Could no compute coordinates from address. Maybe your google API key is invalid or geocoding api is not enabled.', \E_USER_WARNING);
-                    }
+                        $coordinates = $this->locationUtil->computeCoordinatesByString($mapConfig->centerAddress, static::$apiKey);
 
-                    if (\is_array($coordinates)) {
-                        $coordinates = serialize($coordinates);
-                        System::getContainer()->get('huh.utils.cache.database')->cacheValue(static::CACHE_KEY_PREFIX.$mapConfig->centerAddress, $coordinates);
-                    }
-                }
+                        if (false === $coordinates) {
+                            trigger_error('Could not compute coordinates from address. Maybe your Google API key is invalid or geocoding API is not enabled.', E_USER_WARNING);
+
+                            return null;
+                        }
+
+                        return \is_array($coordinates) ? serialize($coordinates) : null;
+                    },
+                );
 
                 if (\is_string($coordinates)) {
                     $coordinates = StringUtil::deserialize($coordinates, true);
 
-                    if (isset($coordinates['lat']) && isset($coordinates['lng'])) {
-                        $map->setCenter(new Coordinate($coordinates['lat'], $coordinates['lng']));
+                    if (isset($coordinates['lat'], $coordinates['lng'])) {
+                        $map->setCenter(new Coordinate((float) $coordinates['lat'], (float) $coordinates['lng']));
                     }
                 }
 
@@ -395,7 +393,7 @@ class MapManager
         }
     }
 
-    public function addStaticMap(Map $map, GoogleMapModel $mapConfig, array &$templateData)
+    public function addStaticMap(Map $map, GoogleMapModel $mapConfig, array &$templateData): void
     {
         if ($mapConfig->staticMapNoscript) {
             $staticParams = [
@@ -410,14 +408,14 @@ class MapManager
         }
     }
 
-    public function addControls(Map $map, GoogleMapModel $mapConfig)
+    public function addControls(Map $map, GoogleMapModel $mapConfig): void
     {
         // map type
         if ($mapConfig->addMapTypeControl) {
             $control = new MapTypeControl(
                 StringUtil::deserialize($mapConfig->mapTypesAvailable, true),
                 $mapConfig->mapTypeControlPos,
-                $mapConfig->mapTypeControlStyle
+                $mapConfig->mapTypeControlStyle,
             );
 
             $map->getControlManager()->setMapTypeControl($control);
@@ -426,7 +424,7 @@ class MapManager
         // zoom
         if ($mapConfig->addZoomControl) {
             $control = new ZoomControl(
-                $mapConfig->zoomControlPos
+                $mapConfig->zoomControlPos,
             );
 
             $map->getControlManager()->setZoomControl($control);
@@ -435,7 +433,7 @@ class MapManager
         // rotate
         if ($mapConfig->addRotateControl) {
             $control = new RotateControl(
-                $mapConfig->rotateControlPos
+                $mapConfig->rotateControlPos,
             );
 
             $map->getControlManager()->setRotateControl($control);
@@ -444,7 +442,7 @@ class MapManager
         // street view
         if ($mapConfig->addStreetViewControl) {
             $control = new StreetViewControl(
-                $mapConfig->streetViewControlPos
+                $mapConfig->streetViewControlPos,
             );
 
             $map->getControlManager()->setStreetViewControl($control);
@@ -453,7 +451,7 @@ class MapManager
         // fullscreen
         if ($mapConfig->addFullscreenControl) {
             $control = new FullscreenControl(
-                $mapConfig->fullscreenControlPos
+                $mapConfig->fullscreenControlPos,
             );
 
             $map->getControlManager()->setFullscreenControl($control);
@@ -487,7 +485,7 @@ class MapManager
             $settings->googlemaps_apiKey = Config::get('googlemaps_apiKey');
         }
 
-        return System::getContainer()->get('huh.utils.dca')->getOverridableProperty('googlemaps_apiKey', [
+        return System::getContainer()->get('huh.google_maps.utils.dca')->getOverridableProperty('googlemaps_apiKey', [
             $settings,
             ['tl_page', $objPage->rootId ?: $objPage->id],
             $mapConfig,
@@ -497,7 +495,7 @@ class MapManager
     /**
      * return language that is either configured at map config or set at page config.
      */
-    public function getLanguage(int $mapId = null): string
+    public function getLanguage(?int $mapId = null): string
     {
         global $objPage;
 

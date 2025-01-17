@@ -1,7 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -9,26 +11,21 @@
 namespace HeimrichHannot\GoogleMapsBundle\Service;
 
 use Contao\Config;
-use Http\Adapter\Guzzle6\Client;
+use Http\Client\HttpClient;
 use Http\Message\MessageFactory\GuzzleMessageFactory;
 use Ivory\GoogleMap\Base\Coordinate;
 use Ivory\GoogleMap\Service\Base\Location\CoordinateLocation;
 use Ivory\GoogleMap\Service\Elevation\Request\PathElevationRequest;
 use Ivory\GoogleMap\Service\Elevation\Request\PositionalElevationRequest;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Ivory\GoogleMap\Service\Elevation\Response\ElevationResult;
 
 class ElevationService
 {
     const REQUEST_TYPE_PATH = 'path';
+
     const REQUEST_TYPE_POSTITIONAL = 'positional';
 
     const MAX_SAMPLES = 300;
-
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
 
     /**
      * @var \Ivory\GoogleMap\Service\Elevation\ElevationService
@@ -38,15 +35,14 @@ class ElevationService
     /**
      * ElevationService constructor.
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(HttpClient $httpClient)
     {
-        $this->container = $container;
-        $this->service = new \Ivory\GoogleMap\Service\Elevation\ElevationService(new Client(),
+        $this->service = new \Ivory\GoogleMap\Service\Elevation\ElevationService($httpClient,
             new GuzzleMessageFactory());
     }
 
     /**
-     * @return ElevationResult[]
+     * @return array<ElevationResult>
      */
     public function getElevation(array $data = [])
     {
@@ -67,7 +63,7 @@ class ElevationService
         $step = (int) ceil(\count($coordinates) / self::MAX_SAMPLES);
 
         foreach ($coordinates as $key => $coordinate) {
-            if (0 != $key % $step) {
+            if (0 !== $key % $step) {
                 continue;
             }
 
@@ -75,15 +71,13 @@ class ElevationService
                 continue;
             }
 
-            $locations[] = new CoordinateLocation(new Coordinate($coordinate[0], $coordinate[1]));
+            $locations[] = new CoordinateLocation(new Coordinate((float) $coordinate[0], (float) $coordinate[1]));
         }
 
         return $locations;
     }
 
     /**
-     * @param $type
-     *
      * @return PathElevationRequest|PositionalElevationRequest
      */
     public function getRequest(array $locations, $type = self::REQUEST_TYPE_POSTITIONAL)

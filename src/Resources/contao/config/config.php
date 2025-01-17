@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
 
-use HeimrichHannot\GoogleMapsBundle\EventListener\ReplaceInsertTagsListener;
-use HeimrichHannot\GoogleMapsBundle\EventListener\ReplaceDynamicScriptTagsListener;
-use HeimrichHannot\GoogleMapsBundle\EventListener\LoadDataContainerListener;
-/**
+use HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel;
+use HeimrichHannot\GoogleMapsBundle\Model\OverlayModel;
+
+/*
  * Backend modules
  */
 $GLOBALS['BE_MOD']['content']['google_maps'] = [
@@ -17,27 +19,13 @@ $GLOBALS['BE_MOD']['content']['google_maps'] = [
     'stylesheet' => 'bundles/heimrichhannotgooglemaps/css/backend.google-maps-bundle.css',
 ];
 
-/**
- * Content elements
- */
-$GLOBALS['TL_CTE']['maps'] = [
-    'google_map' => 'HeimrichHannot\GoogleMapsBundle\Element\ContentGoogleMap',
-];
-
-/**
- * Frontend modules
- */
-$GLOBALS['FE_MOD']['maps'] = [
-    'google_map' => 'HeimrichHannot\GoogleMapsBundle\Module\ModuleGoogleMap',
-];
-
-/**
+/*
  * Models
  */
-$GLOBALS['TL_MODELS']['tl_google_map']         = 'HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel';
-$GLOBALS['TL_MODELS']['tl_google_map_overlay'] = 'HeimrichHannot\GoogleMapsBundle\Model\OverlayModel';
+$GLOBALS['TL_MODELS']['tl_google_map'] = GoogleMapModel::class;
+$GLOBALS['TL_MODELS']['tl_google_map_overlay'] = OverlayModel::class;
 
-/**
+/*
  * Permissions
  */
 $GLOBALS['TL_PERMISSIONS'][] = 'contao_google_maps_bundles';

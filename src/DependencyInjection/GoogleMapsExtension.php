@@ -1,7 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * Copyright (c) 2022 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -9,8 +11,6 @@
 namespace HeimrichHannot\GoogleMapsBundle\DependencyInjection;
 
 use HeimrichHannot\GoogleMapsBundle\EventListener\ConsentBridgeListener;
-use HeimrichHannot\GoogleMapsBundle\EventListener\PrivacyCenterListener;
-use HeimrichHannot\PrivacyCenterBundle\HeimrichHannotPrivacyCenterBundle;
 use Hofff\Contao\Consent\Bridge\HofffContaoConsentBridgeBundle;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -19,15 +19,12 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class GoogleMapsExtension extends Extension
 {
-    public function getAlias()
+    public function getAlias(): string
     {
         return 'huh_google_maps';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
@@ -36,10 +33,6 @@ class GoogleMapsExtension extends Extension
 
         if (!class_exists(HofffContaoConsentBridgeBundle::class)) {
             $container->removeDefinition(ConsentBridgeListener::class);
-        }
-
-        if (!class_exists(HeimrichHannotPrivacyCenterBundle::class)) {
-            $container->removeDefinition(PrivacyCenterListener::class);
         }
     }
 }

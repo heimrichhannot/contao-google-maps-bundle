@@ -1,7 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * Copyright (c) 2023 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -18,6 +20,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 class ApiRenderListener implements EventSubscriberInterface
 {
     private ApiHelper $apiHelper;
+
     private EventDispatcherInterface $eventDispatcher;
 
     public function __construct(ApiHelper $apiHelper, EventDispatcherInterface $eventDispatcher)
@@ -35,7 +38,7 @@ class ApiRenderListener implements EventSubscriberInterface
         ];
     }
 
-    public function onApiRender(ApiEvent $event)
+    public function onApiRender(ApiEvent $event): void
     {
         $event = $this->eventDispatcher->dispatch(new BeforeRenderApiEvent($this->apiHelper, $event));
 

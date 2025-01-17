@@ -1,7 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * Copyright (c) 2023 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -20,8 +22,11 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class MapRendererListener
 {
     protected GoogleMapModel $model;
+
     protected MapManager $manager;
+
     protected MapHelper $mapHelper;
+
     protected ContaoFramework $contaoFramework;
 
     public function __construct(GoogleMapModel $model, MapManager $manager, MapHelper $mapHelper, ContaoFramework $contaoFramework)
@@ -32,22 +37,20 @@ class MapRendererListener
         $this->contaoFramework = $contaoFramework;
     }
 
-    public function renderStylesheet(MapEvent $event, string $eventName, EventDispatcherInterface $dispatcher)
+    public function renderStylesheet(MapEvent $event, string $eventName, EventDispatcherInterface $dispatcher): void
     {
         $this->mapHelper->getEventDispatcher()->removeListener('map.stylesheet', [$this, 'renderStylesheet']);
 
         $responsiveSettings = StringUtil::deserialize($this->model->responsive, true);
 
         // sort by breakpoint asc in order to maintain mobile first
-        usort($responsiveSettings, function ($a, $b) {
-            return $a['breakpoint'] <=> $b['breakpoint'];
-        });
+        usort($responsiveSettings, static fn ($a, $b) => $a['breakpoint'] <=> $b['breakpoint']);
 
         /** @var GoogleMapModel $adapter */
         $adapter = $this->contaoFramework->getAdapter(GoogleMapModel::class);
 
         foreach ($responsiveSettings as $responsiveSetting) {
-            if (empty($responsiveSetting['map']) || null === ($responsiveMapModel = $adapter->findByPk($responsiveSetting['map']))) {
+            if (empty($responsiveSetting['map']) || null === ($responsiveMapModel = $adapter->findById($responsiveSetting['map']))) {
                 continue;
             }
 

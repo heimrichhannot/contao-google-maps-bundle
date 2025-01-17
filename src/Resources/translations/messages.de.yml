@@ -1,2 +1,8 @@
 # labels
 huh.google_maps.label.routing: 'Routenplaner zu Ihrer Adresse:'
+
+huh.google_maps.utils:
+  misc:
+    override:
+      label: '"%fieldname%" überschreiben'
+      desc: 'Klicken Sie hier, um "%fieldname%" zu überschreiben'
