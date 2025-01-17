@@ -25,7 +25,7 @@
     "hofff/contao-consent-bridge": "^1.4"
   },
   "conflict": {
-    "ivory/google-map": "<6.0",
+    "ivory/google-map": "<3.0.4",
     "heimrichhannot/contao-google-maps-list-bundle": "*",
     "hofff/contao-consent-bridge": "<1.4 || >=2.0",
     "heimrichhannot/contao-privacy-center": "<2.10"
@@ -37,13 +37,5 @@
   },
   "extra": {
     "contao-manager-plugin": "HeimrichHannot\\GoogleMapsBundle\\ContaoManager\\Plugin"
-  },
-  "config": {
-    "allow-plugins": {
-      "contao-components/installer": true,
-      "php-http/discovery": true,
-      "dealerdirect/phpcodesniffer-composer-installer": true,
-      "contao/manager-plugin": true
-    }
   }
 }
