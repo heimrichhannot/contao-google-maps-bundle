@@ -15,8 +15,6 @@ use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
 use HeimrichHannot\GoogleMapsBundle\HeimrichHannotGoogleMapsBundle;
-use HeimrichHannot\ListBundle\HeimrichHannotContaoListBundle;
-use HeimrichHannot\ReaderBundle\HeimrichHannotContaoReaderBundle;
 use Hofff\Contao\Consent\Bridge\HofffContaoConsentBridgeBundle;
 
 class Plugin implements BundlePluginInterface
@@ -26,8 +24,6 @@ class Plugin implements BundlePluginInterface
         return [
             BundleConfig::create(HeimrichHannotGoogleMapsBundle::class)->setLoadAfter([
                 ContaoCoreBundle::class,
-                HeimrichHannotContaoReaderBundle::class,
-                HeimrichHannotContaoListBundle::class,
                 HofffContaoConsentBridgeBundle::class,
             ]),
         ];

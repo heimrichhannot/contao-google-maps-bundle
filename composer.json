@@ -26,9 +26,7 @@
   },
   "conflict": {
     "ivory/google-map": "<3.0.4",
-    "heimrichhannot/contao-google-maps-list-bundle": "*",
-    "hofff/contao-consent-bridge": "<1.4 || >=2.0",
-    "heimrichhannot/contao-privacy-center": "<2.10"
+    "hofff/contao-consent-bridge": "<1.4 || >=2.0"
   },
   "autoload": {
     "psr-4": {
