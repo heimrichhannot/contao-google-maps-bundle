@@ -47,13 +47,12 @@ class MapManager
     const GOOGLE_MAPS_STATIC_URL = 'https://maps.googleapis.com/maps/api/staticmap';
 
     protected ContaoFramework $framework;
+
     protected OverlayManager $overlayManager;
+
     protected ModelUtil $modelUtil;
 
-    /**
-     * @var LocationUtil
-     */
-    protected $locationUtil;
+    protected LocationUtil $locationUtil;
 
     /**
      * @var string
@@ -67,18 +66,14 @@ class MapManager
     protected $maps = [];
 
     private MapCollection $mapCollection;
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
-    /**
-     * @var TwigTemplateRenderer
-     */
-    private $renderer;
-    /**
-     * @var TwigTemplateLocator
-     */
-    private $templateLocator;
+
+    private EventDispatcherInterface $eventDispatcher;
+
+    private TwigTemplateRenderer $renderer;
+
+    private TwigTemplateLocator $templateLocator;
+
+    private FileUtil $fileUtil;
 
     public function __construct(
         ContaoFramework $framework,
