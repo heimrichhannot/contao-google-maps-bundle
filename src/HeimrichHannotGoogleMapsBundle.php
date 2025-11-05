@@ -19,4 +19,11 @@ class HeimrichHannotGoogleMapsBundle extends Bundle
     {
         return new GoogleMapsExtension();
     }
+
+    public function getPath(): string
+    {
+        return \dirname(__DIR__);
+    }
+
+
 }

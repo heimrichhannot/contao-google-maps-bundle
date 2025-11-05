@@ -26,10 +26,9 @@ class GoogleMapsExtension extends Extension
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../../config'));
 
-        $loader->load('services.yml');
-        $loader->load('twig.yml');
+        $loader->load('services.yaml');
 
         if (!class_exists(HofffContaoConsentBridgeBundle::class)) {
             $container->removeDefinition(ConsentBridgeListener::class);
