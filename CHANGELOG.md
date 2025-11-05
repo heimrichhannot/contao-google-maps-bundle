@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.11.2] - 2025-03-24
+- Fixed: deprecation warning in MapManager
+
 ## [2.11.1] - 2024-04-30
 - Fixed: exception in user groups configuration
 
