@@ -4,30 +4,29 @@
   "description": "This bundle adds google maps integration to Contao.",
   "license": "LGPL-3.0-or-later",
   "require": {
-    "php": "^7.4 || ^8.0",
-    "contao/core-bundle": "^4.9",
-    "doctrine/dbal": "^2.11 || ^3.0",
-    "heimrichhannot/contao-twig-support-bundle": "^0.2.16 || ^1.0",
-    "heimrichhannot/contao-utils-bundle": "^2.213",
-    "ivory/google-map": "^3.0 || ^5.0 || ^6.0",
-    "mvo/contao-group-widget": "^1.4",
-    "symfony/config": "^4.4 || ^5.0",
-    "symfony/console": "^4.4 || ^5.0",
-    "symfony/dependency-injection": "^4.4 || ^5.0",
-    "symfony/event-dispatcher": "^4.4 || ^5.0",
-    "symfony/http-foundation": "^4.4 || ^5.0",
-    "symfony/http-kernel": "^4.4 || ^5.0",
-    "twig/twig": "^1.38.1 || ^2.7.1 || ^3.0"
+    "php": "^8.1",
+    "contao/core-bundle": "^5.3",
+    "doctrine/dbal": "^3.6",
+    "heimrichhannot/contao-utils-bundle": "^3.6",
+    "ivory/google-map": "^6.0",
+    "mvo/contao-group-widget": "^1.5",
+    "symfony/config": "^6.4",
+    "symfony/console": "^6.4",
+    "symfony/dependency-injection": "^6.4",
+    "symfony/event-dispatcher": "^6.4",
+    "symfony/http-foundation": "^6.4",
+    "symfony/http-kernel": "^6.4",
+    "twig/twig": "^3.10.2"
   },
   "require-dev": {
-    "contao/easy-coding-standard": "^3.4",
+    "contao/easy-coding-standard": "^6.0",
+    "contao/manager-plugin": "^2.0",
+    "guzzlehttp/guzzle": "^7.9",
     "hofff/contao-consent-bridge": "^1.4"
   },
   "conflict": {
     "ivory/google-map": "<3.0.4",
-    "heimrichhannot/contao-google-maps-list-bundle": "*",
-    "hofff/contao-consent-bridge": "<1.4 || >=2.0",
-    "heimrichhannot/contao-privacy-center": "<2.10"
+    "hofff/contao-consent-bridge": "<1.4 || >=2.0"
   },
   "autoload": {
     "psr-4": {

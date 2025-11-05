@@ -1,7 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * Copyright (c) 2023 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -15,7 +17,9 @@ use Symfony\Contracts\EventDispatcher\Event;
 class BeforeRenderApiEvent extends Event
 {
     private ?string $code = null;
+
     private ApiHelper $apiHelper;
+
     private ApiEvent $event;
 
     public function __construct(ApiHelper $apiHelper, ApiEvent $event)

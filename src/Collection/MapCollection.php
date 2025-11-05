@@ -1,7 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -16,11 +18,11 @@ use Ivory\GoogleMap\Map;
 class MapCollection
 {
     /**
-     * @var Map[]
+     * @var array<Map>
      */
     protected $maps = [];
 
-    public function addMap(Map $map, ?int $mapConfigId)
+    public function addMap(Map $map, ?int $mapConfigId): void
     {
         $this->maps[] = ['map' => $map, 'id' => $mapConfigId];
     }
@@ -28,7 +30,7 @@ class MapCollection
     /**
      * Return only map objects.
      *
-     * @return Map[]
+     * @return array<Map>
      */
     public function getMaps()
     {

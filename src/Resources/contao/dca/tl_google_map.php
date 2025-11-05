@@ -1,30 +1,33 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * Copyright (c) 2022 Heimrich & Hannot GmbH
+ * Copyright (c) 2024 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
 
 use Contao\Controller;
+use Contao\DC_Table;
 use Contao\System;
-use HeimrichHannot\GoogleMapsBundle\DataContainer\GoogleMap;
+use HeimrichHannot\GoogleMapsBundle\EventListener\DataContainer\GoogleMapListener;
 use Ivory\GoogleMap\MapTypeId;
 
 $GLOBALS['TL_DCA']['tl_google_map'] = [
     'config' => [
-        'dataContainer' => 'Table',
+        'dataContainer' => DC_Table::class,
         'ctable' => ['tl_google_map_overlay'],
         'switchToEdit' => true,
         'enableVersioning' => true,
         'onload_callback' => [
-            ['huh.google_maps.data_container.google_map', 'checkPermission'],
+            // ['huh.google_maps.data_container.google_map', 'checkPermission'],
         ],
         'onsubmit_callback' => [
-            ['huh.utils.dca', 'setDateAdded'],
+            ['huh.google_maps.utils.dca', 'setDateAdded'],
         ],
         'oncopy_callback' => [
-            ['huh.utils.dca', 'setDateAddedOnCopy'],
+            ['huh.google_maps.utils.dca', 'setDateAddedOnCopy'],
         ],
         'sql' => [
             'keys' => [
@@ -42,52 +45,6 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'fields' => ['title', 'type'],
             'headerFields' => ['title'],
             'panelLayout' => 'filter;sort,search,limit',
-        ],
-        'global_operations' => [
-            'all' => [
-                'label' => &$GLOBALS['TL_LANG']['MSC']['all'],
-                'href' => 'act=select',
-                'class' => 'header_edit_all',
-                'attributes' => 'onclick="Backend.getScrollOffset();"',
-            ],
-        ],
-        'operations' => [
-            'edit' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_google_map']['edit'],
-                'href' => 'table=tl_google_map_overlay',
-                'button_callback' => ['huh.google_maps.data_container.google_map', 'edit'],
-                'icon' => 'edit.svg',
-            ],
-            'editheader' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_google_map']['editheader'],
-                'href' => 'act=edit',
-                'icon' => 'header.svg',
-                'button_callback' => ['huh.google_maps.data_container.google_map', 'editHeader'],
-            ],
-            'copy' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_google_map']['copy'],
-                'href' => 'act=copy',
-                'icon' => 'copy.svg',
-                'button_callback' => ['huh.google_maps.data_container.google_map', 'copyArchive'],
-            ],
-            'delete' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_google_map']['copy'],
-                'href' => 'act=delete',
-                'icon' => 'delete.svg',
-                'attributes' => 'onclick="if(!confirm(\''.($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null)
-                    .'\'))return false;Backend.getScrollOffset()"',
-                'button_callback' => ['huh.google_maps.data_container.google_map', 'deleteArchive'],
-            ],
-            'toggle' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_google_map']['toggle'],
-                'href' => 'act=toggle',
-                'icon' => 'toggle.svg',
-            ],
-            'show' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_google_map']['show'],
-                'href' => 'act=show',
-                'icon' => 'show.svg',
-            ],
         ],
     ],
     'palettes' => [
@@ -124,19 +81,19 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
     ],
     'subpalettes' => [
         // visualization
-        'sizeMode_'.GoogleMap::SIZE_MODE_ASPECT_RATIO => 'aspectRatioX,aspectRatioY',
-        'sizeMode_'.GoogleMap::SIZE_MODE_STATIC => 'width,height',
+        'sizeMode_'.GoogleMapListener::SIZE_MODE_ASPECT_RATIO => 'aspectRatioX,aspectRatioY',
+        'sizeMode_'.GoogleMapListener::SIZE_MODE_STATIC => 'width,height',
         'addClusterer' => 'clustererImg',
         // behavior
         'staticMapNoscript' => 'staticMapWidth,staticMapHeight',
         // positioning
-        'positioningMode_'.GoogleMap::POSITIONING_MODE_STANDARD => 'centerMode,zoom',
-        'positioningMode_'.GoogleMap::POSITIONING_MODE_BOUND => 'boundMode',
+        'positioningMode_'.GoogleMapListener::POSITIONING_MODE_STANDARD => 'centerMode,zoom',
+        'positioningMode_'.GoogleMapListener::POSITIONING_MODE_BOUND => 'boundMode',
         'boundMode_'
-        .GoogleMap::BOUND_MODE_COORDINATES => 'boundNorthEastLat,boundNorthEastLng,boundSouthWestLat,boundSouthWestLng',
-        'boundMode_'.GoogleMap::BOUND_MODE_AUTOMATIC => '',
-        'centerMode_'.GoogleMap::CENTER_MODE_COORDINATE => 'centerLat,centerLng',
-        'centerMode_'.GoogleMap::CENTER_MODE_STATIC_ADDRESS => 'centerAddress',
+        .GoogleMapListener::BOUND_MODE_COORDINATES => 'boundNorthEastLat,boundNorthEastLng,boundSouthWestLat,boundSouthWestLng',
+        'boundMode_'.GoogleMapListener::BOUND_MODE_AUTOMATIC => '',
+        'centerMode_'.GoogleMapListener::CENTER_MODE_COORDINATE => 'centerLat,centerLng',
+        'centerMode_'.GoogleMapListener::CENTER_MODE_STATIC_ADDRESS => 'centerAddress',
         // controls
         'addMapTypeControl' => 'mapTypeControlPos,mapTypeControlStyle',
         'addZoomControl' => 'zoomControlPos',
@@ -163,15 +120,14 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
         ],
         'type' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['type'],
-            'exclude' => true,
             'search' => true,
             'flag' => 12,
             'sorting' => true,
             'default' => 'base',
             'inputType' => 'select',
             'options' => [
-                GoogleMap::MAP_TYPE_BASE,
-                GoogleMap::MAP_TYPE_RESPONSIVE,
+                GoogleMapListener::MAP_TYPE_BASE,
+                GoogleMapListener::MAP_TYPE_RESPONSIVE,
             ],
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map']['reference'],
             'eval' => ['mandatory' => true, 'submitOnChange' => true],
@@ -179,7 +135,6 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
         ],
         'title' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['title'],
-            'exclude' => true,
             'search' => true,
             'sorting' => true,
             'flag' => 1,
@@ -189,7 +144,6 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
         ],
         'htmlId' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['htmlId'],
-            'exclude' => true,
             'search' => true,
             'inputType' => 'text',
             'eval' => ['maxlength' => 64, 'tl_class' => 'w50'],
@@ -198,41 +152,38 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
         // visualization
         'mapType' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['mapType'],
-            'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options' => GoogleMap::TYPES,
+            'options' => GoogleMapListener::TYPES,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map']['reference'],
             'eval' => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true],
             'sql' => "varchar(64) NOT NULL default '".MapTypeId::ROADMAP."'",
         ],
         'sizeMode' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['sizeMode'],
-            'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options' => GoogleMap::SIZE_MODES,
+            'options' => GoogleMapListener::SIZE_MODES,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map']['reference'],
             'eval' => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
-            'sql' => "varchar(64) NOT NULL default '".GoogleMap::SIZE_MODE_ASPECT_RATIO."'",
+            'sql' => "varchar(64) NOT NULL default '".GoogleMapListener::SIZE_MODE_ASPECT_RATIO."'",
         ],
         'width' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['width'],
             'inputType' => 'inputUnit',
-            'options' => $GLOBALS['TL_CSS_UNITS'],
+            'options' => ['px', '%', 'em', 'rem'],
             'eval' => ['includeBlankOption' => true, 'rgxp' => 'digit_auto_inherit', 'maxlength' => 20, 'tl_class' => 'w50'],
             'sql' => "varchar(64) NOT NULL default ''",
         ],
         'height' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['height'],
             'inputType' => 'inputUnit',
-            'options' => $GLOBALS['TL_CSS_UNITS'],
+            'options' => ['px', '%', 'em', 'rem'],
             'eval' => ['includeBlankOption' => true, 'rgxp' => 'digit_auto_inherit', 'maxlength' => 20, 'tl_class' => 'w50'],
             'sql' => "varchar(64) NOT NULL default ''",
         ],
         'aspectRatioX' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['aspectRatioX'],
-            'exclude' => true,
             'search' => true,
             'inputType' => 'text',
             'eval' => ['rgxp' => 'digit', 'maxlength' => 5, 'tl_class' => 'w50', 'mandatory' => true],
@@ -240,7 +191,6 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
         ],
         'aspectRatioY' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['aspectRatioY'],
-            'exclude' => true,
             'search' => true,
             'inputType' => 'text',
             'eval' => ['rgxp' => 'digit', 'maxlength' => 5, 'tl_class' => 'w50', 'mandatory' => true],
@@ -248,7 +198,6 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
         ],
         'addClusterer' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['addClusterer'],
-            'exclude' => true,
             'filter' => true,
             'inputType' => 'checkbox',
             'eval' => ['submitOnChange' => true, 'tl_class' => 'clr m12'],
@@ -256,7 +205,6 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
         ],
         'clustererImg' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['clustererImg'],
-            'exclude' => true,
             'search' => true,
             'inputType' => 'text',
             'eval' => ['mandatory' => false, 'maxlength' => 255],
@@ -264,7 +212,6 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
         ],
         'styles' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['styles'],
-            'exclude' => true,
             'search' => true,
             'inputType' => 'textarea',
             'eval' => ['allowHtml' => true, 'tl_class' => 'clr', 'class' => 'monospace', 'rte' => 'ace|js', 'helpwizard' => true],
@@ -274,35 +221,30 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
         // behavior
         'disableDoubleClickZoom' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['disableDoubleClickZoom'],
-            'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => ['tl_class' => 'w50'],
             'sql' => "char(1) NOT NULL default '1'",
         ],
         'scrollwheel' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['scrollwheel'],
-            'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => ['tl_class' => 'w50'],
             'sql' => "char(1) NOT NULL default ''",
         ],
         'draggable' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['draggable'],
-            'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => ['tl_class' => 'w50'],
             'sql' => "char(1) NOT NULL default '1'",
         ],
         'staticMapNoscript' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['staticMapNoscript'],
-            'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => ['tl_class' => 'w50', 'submitOnChange' => true],
             'sql' => "char(1) NOT NULL default '1'",
         ],
         'staticMapWidth' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['staticMapWidth'],
-            'exclude' => true,
             'search' => true,
             'inputType' => 'text',
             'eval' => ['rgxp' => 'digit', 'maxlength' => 10, 'tl_class' => 'w50', 'mandatory' => true],
@@ -310,7 +252,6 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
         ],
         'staticMapHeight' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['staticMapHeight'],
-            'exclude' => true,
             'search' => true,
             'inputType' => 'text',
             'eval' => ['rgxp' => 'digit', 'maxlength' => 10, 'tl_class' => 'w50', 'mandatory' => true],
@@ -319,27 +260,24 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
         // positioning
         'positioningMode' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['positioningMode'],
-            'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options' => GoogleMap::POSITIONING_MODES,
+            'options' => GoogleMapListener::POSITIONING_MODES,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map']['reference'],
             'eval' => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
             'sql' => "varchar(64) NOT NULL default ''",
         ],
         'boundMode' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['boundMode'],
-            'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options' => GoogleMap::BOUND_MODES,
+            'options' => GoogleMapListener::BOUND_MODES,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map']['reference'],
             'eval' => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
             'sql' => "varchar(64) NOT NULL default ''",
         ],
         'boundNorthEastLat' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['boundNorthEastLat'],
-            'exclude' => true,
             'search' => true,
             'inputType' => 'text',
             'eval' => ['rgxp' => 'digit', 'maxlength' => 16, 'tl_class' => 'w50', 'mandatory' => true],
@@ -347,7 +285,6 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
         ],
         'boundNorthEastLng' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['boundNorthEastLng'],
-            'exclude' => true,
             'search' => true,
             'inputType' => 'text',
             'eval' => ['rgxp' => 'digit', 'maxlength' => 16, 'tl_class' => 'w50', 'mandatory' => true],
@@ -355,7 +292,6 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
         ],
         'boundSouthWestLat' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['boundSouthWestLat'],
-            'exclude' => true,
             'search' => true,
             'inputType' => 'text',
             'eval' => ['rgxp' => 'digit', 'maxlength' => 16, 'tl_class' => 'w50', 'mandatory' => true],
@@ -363,7 +299,6 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
         ],
         'boundSouthWestLng' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['boundSouthWestLng'],
-            'exclude' => true,
             'search' => true,
             'inputType' => 'text',
             'eval' => ['rgxp' => 'digit', 'maxlength' => 16, 'tl_class' => 'w50', 'mandatory' => true],
@@ -371,17 +306,15 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
         ],
         'centerMode' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['centerMode'],
-            'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options' => GoogleMap::CENTER_MODES,
+            'options' => GoogleMapListener::CENTER_MODES,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map']['reference'],
             'eval' => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
             'sql' => "varchar(64) NOT NULL default ''",
         ],
         'centerLat' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['centerLat'],
-            'exclude' => true,
             'search' => true,
             'inputType' => 'text',
             'eval' => ['rgxp' => 'digit', 'maxlength' => 16, 'tl_class' => 'w50', 'mandatory' => true],
@@ -389,7 +322,6 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
         ],
         'centerLng' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['centerLng'],
-            'exclude' => true,
             'search' => true,
             'inputType' => 'text',
             'eval' => ['rgxp' => 'digit', 'maxlength' => 16, 'tl_class' => 'w50', 'mandatory' => true],
@@ -403,7 +335,6 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
         ],
         'centerAddress' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['centerAddress'],
-            'exclude' => true,
             'search' => true,
             'inputType' => 'text',
             'eval' => ['maxlength' => 255, 'tl_class' => 'w50', 'mandatory' => true],
@@ -411,7 +342,6 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
         ],
         'zoom' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['zoom'],
-            'exclude' => true,
             'search' => true,
             'inputType' => 'text',
             'eval' => ['rgxp' => 'digit', 'maxlength' => 2, 'tl_class' => 'w50', 'mandatory' => true],
@@ -420,105 +350,92 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
         // controls
         'mapTypesAvailable' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['mapTypesAvailable'],
-            'exclude' => true,
             'inputType' => 'checkbox',
-            'options' => GoogleMap::TYPES,
+            'options' => GoogleMapListener::TYPES,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map']['reference'],
             'eval' => ['mandatory' => true, 'multiple' => true, 'tl_class' => 'w50 autoheight'],
-            'sql' => "varchar(255) NOT NULL default '".serialize(GoogleMap::TYPES)."'",
+            'sql' => "varchar(255) NOT NULL default '".serialize(GoogleMapListener::TYPES)."'",
         ],
         'addMapTypeControl' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['addMapTypeControl'],
-            'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => ['submitOnChange' => true, 'tl_class' => 'w50 clr'],
             'sql' => "char(1) NOT NULL default '1'",
         ],
         'mapTypeControlStyle' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['controlStyle'],
-            'exclude' => true,
             'inputType' => 'select',
-            'options' => GoogleMap::MAP_CONTROL_STYLES,
+            'options' => GoogleMapListener::MAP_CONTROL_STYLES,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map']['reference'],
             'eval' => ['mandatory' => true, 'tl_class' => 'w50'],
             'sql' => "varchar(16) NOT NULL default 'default'",
         ],
         'mapTypeControlPos' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['controlPos'],
-            'exclude' => true,
             'inputType' => 'radioTable',
-            'options' => GoogleMap::POSITIONS,
+            'options' => GoogleMapListener::POSITIONS,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map']['reference'],
             'eval' => ['cols' => 3, 'tl_class' => 'google-maps-bundle w50 autoheight'],
             'sql' => "varchar(16) NOT NULL default 'top_right'",
         ],
         'addZoomControl' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['addZoomControl'],
-            'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => ['submitOnChange' => true, 'tl_class' => 'w50 clr'],
             'sql' => "char(1) NOT NULL default '1'",
         ],
         'zoomControlPos' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['controlPos'],
-            'exclude' => true,
             'inputType' => 'radioTable',
-            'options' => GoogleMap::POSITIONS,
+            'options' => GoogleMapListener::POSITIONS,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map']['reference'],
             'eval' => ['cols' => 3, 'tl_class' => 'google-maps-bundle w50 autoheight'],
             'sql' => "varchar(16) NOT NULL default 'top_left'",
         ],
         'addRotateControl' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['addRotateControl'],
-            'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => ['submitOnChange' => true, 'tl_class' => 'w50 clr'],
             'sql' => "char(1) NOT NULL default '1'",
         ],
         'rotateControlPos' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['controlPos'],
-            'exclude' => true,
             'inputType' => 'radioTable',
-            'options' => GoogleMap::POSITIONS,
+            'options' => GoogleMapListener::POSITIONS,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map']['reference'],
             'eval' => ['cols' => 3, 'tl_class' => 'google-maps-bundle w50 autoheight'],
             'sql' => "varchar(16) NOT NULL default 'top_left'",
         ],
         'addFullscreenControl' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['addFullscreenControl'],
-            'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => ['submitOnChange' => true, 'tl_class' => 'w50 clr'],
             'sql' => "char(1) NOT NULL default '1'",
         ],
         'fullscreenControlPos' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['controlPos'],
-            'exclude' => true,
             'inputType' => 'radioTable',
-            'options' => GoogleMap::POSITIONS,
+            'options' => GoogleMapListener::POSITIONS,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map']['reference'],
             'eval' => ['cols' => 3, 'tl_class' => 'google-maps-bundle w50 autoheight'],
             'sql' => "varchar(16) NOT NULL default 'top_left'",
         ],
         'addStreetViewControl' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['addStreetViewControl'],
-            'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => ['submitOnChange' => true, 'tl_class' => 'w50 clr'],
             'sql' => "char(1) NOT NULL default '1'",
         ],
         'streetViewControlPos' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['controlPos'],
-            'exclude' => true,
             'inputType' => 'radioTable',
-            'options' => GoogleMap::POSITIONS,
+            'options' => GoogleMapListener::POSITIONS,
             'reference' => &$GLOBALS['TL_LANG']['tl_google_map']['reference'],
             'eval' => ['cols' => 3, 'tl_class' => 'google-maps-bundle w50 autoheight'],
             'sql' => "varchar(16) NOT NULL default 'top_left'",
         ],
         'addScaleControl' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['addScaleControl'],
-            'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => ['tl_class' => 'w50 clr'],
             'sql' => "char(1) NOT NULL default '1'",
@@ -526,14 +443,12 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
         'responsive' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['responsive'],
             'inputType' => 'multiColumnEditor',
-            'exclude' => true,
             'eval' => [
                 'tl_class' => 'clr',
                 'multiColumnEditor' => [
                     'fields' => [
                         'breakpoint' => [
                             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['responsive_breakpoint'],
-                            'exclude' => true,
                             'inputType' => 'text',
                             'eval' => [
                                 'groupStyle' => 'width:100px',
@@ -557,18 +472,14 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
         // template
         'template' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['template'],
-            'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => function () {
-                return System::getContainer()->get('huh.utils.choice.twig_template')->getCachedChoices(['gmap_map_']);
-            },
+            'options_callback' => static fn () => Controller::getTemplateGroup('gmap_map_'),
             'eval' => ['tl_class' => 'w50', 'includeBlankOption' => true],
             'sql' => "varchar(64) NOT NULL default ''",
         ],
         'overrideLanguage' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['overrideLanguage'],
-            'exclude' => true,
             'filter' => true,
             'inputType' => 'checkbox',
             'eval' => ['doNotCopy' => true, 'submitOnChange' => true],
@@ -576,7 +487,6 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
         ],
         'language' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['language'],
-            'exclude' => true,
             'search' => true,
             'inputType' => 'text',
             'eval' => ['mandatory' => true, 'rgxp' => 'language', 'maxlength' => 5, 'nospace' => true, 'doNotCopy' => true, 'tl_class' => 'w50'],
@@ -586,5 +496,5 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
 ];
 
 Controller::loadDataContainer('tl_settings');
-System::getContainer()->get('huh.utils.dca')->addOverridableFields(['googlemaps_apiKey'], 'tl_settings', 'tl_google_map');
+System::getContainer()->get('huh.google_maps.utils.dca')->addOverridableFields(['googlemaps_apiKey'], 'tl_settings', 'tl_google_map');
 $GLOBALS['TL_DCA']['tl_google_map']['fields']['googlemaps_apiKey']['sql'] = "varchar(255) NOT NULL default ''";
