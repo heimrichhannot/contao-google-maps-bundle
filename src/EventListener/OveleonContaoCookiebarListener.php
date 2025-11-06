@@ -46,9 +46,9 @@ class OveleonContaoCookiebarListener
         $dca = &$GLOBALS['TL_DCA']['tl_cookie'];
         $dca['fields']['type']['options'][] = static::TYPE;
         $dca['palettes'][self::TYPE] = $dca['palettes']['default'];
-        PaletteManipulator::create()
-            ->addField('blockTemplate', 'description_legend', PaletteManipulator::POSITION_APPEND)
-            ->applyToPalette(self::TYPE, 'tl_cookie');
+//        PaletteManipulator::create()
+//            ->addField('blockTemplate', 'description_legend', PaletteManipulator::POSITION_APPEND)
+//            ->applyToPalette(self::TYPE, 'tl_cookie');
     }
 
     #[AsCallback(table: 'tl_cookie', target: 'fields.token.load')]
