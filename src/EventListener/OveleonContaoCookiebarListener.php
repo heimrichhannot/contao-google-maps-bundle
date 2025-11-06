@@ -147,7 +147,7 @@ class OveleonContaoCookiebarListener
             }
 
             // renew $content because using insertTags in modules it could be that contentModel and moduleModel is set
-            $content = $this->parseTemplates($moduleModel, $content);
+            $content = $this->parseTemplates($moduleModel, $content, $request);
             $response->setContent($content);
         }
     }
@@ -228,18 +228,15 @@ class OveleonContaoCookiebarListener
         }
         $canvas = $matches[0][0];
         $template = '@Contao/'.($configModel->blockTemplate ?: 'ccb/element_blocker').'.html.twig';
-        $twigTemplate = $this->environment->load($template);
-        $strBlockUrl = '/cookiebar/block/' . $page->language . '/' . $config['id'] . '?redirect='.urlencode($request->getUri());
         $strBlockUrl = $request->getUri();
 
-        $context = [
+        $blocker = $this->twig->render('@Contao/oveleon_cookiebar/blocker/default.html.twig', [
             'cookie' => array_merge($configModel->row(), [
                 'iframeType' => 'googlemaps',
             ]),
             'redirect' => $strBlockUrl,
             'locale' => $page->language,
-        ];
-        $blocker = $this->renderBlocker($twigTemplate, $context, $strBlockUrl);
+        ]);
 
         $html = preg_replace(
             '/(<div id="'.$canvas.'"[^>]*>)/',
@@ -248,49 +245,6 @@ class OveleonContaoCookiebarListener
         );
 
         return $html;
-
-
-
-
-        return $content;
-    }
-
-    /**
-     * @param TemplateWrapper $twigTemplate
-     * @param array $context
-     * @param string $blocker
-     * @return string
-     */
-    private function renderBlocker(TemplateWrapper $twigTemplate, array $context, string $redirect): string
-    {
-        $blocker = <<< SCRIPT
-            <script>
-            // Check if the cookie bar is ready, otherwise respond to document load (#148)
-            if (window.cookiebar) {
-                redirectIfNecessary()
-            } else {
-                window.addEventListener('load', () => {
-                    redirectIfNecessary()
-                })
-            }
-            function redirectIfNecessary() {
-                if (window.cookiebar.cookieExists({$context['cookie']['id']})) {
-                    const decoder = document.createElement('textarea');
-                    decoder.innerHTML = '{$redirect}';
-                    window.frameElement.src = '{$redirect}';
-                    window.location.href = decoder.value;
-                }
-                window.frames.frameElement
-            }
-            </script>
-            SCRIPT;
-
-
-$blocker = '';
-//        $blocker .= $twigTemplate->renderBlock('script', $context);
-        $blocker .= $twigTemplate->renderBlock('styles', $context);
-        $blocker .= $twigTemplate->renderBlock('body', $context);
-        return $blocker;
     }
 
 }

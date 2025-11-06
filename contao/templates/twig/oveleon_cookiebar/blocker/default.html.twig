@@ -1,0 +1,11 @@
+{% use "@Contao/ccb/_styles.html.twig" %}
+
+{{ block('styles') }}
+<div class="ccb-element-blocker {{ cookie.type }}">
+    {% block blocker_content %}
+        <div class="cc-icon {{ cookie.iframeType }}"></div>
+        <div class="cc-title">{{ cookie.title }}</div>
+        <div class="cc-description">{{ cookie.blockDescription|default|csp_inline_styles|insert_tag|encode_email|raw }}</div>
+        <button class="cc-btn cc-focus" onclick="parent.cookiebar.unblock(this, {{ cookie.id }}, '{{ redirect }}')">{{ 'tl_cookiebar.acceptAndDisplayLabel'|trans({}, 'contao_default', locale) }}</button>
+    {% endblock %}
+</div>
