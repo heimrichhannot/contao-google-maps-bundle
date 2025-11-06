@@ -19,9 +19,11 @@ use HeimrichHannot\GoogleMapsBundle\Util\ArrayUtil;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-#[AsFrontendModule('google_map', category: 'maps', template: 'mod_google_map')]
+#[AsFrontendModule(self::TYPE, category: 'maps', template: 'mod_google_map')]
 class GoogleMapsFrontendModuleController extends AbstractFrontendModuleController
 {
+    public const TYPE = 'google_map';
+
     protected MapManager $mapManager;
 
     public function __construct(MapManager $mapManager)
