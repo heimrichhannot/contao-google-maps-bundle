@@ -29,7 +29,7 @@ class OveleonContaoCookiebarListener
 
     public function __construct(
         private readonly Utils $utils,
-        private readonly Environment $twig, private readonly Environment $environment,
+        private readonly Environment $twig,
     )
     {
     }
@@ -185,7 +185,7 @@ class OveleonContaoCookiebarListener
             SCRIPT;
     }
 
-    private function maskExternalResource(string $resource, int $configId, string $name)
+    private function maskExternalResource(string $resource, int $configId, string $name): string
     {
         $script = <<< SCRIPT
             const script = document.createElement('script');
@@ -225,7 +225,7 @@ class OveleonContaoCookiebarListener
             return $content;
         }
         $canvas = $matches[0][0];
-        $template = '@Contao/'.($configModel->blockTemplate ?: 'ccb/element_blocker').'.html.twig';
+//        $template = '@Contao/'.($configModel->blockTemplate ?: 'ccb/element_blocker').'.html.twig';
         $strBlockUrl = $request->getUri();
 
         $blocker = $this->twig->render('@Contao/oveleon_cookiebar/blocker/default.html.twig', [
