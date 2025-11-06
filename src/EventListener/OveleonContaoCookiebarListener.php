@@ -3,7 +3,6 @@
 namespace HeimrichHannot\GoogleMapsBundle\EventListener;
 
 use Contao\ContentModel;
-use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\DataContainer;
@@ -23,7 +22,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\String\ByteString;
 use Twig\Environment;
-use Twig\TemplateWrapper;
 
 class OveleonContaoCookiebarListener
 {
