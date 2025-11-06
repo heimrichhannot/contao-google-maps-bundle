@@ -22,9 +22,11 @@ use HeimrichHannot\UtilsBundle\Util\Utils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-#[AsContentElement('google_map', category: 'maps', template: 'ce_google_map')]
+#[AsContentElement(self::TYPE, category: 'maps', template: 'ce_google_map')]
 class GoogleMapsElementController extends AbstractContentElementController
 {
+    public const TYPE = 'google_map';
+
     protected MapManager $mapManager;
 
     private ScopeMatcher $scopeMatcher;

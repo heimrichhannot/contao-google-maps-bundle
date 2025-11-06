@@ -2,9 +2,13 @@
 
 namespace HeimrichHannot\GoogleMapsBundle\EventListener;
 
+use Contao\ContentModel;
+use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\DataContainer;
+use Contao\ModuleModel;
+use HeimrichHannot\GoogleMapsBundle\Controller\ContentElement\GoogleMapsElementController;
 use HeimrichHannot\GoogleMapsBundle\Event\BeforeRenderApiEvent;
 use HeimrichHannot\UtilsBundle\Util\Utils;
 use Ivory\GoogleMap\Helper\Event\ApiEvents;
@@ -13,17 +17,21 @@ use Ivory\GoogleMap\Helper\Renderer\Utility\SourceRenderer;
 use Ivory\GoogleMap\Helper\Subscriber\ApiJavascriptSubscriber;
 use Oveleon\ContaoCookiebar\Cookie;
 use Oveleon\ContaoCookiebar\Cookiebar;
+use Oveleon\ContaoCookiebar\Model\CookieModel;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\String\ByteString;
+use Twig\Environment;
+use Twig\TemplateWrapper;
 
 class OveleonContaoCookiebarListener
 {
     public const TYPE = 'huh_google_maps';
 
-    private bool $dirty = false;
-
     public function __construct(
         private readonly Utils $utils,
+        private readonly Environment $twig, private readonly Environment $environment,
     )
     {
     }
@@ -37,15 +45,17 @@ class OveleonContaoCookiebarListener
 
         $dca = &$GLOBALS['TL_DCA']['tl_cookie'];
         $dca['fields']['type']['options'][] = static::TYPE;
-        $dca['palettes']['huh_google_maps'] = $dca['palettes']['default'];
+        $dca['palettes'][self::TYPE] = $dca['palettes']['default'];
+        PaletteManipulator::create()
+            ->addField('blockTemplate', 'description_legend', PaletteManipulator::POSITION_APPEND)
+            ->applyToPalette(self::TYPE, 'tl_cookie');
     }
 
     #[AsCallback(table: 'tl_cookie', target: 'fields.token.load')]
     public function requireField(mixed $varValue, DataContainer $dc): mixed
     {
-        if ((string)$dc->activeRecord->type === static::TYPE)
-        {
-            $GLOBALS['TL_DCA']['tl_cookie']['fields'][ $dc->field ]['eval']['mandatory'] = false;
+        if ((string)$dc->activeRecord->type === static::TYPE) {
+            $GLOBALS['TL_DCA']['tl_cookie']['fields'][$dc->field]['eval']['mandatory'] = false;
         }
 
         return $varValue;
@@ -110,6 +120,38 @@ class OveleonContaoCookiebarListener
         $event->setCode($event->getApiEvent()->getCode());
     }
 
+    #[AsEventListener(event: 'kernel.response')]
+    public function onKernelResponse(ResponseEvent $event): void
+    {
+        $request = $event->getRequest();
+        $response = $event->getResponse();
+        $content = $response->getContent();
+
+        if ($request->attributes->has('contentModel')) {
+            $contentModel = $request->attributes->get('contentModel');
+
+            if (!$contentModel instanceof ContentModel) {
+                $contentModel = ContentModel::findByPk($contentModel);
+            }
+
+            // renew $content because using insertTags in modules it could be that contentModel and moduleModel is set
+            $content = $this->parseTemplates($contentModel, $content, $request);
+            $response->setContent($content);
+        }
+
+        if ($request->attributes->has('moduleModel')) {
+            $moduleModel = $request->attributes->get('moduleModel');
+
+            if (!$moduleModel instanceof ModuleModel) {
+                $moduleModel = ModuleModel::findByPk($moduleModel);
+            }
+
+            // renew $content because using insertTags in modules it could be that contentModel and moduleModel is set
+            $content = $this->parseTemplates($moduleModel, $content);
+            $response->setContent($content);
+        }
+    }
+
     private function findConfig(): ?array
     {
         $config = Cookiebar::getConfigByPage($this->utils->request()->getCurrentRootPageModel());
@@ -160,7 +202,95 @@ class OveleonContaoCookiebarListener
     private function addScriptToGlobals(string $script): void
     {
         $nonce = ByteString::fromRandom(4, '0123456789')->toString();
-        $GLOBALS['TL_BODY']['huhGoogleMaps_'.$nonce] = $script;
+        $GLOBALS['TL_BODY']['huhGoogleMaps_' . $nonce] = $script;
+    }
+
+    private function parseTemplates(ContentModel|ModuleModel $moduleModel, string|bool $content, Request $request): bool|string
+    {
+        if ($moduleModel->type !== GoogleMapsElementController::TYPE) {
+            return $content;
+        }
+
+        $page = $this->utils->request()->getCurrentRootPageModel();
+        $config = $this->findConfig();
+        if (null === $config) {
+            return $content;
+        }
+        $configModel = CookieModel::findByPk($config['id']);
+        if (null === $configModel) {
+            return $content;
+        }
+
+        $matches = [];
+        preg_match_all('/map_canvas_[a-z0-9]+/', $content, $matches);
+        if (empty($matches[0])) {
+            return $content;
+        }
+        $canvas = $matches[0][0];
+        $template = '@Contao/'.($configModel->blockTemplate ?: 'ccb/element_blocker').'.html.twig';
+        $twigTemplate = $this->environment->load($template);
+        $strBlockUrl = '/cookiebar/block/' . $page->language . '/' . $config['id'] . '?redirect='.urlencode($request->getUri());
+        $strBlockUrl = $request->getUri();
+
+        $context = [
+            'cookie' => array_merge($configModel->row(), [
+                'iframeType' => 'googlemaps',
+            ]),
+            'redirect' => $strBlockUrl,
+            'locale' => $page->language,
+        ];
+        $blocker = $this->renderBlocker($twigTemplate, $context, $strBlockUrl);
+
+        $html = preg_replace(
+            '/(<div id="'.$canvas.'"[^>]*>)/',
+            '$1' . $blocker,
+            $content
+        );
+
+        return $html;
+
+
+
+
+        return $content;
+    }
+
+    /**
+     * @param TemplateWrapper $twigTemplate
+     * @param array $context
+     * @param string $blocker
+     * @return string
+     */
+    private function renderBlocker(TemplateWrapper $twigTemplate, array $context, string $redirect): string
+    {
+        $blocker = <<< SCRIPT
+            <script>
+            // Check if the cookie bar is ready, otherwise respond to document load (#148)
+            if (window.cookiebar) {
+                redirectIfNecessary()
+            } else {
+                window.addEventListener('load', () => {
+                    redirectIfNecessary()
+                })
+            }
+            function redirectIfNecessary() {
+                if (window.cookiebar.cookieExists({$context['cookie']['id']})) {
+                    const decoder = document.createElement('textarea');
+                    decoder.innerHTML = '{$redirect}';
+                    window.frameElement.src = '{$redirect}';
+                    window.location.href = decoder.value;
+                }
+                window.frames.frameElement
+            }
+            </script>
+            SCRIPT;
+
+
+$blocker = '';
+//        $blocker .= $twigTemplate->renderBlock('script', $context);
+        $blocker .= $twigTemplate->renderBlock('styles', $context);
+        $blocker .= $twigTemplate->renderBlock('body', $context);
+        return $blocker;
     }
 
 }
