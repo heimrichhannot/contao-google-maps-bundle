@@ -9,21 +9,20 @@ declare(strict_types=1);
  */
 
 use Contao\Controller;
+use Contao\DataContainer;
 use Contao\DC_Table;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 use HeimrichHannot\GoogleMapsBundle\EventListener\DataContainer\OverlayListener;
+use HeimrichHannot\UtilsBundle\Dca\DateAddedField;
+
+DateAddedField::register('tl_google_map_overlay')
+    ->setFlag(DataContainer::SORT_DAY_DESC);
 
 $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
     'config' => [
         'dataContainer' => DC_Table::class,
         'ptable' => 'tl_google_map',
         'enableVersioning' => true,
-        'onsubmit_callback' => [
-            ['huh.google_maps.utils.dca', 'setDateAdded'],
-        ],
-        'oncopy_callback' => [
-            ['huh.google_maps.utils.dca', 'setDateAddedOnCopy'],
-        ],
         'sql' => [
             'keys' => [
                 'id' => 'primary',
@@ -92,13 +91,6 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
         ],
         'tstamp' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['tstamp'],
-            'sql' => "int(10) unsigned NOT NULL default '0'",
-        ],
-        'dateAdded' => [
-            'label' => &$GLOBALS['TL_LANG']['MSC']['dateAdded'],
-            'sorting' => true,
-            'flag' => 6,
-            'eval' => ['rgxp' => 'datim', 'doNotCopy' => true],
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
         // general
