@@ -152,7 +152,16 @@ class OveleonContaoCookiebarListener
 
     private function findConfig(): ?array
     {
-        $config = Cookiebar::getConfigByPage($this->utils->request()->getCurrentRootPageModel());
+        if (!class_exists(Cookiebar::class)) {
+            return null;
+        }
+
+        $rootPage = $this->utils->request()->getCurrentRootPageModel();
+        if (null === $rootPage) {
+            return null;
+        }
+
+        $config = Cookiebar::getConfigByPage($rootPage);
         if (null === $config) {
             return null;
         }
@@ -191,6 +200,7 @@ class OveleonContaoCookiebarListener
             const script = document.createElement('script');
             script.src = '{$resource}';
             script.type = 'text/javascript';
+            script.async = true;
             document.head.appendChild(script);
             SCRIPT;
 

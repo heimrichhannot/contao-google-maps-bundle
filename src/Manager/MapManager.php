@@ -249,7 +249,16 @@ class MapManager
         $listener = new ApiRenderListener($apiHelper, $this->eventDispatcher);
         $apiHelper->getEventDispatcher()->addListener(ApiEvents::JAVASCRIPT, [$listener, 'onApiRender']);
 
-        return $apiHelper->render($this->mapCollection->getMaps());
+        $output = $apiHelper->render($this->mapCollection->getMaps());
+        
+        // Add loading=async parameter to Google Maps API URL for better performance
+        $output = preg_replace(
+            '/(https:\/\/maps\.googleapis\.com\/maps\/api\/js\?[^"\']*)/i',
+            '$1&loading=async',
+            $output
+        );
+
+        return $output;
     }
 
     public function setVisualization(Map $map, GoogleMapModel $mapConfig): void
@@ -419,6 +428,9 @@ class MapManager
             );
 
             $map->getControlManager()->setMapTypeControl($control);
+        } else {
+            // Explicitly disable map type control when not enabled
+            $map->setMapOption('mapTypeControl', false);
         }
 
         // zoom
@@ -437,6 +449,9 @@ class MapManager
             );
 
             $map->getControlManager()->setRotateControl($control);
+        } else {
+            // Explicitly disable rotate control when not enabled
+            $map->setMapOption('rotateControl', false);
         }
 
         // street view
@@ -446,6 +461,9 @@ class MapManager
             );
 
             $map->getControlManager()->setStreetViewControl($control);
+        } else {
+            // Explicitly disable street view control when not enabled
+            $map->setMapOption('streetViewControl', false);
         }
 
         // fullscreen
@@ -455,6 +473,9 @@ class MapManager
             );
 
             $map->getControlManager()->setFullscreenControl($control);
+        } else {
+            // Explicitly disable fullscreen control when not enabled
+            $map->setMapOption('fullscreenControl', false);
         }
 
         // scale
@@ -462,6 +483,9 @@ class MapManager
             $control = new ScaleControl();
 
             $map->getControlManager()->setScaleControl($control);
+        } else {
+            // Explicitly disable scale control when not enabled
+            $map->setMapOption('scaleControl', false);
         }
     }
 
