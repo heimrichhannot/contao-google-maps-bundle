@@ -1,0 +1,65 @@
+name: CI
+on: [ push ]
+
+jobs:
+  phpstan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install the dependencies
+        uses: ramsey/composer-install@v3
+        with:
+          composer-options: "--no-plugins"
+
+      - name: PHPStan
+        run: vendor/bin/phpstan analyse -c phpstan.neon
+
+  rector:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install the dependencies
+        uses: ramsey/composer-install@v3
+        with:
+          composer-options: "--no-plugins"
+
+      - name: Rector
+        run: vendor/bin/rector --dry-run --no-progress-bar
+
+  ecs:
+    name: ECS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          extensions: dom, fileinfo, filter, gd, hash, intl, json, mbstring, mysqli, pcre, pdo_mysql, zlib
+          coverage: none
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          show-progress: false
+
+      - name: Install the dependencies
+        uses: ramsey/composer-install@v3
+        with:
+          composer-options: "--no-plugins"
+
+      - name: Run ECS
+        run: vendor/bin/ecs check --no-progress-bar
