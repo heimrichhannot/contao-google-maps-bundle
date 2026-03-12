@@ -14,7 +14,7 @@ class MarkerHelper
     public function trigger(): string
     {
         return sprintf(
-            "new google.maps.event.trigger(%s, 'click'); return false;",
+            "if (typeof google !== 'undefined') {google.maps.event.trigger(%s, 'click');} return false;",
             $this->variable
         );
     }

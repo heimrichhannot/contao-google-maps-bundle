@@ -191,9 +191,10 @@ class MapManager
 
         $event = new BeforeRenderMapEvent($templateName, $templateData, $map);
         $this->eventDispatcher->dispatch($event, BeforeRenderMapEvent::NAME);
+        $this->eventDispatcher->dispatch($event);
 
-        $template = new FragmentTemplate($event->getTemplate());
-        $template->setData($event->getTemplateData());
+        $template = new FragmentTemplate($event->template);
+        $template->setData($event->templateData);
 
         return $template->parse();
     }
