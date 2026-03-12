@@ -27,26 +27,37 @@ $fields = [
         'filter' => true,
         'inputType' => 'select',
         'options_callback' => ['huh.google_maps.data_container.google_map', 'getMapChoices'],
-        'eval' => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true, 'chosen' => true],
+        'eval' => [
+            'tl_class' => 'w50',
+            'mandatory' => true,
+            'includeBlankOption' => true,
+            'chosen' => true,
+        ],
         'sql' => "int(10) unsigned NOT NULL default '0'",
         'wizard' => [['huh.google_maps.data_container.map_wizard', 'addWizard']],
     ],
     'googlemaps_skipHtml' => [
         'label' => &$GLOBALS['TL_LANG']['tl_content']['googlemaps_skipHtml'],
         'inputType' => 'checkbox',
-        'eval' => ['tl_class' => 'w50 clr'],
+        'eval' => [
+            'tl_class' => 'w50 clr',
+        ],
         'sql' => "char(1) NOT NULL default ''",
     ],
     'googlemaps_skipCss' => [
         'label' => &$GLOBALS['TL_LANG']['tl_content']['googlemaps_skipCss'],
         'inputType' => 'checkbox',
-        'eval' => ['tl_class' => 'w50'],
+        'eval' => [
+            'tl_class' => 'w50',
+        ],
         'sql' => "char(1) NOT NULL default ''",
     ],
     'googlemaps_skipJs' => [
         'label' => &$GLOBALS['TL_LANG']['tl_content']['googlemaps_skipJs'],
         'inputType' => 'checkbox',
-        'eval' => ['tl_class' => 'w50'],
+        'eval' => [
+            'tl_class' => 'w50',
+        ],
         'sql' => "char(1) NOT NULL default ''",
     ],
 ];

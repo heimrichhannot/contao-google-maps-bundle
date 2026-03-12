@@ -23,13 +23,19 @@ $fields = [
         'label' => &$GLOBALS['TL_LANG']['tl_settings']['googlemaps_apiKey'],
         'search' => true,
         'inputType' => 'text',
-        'eval' => ['maxlength' => 255, 'tl_class' => 'w50'],
+        'eval' => [
+            'maxlength' => 255,
+            'tl_class' => 'w50',
+        ],
     ],
     'utilsGoogleApiKey' => [
         'label' => &$GLOBALS['TL_LANG']['tl_settings']['utilsGoogleApiKey'],
         'search' => true,
         'inputType' => 'text',
-        'eval' => ['maxlength' => 255, 'tl_class' => 'w50'],
+        'eval' => [
+            'maxlength' => 255,
+            'tl_class' => 'w50',
+        ],
     ],
 ];
 
