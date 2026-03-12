@@ -34,7 +34,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-#[AsCommand(name: 'huh:google-maps:migrate-dlh', description: 'Migrates existing Maps created using delahaye/dlh_googlemaps.', description: static::$defaultDescription)]
+#[AsCommand(
+    name: 'huh:google-maps:migrate-dlh',
+    description: 'Migrates existing Maps created using delahaye/dlh_googlemaps.'
+)]
 class MigrateDlhCommand extends Command
 {
     protected bool $dryRun = false;

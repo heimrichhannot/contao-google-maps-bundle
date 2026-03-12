@@ -49,13 +49,20 @@ class OverlayManager
      */
     protected static $markerVariableMapping = [];
 
-    public function __construct(protected ContaoFramework $framework, protected ModelUtil $modelUtil, protected LocationUtil $locationUtil, private readonly FileUtil $fileUtil, private readonly InsertTagParser $insertTagParser, private readonly CacheInterface $cache)
+    public function __construct(
+        protected ContaoFramework $framework,
+        protected ModelUtil $modelUtil,
+        protected LocationUtil $locationUtil,
+        private readonly FileUtil $fileUtil,
+        private readonly InsertTagParser $insertTagParser,
+        private readonly CacheInterface $cache
+    )
     {
     }
 
     public function addOverlayToMap(Map $map, OverlayModel $overlayConfig, string $apiKey): void
     {
-        $this->apiKey = $apiKey;
+        self::$apiKey = $apiKey;
 
         switch ($overlayConfig->type) {
             case OverlayListener::TYPE_MARKER:
@@ -134,7 +141,7 @@ class OverlayManager
                     function (ItemInterface $item) use ($overlayConfig) {
                         $item->expiresAfter(static::CACHE_TIME);
 
-                        $coordinates = $this->locationUtil->computeCoordinatesByString($overlayConfig->positioningAddress, $this->apiKey);
+                        $coordinates = $this->locationUtil->computeCoordinatesByString($overlayConfig->positioningAddress, self::$apiKey);
 
                         if (false === $coordinates) {
                             trigger_error('Could not compute coordinates from address. Maybe your Google API key is invalid or geocoding API is not enabled.', E_USER_WARNING);

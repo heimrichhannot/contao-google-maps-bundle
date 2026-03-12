@@ -1,0 +1,14 @@
+parameters:
+  level: 1
+  paths:
+    - src
+#    - contao
+#  universalObjectCratesClasses:
+#    - Contao\Database\Result
+#    - Contao\Model
+#    - Contao\Template
+  ignoreErrors:
+    - '#^Call to static method findByPk\(\) on an unknown class Oveleon\\ContaoCookiebar\\Model\\CookieModel\.$#'
+    - '#^Parameter \$configModel of method HeimrichHannot\\GoogleMapsBundle\\EventListener\\OveleonContaoCookiebarListener\:\:parseHtml\(\) has invalid type Oveleon\\ContaoCookiebar\\Model\\CookieModel\.$#'
+includes:
+  - vendor/phpstan/phpstan-symfony/extension.neon

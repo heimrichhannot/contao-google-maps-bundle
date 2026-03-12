@@ -64,13 +64,13 @@ class UtilsBundleEntityFinderFindEventListener
                 description: 'Google Maps: ' . $model->title . ' (ID: ' . $model->id . ')',
                 parents: (function () use ($model): \Generator {
 
-                    $contentElements = ContentModel::findBy(['googlemaps_map=?'], [$map->id]) ?? [];
+                    $contentElements = ContentModel::findBy(['googlemaps_map=?'], [$model->id]) ?? [];
 
 
                     foreach ($contentElements as $contentElement) {
                         yield ['table' => ContentModel::getTable(), 'id' => $contentElement->id];
                     }
-                    $frontendModules = ModuleModel::findBy(['googlemaps_map=?'], [$map->id]) ?? [];
+                    $frontendModules = ModuleModel::findBy(['googlemaps_map=?'], [$model->id]) ?? [];
 
                     foreach ($frontendModules as $frontendModule) {
                         yield ['table' => ModuleModel::getTable(), 'id' => $frontendModule->id];
