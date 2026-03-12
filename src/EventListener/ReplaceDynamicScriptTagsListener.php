@@ -10,12 +10,10 @@ declare(strict_types=1);
 
 namespace HeimrichHannot\GoogleMapsBundle\EventListener;
 
-use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use HeimrichHannot\GoogleMapsBundle\Manager\MapManager;
 
-/**
- * @Hook("replaceDynamicScriptTags")
- */
+#[AsHook('replaceDynamicScriptTags')]
 class ReplaceDynamicScriptTagsListener
 {
     /**

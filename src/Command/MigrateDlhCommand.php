@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace HeimrichHannot\GoogleMapsBundle\Command;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Contao\Config;
 use Contao\ContentModel;
 use Contao\CoreBundle\Framework\ContaoFramework;
@@ -33,12 +34,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+#[AsCommand(name: 'huh:google-maps:migrate-dlh', description: 'Migrates existing Maps created using delahaye/dlh_googlemaps.', description: static::$defaultDescription)]
 class MigrateDlhCommand extends Command
 {
-    protected static $defaultName = 'huh:google-maps:migrate-dlh';
-
-    protected static $defaultDescription = 'Migrates existing Maps created using delahaye/dlh_googlemaps.';
-
     protected bool $dryRun = false;
 
     protected array $mapMapper = [];
@@ -66,7 +64,6 @@ class MigrateDlhCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setDescription(static::$defaultDescription)
             ->addOption('skip-unsupported-field-warnings', null, InputOption::VALUE_NONE, 'Skip warnings indicating that fields don\'t exist anymore in Google Maps v3.')
             ->addOption('skip-contentelements', null, InputOption::VALUE_NONE, 'Skip migration of content elements.')
             ->addOption('skip-frontendmodules', null, InputOption::VALUE_NONE, 'Skip migration of frontend modules.')

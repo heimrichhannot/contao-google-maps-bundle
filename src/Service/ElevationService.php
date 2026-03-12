@@ -10,8 +10,8 @@ declare(strict_types=1);
 
 namespace HeimrichHannot\GoogleMapsBundle\Service;
 
+use Psr\Http\Client\ClientInterface;
 use Contao\Config;
-use Http\Client\HttpClient;
 use Http\Message\MessageFactory\GuzzleMessageFactory;
 use Ivory\GoogleMap\Base\Coordinate;
 use Ivory\GoogleMap\Service\Base\Location\CoordinateLocation;
@@ -35,7 +35,7 @@ class ElevationService
     /**
      * ElevationService constructor.
      */
-    public function __construct(HttpClient $httpClient)
+    public function __construct(ClientInterface $httpClient)
     {
         $this->service = new \Ivory\GoogleMap\Service\Elevation\ElevationService($httpClient,
             new GuzzleMessageFactory());

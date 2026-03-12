@@ -165,9 +165,7 @@ class OveleonContaoCookiebarListener
             return null;
         }
 
-        return array_find($cookies, function (array $cookie) {
-            return $cookie['type'] === static::TYPE;
-        });
+        return array_find($cookies, fn(array $cookie) => $cookie['type'] === static::TYPE);
     }
 
     private function maskScript(string $script, int $configId, ?string $ident = null): string

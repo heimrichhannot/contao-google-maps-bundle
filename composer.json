@@ -20,9 +20,14 @@
   },
   "require-dev": {
     "contao/easy-coding-standard": "^6.0",
-    "contao/manager-plugin": "^2.0",
+    "contao/manager-plugin": "^2.13",
     "guzzlehttp/guzzle": "^7.9",
-    "hofff/contao-consent-bridge": "^1.4"
+    "hofff/contao-consent-bridge": "^1.4",
+    "rector/rector": "^2.3",
+    "contao/contao-rector": "dev-main",
+    "symplify/easy-coding-standard": "^13.0",
+    "phpstan/phpstan": "^2.1",
+    "phpstan/phpstan-symfony": "^2.0"
   },
   "conflict": {
     "ivory/google-map": "<3.0.4",

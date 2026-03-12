@@ -50,7 +50,7 @@ class UtilsBundleEntityFinderFindEventListener
         );
     }
 
-    private function googleMaps(EntityFinderFindEvent $event)
+    private function googleMaps(EntityFinderFindEvent $event): void
     {
         $model = GoogleMapModel::findById($event->id);
         if (!$model) {

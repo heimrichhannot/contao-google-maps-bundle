@@ -10,10 +10,10 @@ declare(strict_types=1);
 
 namespace HeimrichHannot\GoogleMapsBundle\EventListener;
 
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\Config;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
-use Contao\CoreBundle\ServiceAnnotation\Callback;
-use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\DataContainer;
 use Contao\Template;
 use HeimrichHannot\GoogleMapsBundle\Util\DcaUtil;
@@ -48,9 +48,8 @@ final class ConsentBridgeListener
     /**
      * Adjust the data containers for the consent bridge support. High priority
      * required so that the service tags can be applied.
-     *
-     * @Hook("loadDataContainer", priority=255)
      */
+    #[AsHook('loadDataContainer', priority: 255)]
     public function onLoadDataContainer(string $table): void
     {
         if ([] === $this->consentToolManager->consentTools()) {
@@ -81,9 +80,7 @@ final class ConsentBridgeListener
         }
     }
 
-    /**
-     * @Callback(table="tl_settings", target="config.onload")
-     */
+    #[AsCallback(table: 'tl_settings', target: 'config.onload')]
     public function onLoadSettings(DataContainer $table): void
     {
         if ([] === $this->consentToolManager->consentTools()) {
@@ -96,9 +93,7 @@ final class ConsentBridgeListener
         ;
     }
 
-    /**
-     * @Callback(table="tl_page", target="config.onload")
-     */
+    #[AsCallback(table: 'tl_page', target: 'config.onload')]
     public function onLoadPage(DataContainer $table): void
     {
         if ([] === $this->consentToolManager->consentTools()) {
@@ -112,10 +107,8 @@ final class ConsentBridgeListener
         ;
     }
 
-    /**
-     * @Callback(table="tl_settings", target="fields.googlemaps_consentId.options")
-     * @Callback(table="tl_page", target="fields.googlemaps_consentId.options")
-     */
+    #[AsCallback(table: 'tl_settings', target: 'fields.googlemaps_consentId.options')]
+    #[AsCallback(table: 'tl_page', target: 'fields.googlemaps_consentId.options')]
     public function consentIdOptions(): array
     {
         /** @var array<string, array<string, string>> $options */
@@ -142,9 +135,8 @@ final class ConsentBridgeListener
     /**
      * Adjust the generated map api. Priority -1 ensures it's called after the
      * ReplaceDynamicScriptTagsListener listener.
-     *
-     * @Hook("replaceDynamicScriptTags", priority=-1)
      */
+    #[AsHook('replaceDynamicScriptTags', priority: -1)]
     public function onReplaceDynamicScriptTags(string $buffer): string
     {
         if (!isset($GLOBALS['TL_BODY']['huhGoogleMaps'])) {
@@ -165,9 +157,7 @@ final class ConsentBridgeListener
         return $buffer;
     }
 
-    /**
-     * @Hook("parseTemplate")
-     */
+    #[AsHook('parseTemplate')]
     public function onParseTemplate(Template $template): void
     {
         if (!preg_match('#^(ce|mod)_google_map#', $template->getName())) {
