@@ -223,17 +223,22 @@ class OveleonContaoCookiebarListener
         $template = '@Contao/google_maps/oveleon_cookiebar/blocker.html.twig';
 
         // support legacy path for bc
-        if ($this->twig->getLoader()->exists('@Contao/oveleon_cookiebar/blocker/default.html.twig')) {
-            $template = '@Contao/oveleon_cookiebar/blocker/default.html.twig';
+        $legacyTemplateName = '@Contao/oveleon_cookiebar/blocker/default.html.twig';
+        if (
+            $this->twig->getLoader()->exists($legacyTemplateName) &&
+            !str_contains(
+                $this->twig->getLoader()->getSourceContext($legacyTemplateName)->getPath(),
+                'heimrichhannot/contao-google-maps-bundle'
+            )
+        ) {
             trigger_deprecation(
                 'heimrichhannot/contao-google-maps-bundle',
                 '3.0.0-beta4',
                 'The template path %s is deprecated and will not be supported anymore in version 4.0. Use %s instead.',
-                [
-                    '@Contao/oveleon_cookiebar/blocker/default.html.twig',
-                    '@Contao/google_maps/oveleon_cookiebar/blocker.html.twig',
-                ]
+                $legacyTemplateName,
+                $template,
             );
+            $template = $legacyTemplateName;
         }
 
         $blocker = $this->twig->render($template, [
