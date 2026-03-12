@@ -102,20 +102,8 @@ class GoogleMapListener
         MapTypeControlStyle::HORIZONTAL_BAR,
     ];
 
-    protected ContaoFramework $framework;
-
-    protected Connection $connection;
-
-    protected Security $security;
-
-    protected RequestStack $requestStack;
-
-    public function __construct(ContaoFramework $framework, Connection $connection, Security $security, RequestStack $requestStack)
+    public function __construct(protected ContaoFramework $framework, protected Connection $connection, protected Security $security, protected RequestStack $requestStack)
     {
-        $this->framework = $framework;
-        $this->connection = $connection;
-        $this->security = $security;
-        $this->requestStack = $requestStack;
     }
 
     public function getResponsiveMaps(DataContainer $dc)

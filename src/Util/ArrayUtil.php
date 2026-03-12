@@ -15,8 +15,8 @@ class ArrayUtil
     public static function removePrefix(string $prefix, array $array): array
     {
         $array = array_combine(
-            array_map(static fn ($key) => str_starts_with($key, $prefix) ?
-            substr($key, \strlen($prefix)) : $key, array_keys($array)),
+            array_map(static fn ($key) => str_starts_with((string) $key, $prefix) ?
+            substr((string) $key, \strlen($prefix)) : $key, array_keys($array)),
             $array,
         );
 

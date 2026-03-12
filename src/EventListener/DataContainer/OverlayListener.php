@@ -90,14 +90,8 @@ class OverlayListener extends Backend
         Animation::DROP,
     ];
 
-    protected ContaoFramework $framework;
-
-    protected Utils $utils;
-
-    public function __construct(ContaoFramework $framework, Utils $utils)
+    public function __construct(protected ContaoFramework $framework, protected Utils $utils)
     {
-        $this->framework = $framework;
-        $this->utils = $utils;
         parent::__construct();
     }
 

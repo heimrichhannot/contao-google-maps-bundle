@@ -16,7 +16,7 @@ $dca = &$GLOBALS['TL_DCA']['tl_module'];
  * Palettes
  */
 $dca['palettes'][ModuleListener::MODULE_GOOGLE_MAP] =
-    '{type_legend},name,headline,type;{config_legend},googlemaps_map,googlemaps_skipHtml,googlemaps_skipCss,googlemaps_skipJs;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;';
+    '{type_legend},name,headline,type;{config_legend},googlemaps_map,googlemaps_skipHtml,googlemaps_skipCss,googlemaps_skipJs;{template_legend:collapsed},customTpl;{protected_legend:collapsed},protected;{expert_legend:collapsed},guests,cssID;';
 
 /**
  * Fields.

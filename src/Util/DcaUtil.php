@@ -21,17 +21,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DcaUtil
 {
-    protected ContaoFramework $framework;
-
-    protected TranslatorInterface $translator;
-
-    protected Utils $utils;
-
-    public function __construct(ContaoFramework $framework, TranslatorInterface $translator, Utils $utils)
+    public function __construct(protected ContaoFramework $framework, protected TranslatorInterface $translator, protected Utils $utils)
     {
-        $this->framework = $framework;
-        $this->translator = $translator;
-        $this->utils = $utils;
     }
 
     /**
@@ -78,7 +69,7 @@ class DcaUtil
 
         foreach ($fields as $field) {
             // add override boolean field
-            $overrideFieldname = 'override'.ucfirst($field);
+            $overrideFieldname = 'override'.ucfirst((string) $field);
 
             $destinationDca['fields'][$overrideFieldname] = [
                 'label' => &$GLOBALS['TL_LANG'][$destinationTable][$overrideFieldname],

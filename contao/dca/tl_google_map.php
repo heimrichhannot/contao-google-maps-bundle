@@ -7,7 +7,7 @@ declare(strict_types=1);
  *
  * @license LGPL-3.0-or-later
  */
-
+use Contao\DataContainer;
 use Contao\Controller;
 use Contao\DC_Table;
 use Contao\System;
@@ -41,7 +41,7 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'format' => '%s',
         ],
         'sorting' => [
-            'mode' => 2,
+            'mode' => DataContainer::MODE_SORTABLE,
             'fields' => ['title', 'type'],
             'headerFields' => ['title'],
             'panelLayout' => 'filter;sort,search,limit',
@@ -114,14 +114,14 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
         'dateAdded' => [
             'label' => &$GLOBALS['TL_LANG']['MSC']['dateAdded'],
             'sorting' => true,
-            'flag' => 6,
+            'flag' => DataContainer::SORT_DAY_DESC,
             'eval' => ['rgxp' => 'datim', 'doNotCopy' => true],
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
         'type' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['type'],
             'search' => true,
-            'flag' => 12,
+            'flag' => DataContainer::SORT_DESC,
             'sorting' => true,
             'default' => 'base',
             'inputType' => 'select',
@@ -137,7 +137,7 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['title'],
             'search' => true,
             'sorting' => true,
-            'flag' => 1,
+            'flag' => DataContainer::SORT_INITIAL_LETTER_ASC,
             'inputType' => 'text',
             'eval' => ['maxlength' => 128, 'mandatory' => true, 'tl_class' => 'w50'],
             'sql' => "varchar(128) NOT NULL default ''",

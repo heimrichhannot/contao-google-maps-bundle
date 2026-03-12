@@ -23,26 +23,8 @@ use Hofff\Contao\Consent\Bridge\ConsentToolManager;
 
 final class ConsentBridgeListener
 {
-    /**
-     * @var ConsentToolManager
-     */
-    private $consentToolManager;
-
-    /**
-     * @var ConsentIdParser
-     */
-    private $consentIdParser;
-
-    /**
-     * @var DcaUtil
-     */
-    private $dcaUtil;
-
-    public function __construct(ConsentToolManager $consentManager, ConsentIdParser $consentIdParser, DcaUtil $dcaUtil)
+    public function __construct(private readonly ConsentToolManager $consentToolManager, private readonly ConsentIdParser $consentIdParser, private readonly DcaUtil $dcaUtil)
     {
-        $this->consentToolManager = $consentManager;
-        $this->consentIdParser = $consentIdParser;
-        $this->dcaUtil = $dcaUtil;
     }
 
     /**

@@ -18,14 +18,8 @@ class BeforeRenderApiEvent extends Event
 {
     private ?string $code = null;
 
-    private ApiHelper $apiHelper;
-
-    private ApiEvent $event;
-
-    public function __construct(ApiHelper $apiHelper, ApiEvent $event)
+    public function __construct(private readonly ApiHelper $apiHelper, private readonly ApiEvent $event)
     {
-        $this->apiHelper = $apiHelper;
-        $this->event = $event;
     }
 
     public function getCode(): ?string

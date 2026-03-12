@@ -19,14 +19,8 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ApiRenderListener implements EventSubscriberInterface
 {
-    private ApiHelper $apiHelper;
-
-    private EventDispatcherInterface $eventDispatcher;
-
-    public function __construct(ApiHelper $apiHelper, EventDispatcherInterface $eventDispatcher)
+    public function __construct(private readonly ApiHelper $apiHelper, private readonly EventDispatcherInterface $eventDispatcher)
     {
-        $this->apiHelper = $apiHelper;
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     public static function getSubscribedEvents(): array

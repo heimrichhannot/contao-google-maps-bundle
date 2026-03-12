@@ -27,17 +27,8 @@ class GoogleMapsElementController extends AbstractContentElementController
 {
     public const TYPE = 'google_map';
 
-    protected MapManager $mapManager;
-
-    private ScopeMatcher $scopeMatcher;
-
-    private Utils $utils;
-
-    public function __construct(ScopeMatcher $scopeMatcher, Utils $utils, MapManager $mapManager)
+    public function __construct(private readonly ScopeMatcher $scopeMatcher, private readonly Utils $utils, protected MapManager $mapManager)
     {
-        $this->scopeMatcher = $scopeMatcher;
-        $this->utils = $utils;
-        $this->mapManager = $mapManager;
     }
 
     protected function getResponse(FragmentTemplate $template, ContentModel $model, Request $request): Response
@@ -57,7 +48,7 @@ class GoogleMapsElementController extends AbstractContentElementController
     protected function getBackendWildcard(FragmentTemplate $template, ContentModel $model): Response
     {
         $wilcardTemplate = new BackendTemplate('be_wildcard');
-        $wilcardTemplate->wildcard = '### '.mb_strtoupper($GLOBALS['TL_LANG']['CTE'][$model->type][0]).' ###';
+        $wilcardTemplate->wildcard = '### '.mb_strtoupper((string) $GLOBALS['TL_LANG']['CTE'][$model->type][0]).' ###';
         $wilcardTemplate->title = $template->headline;
 
         if (null !== ($map = $this->utils->model()->findModelInstanceByPk('tl_google_map', $model->googlemaps_map))) {

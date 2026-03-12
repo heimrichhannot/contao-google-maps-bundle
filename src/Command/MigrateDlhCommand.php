@@ -47,18 +47,9 @@ class MigrateDlhCommand extends Command
 
     private bool $cleanBeforeMigration;
 
-    private EventDispatcherInterface $dispatcher;
-
-    private ContaoFramework $framework;
-
-    private Connection $connection;
-
-    public function __construct(ContaoFramework $framework, EventDispatcherInterface $eventDispatcher, Connection $connection)
+    public function __construct(private readonly ContaoFramework $framework, private readonly EventDispatcherInterface $dispatcher, private readonly Connection $connection)
     {
         parent::__construct();
-        $this->framework = $framework;
-        $this->dispatcher = $eventDispatcher;
-        $this->connection = $connection;
     }
 
     protected function configure(): void
@@ -115,7 +106,7 @@ class MigrateDlhCommand extends Command
 
         $this->io->success('dlh_googlemaps migration finished');
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     protected function migrateApiKeys(): void
@@ -252,7 +243,7 @@ class MigrateDlhCommand extends Command
                 $legacyValue = $legacyMap->{$legacyField};
 
                 if (\in_array($legacyField, $fieldsToLower, true)) {
-                    $legacyValue = strtolower($legacyValue);
+                    $legacyValue = strtolower((string) $legacyValue);
                 }
 
                 if (\in_array($legacyField, array_keys($fieldsMappings), true)) {
@@ -282,8 +273,8 @@ class MigrateDlhCommand extends Command
             } else {
                 $map->centerMode = GoogleMapListener::CENTER_MODE_COORDINATE;
 
-                if (strpos($legacyMap->center, ',')) {
-                    $coordinates = explode(',', $legacyMap->center);
+                if (strpos((string) $legacyMap->center, ',')) {
+                    $coordinates = explode(',', (string) $legacyMap->center);
 
                     if (\is_array($coordinates) && \count($coordinates) > 1) {
                         $map->centerLat = $coordinates[0];
@@ -299,12 +290,12 @@ class MigrateDlhCommand extends Command
                 $map->sizeMode = GoogleMapListener::SIZE_MODE_STATIC;
 
                 $map->width = serialize([
-                    'value' => preg_replace('/[^\d]/i', '', $mapSize[0]),
+                    'value' => preg_replace('/[^\d]/i', '', (string) $mapSize[0]),
                     'unit' => 'px',
                 ]);
 
                 $map->height = serialize([
-                    'value' => preg_replace('/[^\d]/i', '', $mapSize[1]),
+                    'value' => preg_replace('/[^\d]/i', '', (string) $mapSize[1]),
                     'unit' => 'px',
                 ]);
             } else {
@@ -410,7 +401,7 @@ class MigrateDlhCommand extends Command
                 $legacyValue = $legacyOverlay->{$legacyField};
 
                 if (\in_array($legacyField, $fieldsToLower, true)) {
-                    $legacyValue = strtolower($legacyValue);
+                    $legacyValue = strtolower((string) $legacyValue);
                 }
 
                 if (\in_array($legacyField, array_keys($fieldsMappings), true)) {
@@ -444,7 +435,7 @@ class MigrateDlhCommand extends Command
             if ($legacyOverlay->singleCoords) {
                 $overlay->positioningMode = OverlayListener::POSITIONING_MODE_COORDINATE;
 
-                if (strpos($legacyOverlay->singleCoords, ',')) {
+                if (strpos((string) $legacyOverlay->singleCoords, ',')) {
                     $coordinates = explode(',', str_replace(' ', '', $legacyOverlay->singleCoords));
 
                     if (\is_array($coordinates) && \count($coordinates) > 1) {

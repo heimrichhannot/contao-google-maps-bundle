@@ -67,7 +67,7 @@ class ElevationService
                 continue;
             }
 
-            if (!\is_array($coordinate) && !\is_array($coordinate = explode(',', $coordinate))) {
+            if (!\is_array($coordinate) && !\is_array($coordinate = explode(',', (string) $coordinate))) {
                 continue;
             }
 

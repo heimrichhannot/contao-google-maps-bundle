@@ -57,14 +57,6 @@ class MapManager
 
     const GOOGLE_MAPS_STATIC_URL = 'https://maps.googleapis.com/maps/api/staticmap';
 
-    protected ContaoFramework $framework;
-
-    protected OverlayManager $overlayManager;
-
-    protected ModelUtil $modelUtil;
-
-    protected LocationUtil $locationUtil;
-
     /**
      * @var string
      */
@@ -77,27 +69,8 @@ class MapManager
      */
     protected $maps = [];
 
-    private FileUtil $fileUtil;
-
-    private MapCollection $mapCollection;
-
-    private EventDispatcherInterface $eventDispatcher;
-
-    private CacheInterface $cache;
-
-    public function __construct(
-        private readonly Utils $utils,
-
-        ContaoFramework $framework, OverlayManager $overlayManager, ModelUtil $modelUtil, LocationUtil $locationUtil, FileUtil $fileUtil, MapCollection $mapCollection, EventDispatcherInterface $eventDispatcher, CacheInterface $cache)
+    public function __construct(private readonly Utils $utils, protected ContaoFramework $framework, protected OverlayManager $overlayManager, protected ModelUtil $modelUtil, protected LocationUtil $locationUtil, private readonly FileUtil $fileUtil, private readonly MapCollection $mapCollection, private readonly EventDispatcherInterface $eventDispatcher, private readonly CacheInterface $cache)
     {
-        $this->framework = $framework;
-        $this->overlayManager = $overlayManager;
-        $this->modelUtil = $modelUtil;
-        $this->locationUtil = $locationUtil;
-        $this->fileUtil = $fileUtil;
-        $this->mapCollection = $mapCollection;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->cache = $cache;
     }
 
     public function prepareMap(int $mapId, array $config = [], ?Collection $overlays = null): ?array

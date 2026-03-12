@@ -36,7 +36,7 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
             'format' => '%s',
         ],
         'sorting' => [
-            'mode' => 4,
+            'mode' => DataContainer::MODE_PARENT,
             'fields' => ['type', 'title'],
             'headerFields' => ['title'],
             'panelLayout' => 'filter;sort,search,limit',
@@ -98,7 +98,7 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['title'],
             'search' => true,
             'sorting' => true,
-            'flag' => 1,
+            'flag' => DataContainer::SORT_INITIAL_LETTER_ASC,
             'inputType' => 'text',
             'eval' => ['mandatory' => true, 'tl_class' => 'w50'],
             'sql' => "varchar(255) NOT NULL default ''",

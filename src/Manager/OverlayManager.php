@@ -39,12 +39,6 @@ class OverlayManager
 
     const CACHE_TIME = 86400;
 
-    protected ContaoFramework $framework;
-
-    protected ModelUtil $modelUtil;
-
-    protected LocationUtil $locationUtil;
-
     /**
      * @var string
      */
@@ -55,20 +49,8 @@ class OverlayManager
      */
     protected static $markerVariableMapping = [];
 
-    private FileUtil $fileUtil;
-
-    private InsertTagParser $insertTagParser;
-
-    private CacheInterface $cache;
-
-    public function __construct(ContaoFramework $framework, ModelUtil $modelUtil, LocationUtil $locationUtil, FileUtil $fileUtil, InsertTagParser $insertTagParser, CacheInterface $cache)
+    public function __construct(protected ContaoFramework $framework, protected ModelUtil $modelUtil, protected LocationUtil $locationUtil, private readonly FileUtil $fileUtil, private readonly InsertTagParser $insertTagParser, private readonly CacheInterface $cache)
     {
-        $this->framework = $framework;
-        $this->modelUtil = $modelUtil;
-        $this->locationUtil = $locationUtil;
-        $this->fileUtil = $fileUtil;
-        $this->insertTagParser = $insertTagParser;
-        $this->cache = $cache;
     }
 
     public function addOverlayToMap(Map $map, OverlayModel $overlayConfig, string $apiKey): void
