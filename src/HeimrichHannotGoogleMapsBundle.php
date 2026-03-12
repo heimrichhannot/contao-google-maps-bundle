@@ -24,6 +24,4 @@ class HeimrichHannotGoogleMapsBundle extends Bundle
     {
         return \dirname(__DIR__);
     }
-
-
 }

@@ -15,7 +15,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class DlhMigrationModifyMapEvent extends Event
 {
-    const NAME = 'huh.google_maps.event.dlh_migration_modify_map';
+    public const NAME = 'huh.google_maps.event.dlh_migration_modify_map';
 
     /**
      * @var object

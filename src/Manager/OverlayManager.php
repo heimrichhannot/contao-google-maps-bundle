@@ -35,9 +35,9 @@ use Symfony\Contracts\Cache\ItemInterface;
 
 class OverlayManager
 {
-    const CACHE_KEY_PREFIX = 'googleMaps_overlay';
+    public const CACHE_KEY_PREFIX = 'googleMaps_overlay';
 
-    const CACHE_TIME = 86400;
+    public const CACHE_TIME = 86400;
 
     /**
      * @var string
@@ -55,9 +55,8 @@ class OverlayManager
         protected LocationUtil $locationUtil,
         private readonly FileUtil $fileUtil,
         private readonly InsertTagParser $insertTagParser,
-        private readonly CacheInterface $cache
-    )
-    {
+        private readonly CacheInterface $cache,
+    ) {
     }
 
     public function addOverlayToMap(Map $map, OverlayModel $overlayConfig, string $apiKey): void
@@ -247,7 +246,9 @@ class OverlayManager
 
         // events
         if ($overlayConfig->clickEvent) {
-            $marker->addOptions(['clickable' => true]);
+            $marker->addOptions([
+                'clickable' => true,
+            ]);
 
             switch ($overlayConfig->clickEvent) {
                 case OverlayListener::CLICK_EVENT_LINK:

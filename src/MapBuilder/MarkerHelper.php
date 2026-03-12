@@ -8,8 +8,9 @@ class MarkerHelper
 {
     public function __construct(
         public readonly string $variable,
-        public readonly Request $request
-    ) {}
+        public readonly Request $request,
+    ) {
+    }
 
     public function trigger(): string
     {

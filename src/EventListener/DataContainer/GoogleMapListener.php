@@ -25,60 +25,60 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class GoogleMapListener
 {
-    const SIZE_MODE_ASPECT_RATIO = 'aspect_ratio';
+    public const SIZE_MODE_ASPECT_RATIO = 'aspect_ratio';
 
-    const SIZE_MODE_STATIC = 'static';
+    public const SIZE_MODE_STATIC = 'static';
 
-    const SIZE_MODE_CSS = 'css';
+    public const SIZE_MODE_CSS = 'css';
 
-    const SIZE_MODES = [
+    public const SIZE_MODES = [
         self::SIZE_MODE_ASPECT_RATIO,
         self::SIZE_MODE_STATIC,
         self::SIZE_MODE_CSS,
     ];
 
-    const MAP_TYPE_BASE = 'base';
+    public const MAP_TYPE_BASE = 'base';
 
-    const MAP_TYPE_RESPONSIVE = 'responsive';
+    public const MAP_TYPE_RESPONSIVE = 'responsive';
 
-    const TYPES = [
+    public const TYPES = [
         MapTypeId::ROADMAP,
         MapTypeId::SATELLITE,
         MapTypeId::TERRAIN,
         MapTypeId::HYBRID,
     ];
 
-    const POSITIONING_MODE_STANDARD = 'standard';
+    public const POSITIONING_MODE_STANDARD = 'standard';
 
-    const POSITIONING_MODE_BOUND = 'bound';
+    public const POSITIONING_MODE_BOUND = 'bound';
 
-    const POSITIONING_MODES = [
+    public const POSITIONING_MODES = [
         self::POSITIONING_MODE_STANDARD,
         self::POSITIONING_MODE_BOUND,
     ];
 
-    const BOUND_MODE_COORDINATES = 'coordinates';
+    public const BOUND_MODE_COORDINATES = 'coordinates';
 
-    const BOUND_MODE_AUTOMATIC = 'automatic';
+    public const BOUND_MODE_AUTOMATIC = 'automatic';
 
-    const BOUND_MODES = [
+    public const BOUND_MODES = [
         self::BOUND_MODE_COORDINATES,
         self::BOUND_MODE_AUTOMATIC,
     ];
 
-    const CENTER_MODE_COORDINATE = 'coordinate';
+    public const CENTER_MODE_COORDINATE = 'coordinate';
 
-    const CENTER_MODE_STATIC_ADDRESS = 'static_address';
+    public const CENTER_MODE_STATIC_ADDRESS = 'static_address';
 
-    const CENTER_MODE_EXTERNAL = 'external';
+    public const CENTER_MODE_EXTERNAL = 'external';
 
-    const CENTER_MODES = [
+    public const CENTER_MODES = [
         self::CENTER_MODE_COORDINATE,
         self::CENTER_MODE_STATIC_ADDRESS,
         self::CENTER_MODE_EXTERNAL,
     ];
 
-    const POSITIONS = [
+    public const POSITIONS = [
         ControlPosition::TOP_LEFT,
         ControlPosition::TOP_CENTER,
         ControlPosition::TOP_RIGHT,
@@ -96,14 +96,18 @@ class GoogleMapListener
         ControlPosition::BOTTOM_RIGHT,
     ];
 
-    const MAP_CONTROL_STYLES = [
+    public const MAP_CONTROL_STYLES = [
         MapTypeControlStyle::DEFAULT_,
         MapTypeControlStyle::DROPDOWN_MENU,
         MapTypeControlStyle::HORIZONTAL_BAR,
     ];
 
-    public function __construct(protected ContaoFramework $framework, protected Connection $connection, protected Security $security, protected RequestStack $requestStack)
-    {
+    public function __construct(
+        protected ContaoFramework $framework,
+        protected Connection $connection,
+        protected Security $security,
+        protected RequestStack $requestStack,
+    ) {
     }
 
     public function getResponsiveMaps(DataContainer $dc)
@@ -198,7 +202,11 @@ class GoogleMapListener
                         $mapsAllowed = StringUtil::deserialize($groupPermissions['contao_google_maps_bundles'], true);
                         $mapsAllowed[] = $insertId;
 
-                        $this->connection->update('tl_user_group', ['contao_google_maps_bundles' => serialize($mapsAllowed)], ['id' => $groupPermissions['id']]);
+                        $this->connection->update('tl_user_group', [
+                            'contao_google_maps_bundles' => serialize($mapsAllowed),
+                        ], [
+                            'id' => $groupPermissions['id'],
+                        ]);
                     }
                 }
             }
@@ -218,7 +226,11 @@ class GoogleMapListener
                     $mapsAllowed = StringUtil::deserialize($userPermissions['contao_google_maps_bundles'], true);
                     $mapsAllowed[] = $insertId;
 
-                    $this->connection->update('tl_user', ['contao_google_maps_bundles' => serialize($mapsAllowed)], ['id' => $userPermissions['id']]);
+                    $this->connection->update('tl_user', [
+                        'contao_google_maps_bundles' => serialize($mapsAllowed),
+                    ], [
+                        'id' => $userPermissions['id'],
+                    ]);
                 }
             }
 

@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace HeimrichHannot\GoogleMapsBundle\Command;
 
-use Symfony\Component\Console\Attribute\AsCommand;
 use Contao\Config;
 use Contao\ContentModel;
 use Contao\CoreBundle\Framework\ContaoFramework;
@@ -26,6 +25,7 @@ use HeimrichHannot\GoogleMapsBundle\EventListener\DataContainer\GoogleMapListene
 use HeimrichHannot\GoogleMapsBundle\EventListener\DataContainer\OverlayListener;
 use HeimrichHannot\GoogleMapsBundle\Model\GoogleMapModel;
 use HeimrichHannot\GoogleMapsBundle\Model\OverlayModel;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\InputInterface;
@@ -50,8 +50,11 @@ class MigrateDlhCommand extends Command
 
     private bool $cleanBeforeMigration;
 
-    public function __construct(private readonly ContaoFramework $framework, private readonly EventDispatcherInterface $dispatcher, private readonly Connection $connection)
-    {
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly EventDispatcherInterface $dispatcher,
+        private readonly Connection $connection,
+    ) {
         parent::__construct();
     }
 
@@ -462,8 +465,14 @@ class MigrateDlhCommand extends Command
                 case OverlayListener::MARKER_TYPE_ICON:
                     $iconSize = StringUtil::deserialize($legacyOverlay->iconSize, true);
 
-                    $overlay->iconWidth = ['value' => $iconSize[0], 'unit' => 'px'];
-                    $overlay->iconHeight = ['value' => $iconSize[1], 'unit' => 'px'];
+                    $overlay->iconWidth = [
+                        'value' => $iconSize[0],
+                        'unit' => 'px',
+                    ];
+                    $overlay->iconHeight = [
+                        'value' => $iconSize[1],
+                        'unit' => 'px',
+                    ];
 
                     $iconAnchor = StringUtil::deserialize($legacyOverlay->iconAnchor, true);
 

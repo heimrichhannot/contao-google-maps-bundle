@@ -15,15 +15,16 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class BeforeRenderMapEvent extends Event
 {
-    /** @deprecated Use class FQN instead */
-    const NAME = 'huh.maps.before_render_map';
+    /**
+     * @deprecated Use class FQN instead
+     */
+    public const NAME = 'huh.maps.before_render_map';
 
     public function __construct(
         public string $template,
         public array $templateData,
-        public Map $map
-    )
-    {
+        public Map $map,
+    ) {
     }
 
     /**

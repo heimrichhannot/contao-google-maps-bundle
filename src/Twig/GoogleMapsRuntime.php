@@ -12,11 +12,12 @@ class GoogleMapsRuntime implements RuntimeExtensionInterface
     public function __construct(
         private readonly MapManager $mapManager,
         private readonly MapBuilderFactory $mapBuilderFactory,
-    ) {}
+    ) {
+    }
 
     public function render(int $mapId, array $context = []): string
     {
-        return $this->mapManager->render($mapId,);
+        return $this->mapManager->render($mapId);
     }
 
     public function renderHtml(int $mapId): string
@@ -40,5 +41,4 @@ class GoogleMapsRuntime implements RuntimeExtensionInterface
             ->build()
             ->setMapIfIfExist($id);
     }
-
 }

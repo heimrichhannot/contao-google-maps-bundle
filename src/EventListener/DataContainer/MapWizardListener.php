@@ -25,7 +25,14 @@ class MapWizardListener
 
         $label = System::getContainer()->get('translator')->trans('tl_google_map.edit.1', [], 'contao_tl_google_map');
         $title = \sprintf($label, $dc->value);
-        $href = System::getContainer()->get('router')->generate('contao_backend', ['do' => 'google_maps', 'table' => 'tl_google_map', 'act' => 'edit', 'id' => $dc->value, 'popup' => '1', 'nb' => '1']);
+        $href = System::getContainer()->get('router')->generate('contao_backend', [
+            'do' => 'google_maps',
+            'table' => 'tl_google_map',
+            'act' => 'edit',
+            'id' => $dc->value,
+            'popup' => '1',
+            'nb' => '1',
+        ]);
 
         return ' <a href="'.StringUtil::specialcharsUrl($href).'" title="'.StringUtil::specialchars($title).'" onclick="Backend.openModalIframe({\'title\':\''.StringUtil::specialchars(str_replace("'", "\\'", $title)).'\',\'url\':this.href});return false">'.Image::getHtml('edit.svg', $title).'</a>';
     }

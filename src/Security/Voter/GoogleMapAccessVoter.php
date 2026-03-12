@@ -24,8 +24,9 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
  */
 class GoogleMapAccessVoter extends AbstractDataContainerVoter
 {
-    public function __construct(private readonly AccessDecisionManagerInterface $accessDecisionManager)
-    {
+    public function __construct(
+        private readonly AccessDecisionManagerInterface $accessDecisionManager,
+    ) {
     }
 
     protected function getTable(): string

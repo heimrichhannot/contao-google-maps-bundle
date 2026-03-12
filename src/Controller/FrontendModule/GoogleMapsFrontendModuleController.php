@@ -24,8 +24,9 @@ class GoogleMapsFrontendModuleController extends AbstractFrontendModuleControlle
 {
     public const TYPE = 'google_map';
 
-    public function __construct(protected MapManager $mapManager)
-    {
+    public function __construct(
+        protected MapManager $mapManager,
+    ) {
     }
 
     /**

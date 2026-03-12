@@ -12,5 +12,5 @@ namespace HeimrichHannot\GoogleMapsBundle\EventListener\DataContainer;
 
 class ContentListener
 {
-    const ELEMENT_GOOGLE_MAP = 'google_map';
+    public const ELEMENT_GOOGLE_MAP = 'google_map';
 }

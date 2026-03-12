@@ -51,11 +51,11 @@ use Twig\Error\SyntaxError;
 
 class MapManager
 {
-    const CACHE_KEY_PREFIX = 'googleMaps_map';
+    public const CACHE_KEY_PREFIX = 'googleMaps_map';
 
-    const CACHE_TIME = 86400;
+    public const CACHE_TIME = 86400;
 
-    const GOOGLE_MAPS_STATIC_URL = 'https://maps.googleapis.com/maps/api/staticmap';
+    public const GOOGLE_MAPS_STATIC_URL = 'https://maps.googleapis.com/maps/api/staticmap';
 
     /**
      * @var string
@@ -69,8 +69,17 @@ class MapManager
      */
     protected $maps = [];
 
-    public function __construct(private readonly Utils $utils, protected ContaoFramework $framework, protected OverlayManager $overlayManager, protected ModelUtil $modelUtil, protected LocationUtil $locationUtil, private readonly FileUtil $fileUtil, private readonly MapCollection $mapCollection, private readonly EventDispatcherInterface $eventDispatcher, private readonly CacheInterface $cache)
-    {
+    public function __construct(
+        private readonly Utils $utils,
+        protected ContaoFramework $framework,
+        protected OverlayManager $overlayManager,
+        protected ModelUtil $modelUtil,
+        protected LocationUtil $locationUtil,
+        private readonly FileUtil $fileUtil,
+        private readonly MapCollection $mapCollection,
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly CacheInterface $cache,
+    ) {
     }
 
     public function prepareMap(int $mapId, array $config = [], ?Collection $overlays = null): ?array
@@ -223,7 +232,7 @@ class MapManager
         $apiHelper->getEventDispatcher()->addListener(ApiEvents::JAVASCRIPT, [$listener, 'onApiRender']);
 
         $output = $apiHelper->render($this->mapCollection->getMaps());
-        
+
         // Add loading=async parameter to Google Maps API URL for better performance
         $output = preg_replace(
             '/(https:\/\/maps\.googleapis\.com\/maps\/api\/js\?[^"\']*)/i',

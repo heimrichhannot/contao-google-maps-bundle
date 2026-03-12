@@ -21,8 +21,12 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class MapRendererListener
 {
-    public function __construct(protected GoogleMapModel $model, protected MapManager $manager, protected MapHelper $mapHelper, protected ContaoFramework $contaoFramework)
-    {
+    public function __construct(
+        protected GoogleMapModel $model,
+        protected MapManager $manager,
+        protected MapHelper $mapHelper,
+        protected ContaoFramework $contaoFramework,
+    ) {
     }
 
     public function renderStylesheet(MapEvent $event, string $eventName, EventDispatcherInterface $dispatcher): void

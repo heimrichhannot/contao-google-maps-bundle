@@ -16,7 +16,8 @@ class UtilsBundleEntityFinderFindEventListener
 {
     public function __construct(
         private readonly EntityFinderHelper $helper,
-    ) {}
+    ) {
+    }
 
     public function __invoke(EntityFinderFindEvent $event): void
     {
@@ -42,9 +43,12 @@ class UtilsBundleEntityFinderFindEventListener
             new Element(
                 id: $overlay->id,
                 table: OverlayModel::getTable(),
-                description: 'Google Maps Overlay: ' . $overlay->title . ' (ID: ' . $overlay->id . ')',
+                description: 'Google Maps Overlay: '.$overlay->title.' (ID: '.$overlay->id.')',
                 parents: (function () use ($overlay): \Generator {
-                    yield ['table' => GoogleMapModel::getTable(), 'id' => $overlay->pid];
+                    yield [
+                        'table' => GoogleMapModel::getTable(),
+                        'id' => $overlay->pid,
+                    ];
                 })()
             )
         );
@@ -61,46 +65,73 @@ class UtilsBundleEntityFinderFindEventListener
             new Element(
                 id: $model->id,
                 table: GoogleMapModel::getTable(),
-                description: 'Google Maps: ' . $model->title . ' (ID: ' . $model->id . ')',
+                description: 'Google Maps: '.$model->title.' (ID: '.$model->id.')',
                 parents: (function () use ($model): \Generator {
-
                     $contentElements = ContentModel::findBy(['googlemaps_map=?'], [$model->id]) ?? [];
 
-
                     foreach ($contentElements as $contentElement) {
-                        yield ['table' => ContentModel::getTable(), 'id' => $contentElement->id];
+                        yield [
+                            'table' => ContentModel::getTable(),
+                            'id' => $contentElement->id,
+                        ];
                     }
                     $frontendModules = ModuleModel::findBy(['googlemaps_map=?'], [$model->id]) ?? [];
 
                     foreach ($frontendModules as $frontendModule) {
-                        yield ['table' => ModuleModel::getTable(), 'id' => $frontendModule->id];
+                        yield [
+                            'table' => ModuleModel::getTable(),
+                            'id' => $frontendModule->id,
+                        ];
                     }
 
                     foreach ($this->helper->findModulesByInserttag('html', 'html', 'google_map', $model->id) as $module) {
-                        yield ['table' => 'tl_module', 'id' => $module->id];
+                        yield [
+                            'table' => 'tl_module',
+                            'id' => $module->id,
+                        ];
                     }
                     foreach ($this->helper->findModulesByInserttag('html', 'html', 'google_map_html', $model->id) as $module) {
-                        yield ['table' => 'tl_module', 'id' => $module->id];
+                        yield [
+                            'table' => 'tl_module',
+                            'id' => $module->id,
+                        ];
                     }
                     foreach ($this->helper->findModulesByInserttag('html', 'html', 'google_map_css', $model->id) as $module) {
-                        yield ['table' => 'tl_module', 'id' => $module->id];
+                        yield [
+                            'table' => 'tl_module',
+                            'id' => $module->id,
+                        ];
                     }
                     foreach ($this->helper->findModulesByInserttag('html', 'html', 'google_map_js', $model->id) as $module) {
-                        yield ['table' => 'tl_module', 'id' => $module->id];
+                        yield [
+                            'table' => 'tl_module',
+                            'id' => $module->id,
+                        ];
                     }
                     foreach ($this->helper->findContentElementByInserttag('html', 'html', 'google_map', $model->id) as $module) {
-                        yield ['table' => 'tl_content', 'id' => $module->id];
+                        yield [
+                            'table' => 'tl_content',
+                            'id' => $module->id,
+                        ];
                     }
                     foreach ($this->helper->findContentElementByInserttag('html', 'html', 'google_map_html', $model->id) as $module) {
-                        yield ['table' => 'tl_content', 'id' => $module->id];
+                        yield [
+                            'table' => 'tl_content',
+                            'id' => $module->id,
+                        ];
                     }
                     foreach ($this->helper->findContentElementByInserttag('html', 'html', 'google_map_css', $model->id) as $module) {
-                        yield ['table' => 'tl_content', 'id' => $module->id];
+                        yield [
+                            'table' => 'tl_content',
+                            'id' => $module->id,
+                        ];
                     }
                     foreach ($this->helper->findContentElementByInserttag('html', 'html', 'google_map_js', $model->id) as $module) {
-                        yield ['table' => 'tl_content', 'id' => $module->id];
+                        yield [
+                            'table' => 'tl_content',
+                            'id' => $module->id,
+                        ];
                     }
-
                 })()
             )
         );

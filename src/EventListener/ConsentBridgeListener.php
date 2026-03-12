@@ -10,10 +10,10 @@ declare(strict_types=1);
 
 namespace HeimrichHannot\GoogleMapsBundle\EventListener;
 
-use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
-use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\Config;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\DataContainer;
 use Contao\Template;
 use HeimrichHannot\GoogleMapsBundle\Util\DcaUtil;
@@ -23,8 +23,11 @@ use Hofff\Contao\Consent\Bridge\ConsentToolManager;
 
 final class ConsentBridgeListener
 {
-    public function __construct(private readonly ConsentToolManager $consentToolManager, private readonly ConsentIdParser $consentIdParser, private readonly DcaUtil $dcaUtil)
-    {
+    public function __construct(
+        private readonly ConsentToolManager $consentToolManager,
+        private readonly ConsentIdParser $consentIdParser,
+        private readonly DcaUtil $dcaUtil,
+    ) {
     }
 
     /**
@@ -177,7 +180,9 @@ final class ConsentBridgeListener
         }
 
         $consentIdAsString = $this->dcaUtil->getOverridableProperty('googlemaps_consentId', [
-            (object) ['googlemaps_consentId' => Config::get('googlemaps_consentId')],
+            (object) [
+                'googlemaps_consentId' => Config::get('googlemaps_consentId'),
+            ],
             ['tl_page', $objPage->rootId ?: $objPage->id],
         ]);
 

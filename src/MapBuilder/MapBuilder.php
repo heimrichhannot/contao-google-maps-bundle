@@ -8,7 +8,6 @@ use HeimrichHannot\GoogleMapsBundle\Event\GoogleMapsPrepareExternalItemEvent;
 use HeimrichHannot\GoogleMapsBundle\Manager\MapManager;
 use HeimrichHannot\GoogleMapsBundle\Manager\OverlayManager;
 use HeimrichHannot\GoogleMapsBundle\Model\OverlayModel;
-use HeimrichHannot\GoogleMapsBundle\MapBuilder\MarkerHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -22,27 +21,31 @@ class MapBuilder implements \Stringable
     private array $mapTemplateData;
 
     public function __construct(
-        private readonly MapManager               $mapManager,
+        private readonly MapManager $mapManager,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly OverlayManager $overlayManager,
         private readonly RequestStack $requestStack,
-    ) {}
+    ) {
+    }
 
     public function setMapId(int $id): self
     {
         $this->mapId = $id;
+
         return $this;
     }
 
     public function setConfig(array $config): self
     {
         $this->mapTemplateData = $config;
+
         return $this;
     }
 
     public function addConfig(string $key, $value): self
     {
         $this->mapTemplateData[$key] = $value;
+
         return $this;
     }
 
@@ -53,13 +56,13 @@ class MapBuilder implements \Stringable
         }
 
         if (is_scalar($mapId)) {
-            return $this->setMapId((int)$mapId);
+            return $this->setMapId((int) $mapId);
         }
 
         if (is_array($mapId)) {
             foreach ($mapId as $id) {
                 if (is_scalar($id)) {
-                    $this->setMapIfIfExist((int)$id);
+                    $this->setMapIfIfExist((int) $id);
                     if (isset($this->mapId)) {
                         return $this;
                     }
@@ -76,6 +79,7 @@ class MapBuilder implements \Stringable
             throw new \RuntimeException('Map already build.');
         }
         $this->overlays = $overlays;
+
         return $this;
     }
 
@@ -109,6 +113,7 @@ class MapBuilder implements \Stringable
         $this->mapTemplateData = $templateData;
 
         $this->prepared = true;
+
         return $this;
     }
 
@@ -128,7 +133,6 @@ class MapBuilder implements \Stringable
             $this->requestStack->getCurrentRequest() ?: new Request()
         );
     }
-
 
     public function __toString(): string
     {
@@ -153,6 +157,7 @@ class MapBuilder implements \Stringable
     {
         $new = clone $this;
         $new->mapTemplateData = array_merge($new->mapTemplateData ?? [], $config);
+
         return $new;
     }
 
@@ -189,7 +194,6 @@ class MapBuilder implements \Stringable
         $overlays = [];
 
         foreach ($this->overlays as $overlayData) {
-
             if ($overlayData instanceof OverlayModel) {
                 $model = $overlayData;
                 $overlayData = $model->row();

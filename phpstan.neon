@@ -2,7 +2,7 @@ parameters:
   level: 1
   paths:
     - src
-#    - contao
+    - contao
 #  universalObjectCratesClasses:
 #    - Contao\Database\Result
 #    - Contao\Model

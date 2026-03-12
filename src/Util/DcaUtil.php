@@ -21,8 +21,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DcaUtil
 {
-    public function __construct(protected ContaoFramework $framework, protected TranslatorInterface $translator, protected Utils $utils)
-    {
+    public function __construct(
+        protected ContaoFramework $framework,
+        protected TranslatorInterface $translator,
+        protected Utils $utils,
+    ) {
     }
 
     /**
@@ -74,7 +77,11 @@ class DcaUtil
             $destinationDca['fields'][$overrideFieldname] = [
                 'label' => &$GLOBALS['TL_LANG'][$destinationTable][$overrideFieldname],
                 'inputType' => 'checkbox',
-                'eval' => ['tl_class' => 'w50', 'submitOnChange' => true, 'isOverrideSelector' => true],
+                'eval' => [
+                    'tl_class' => 'w50',
+                    'submitOnChange' => true,
+                    'isOverrideSelector' => true,
+                ],
                 'sql' => "char(1) NOT NULL default ''",
             ];
 

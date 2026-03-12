@@ -30,8 +30,7 @@ class OveleonContaoCookiebarListener
         private readonly Utils $utils,
         private readonly Environment $twig,
         private readonly RequestStack $requestStack,
-    )
-    {
+    ) {
     }
 
     #[AsHook('loadDataContainer')]
@@ -44,15 +43,15 @@ class OveleonContaoCookiebarListener
         $dca = &$GLOBALS['TL_DCA']['tl_cookie'];
         $dca['fields']['type']['options'][] = static::TYPE;
         $dca['palettes'][self::TYPE] = $dca['palettes']['default'];
-//        PaletteManipulator::create()
-//            ->addField('blockTemplate', 'description_legend', PaletteManipulator::POSITION_APPEND)
-//            ->applyToPalette(self::TYPE, 'tl_cookie');
+        //        PaletteManipulator::create()
+        //            ->addField('blockTemplate', 'description_legend', PaletteManipulator::POSITION_APPEND)
+        //            ->applyToPalette(self::TYPE, 'tl_cookie');
     }
 
     #[AsCallback(table: 'tl_cookie', target: 'fields.token.load')]
     public function requireField(mixed $varValue, DataContainer $dc): mixed
     {
-        if ((string)$dc->activeRecord->type === static::TYPE) {
+        if ((string) $dc->activeRecord->type === static::TYPE) {
             $GLOBALS['TL_DCA']['tl_cookie']['fields'][$dc->field]['eval']['mandatory'] = false;
         }
 
@@ -80,6 +79,7 @@ class OveleonContaoCookiebarListener
 
         if (!$apiSubscriber) {
             $event->setCode($this->maskScript($event->getCode(), $config['id']));
+
             return;
         }
 
@@ -165,13 +165,13 @@ class OveleonContaoCookiebarListener
             return null;
         }
 
-        return array_find($cookies, fn(array $cookie) => $cookie['type'] === static::TYPE);
+        return array_find($cookies, fn (array $cookie) => $cookie['type'] === static::TYPE);
     }
 
     private function maskScript(string $script, int $configId, ?string $ident = null): string
     {
         if (!$ident) {
-            $ident = 'gmap_load_' . ByteString::fromRandom(4, '0123456789')->toString();
+            $ident = 'gmap_load_'.ByteString::fromRandom(4, '0123456789')->toString();
         }
 
         return <<< SCRIPT
@@ -202,7 +202,7 @@ class OveleonContaoCookiebarListener
     private function addScriptToGlobals(string $script): void
     {
         $nonce = ByteString::fromRandom(4, '0123456789')->toString();
-        $GLOBALS['TL_BODY']['huhGoogleMaps_' . $nonce] = $script;
+        $GLOBALS['TL_BODY']['huhGoogleMaps_'.$nonce] = $script;
     }
 
     private function parseHtml(string $content, Map $map, Request $request, CookieModel $configModel): string|array|bool|null
@@ -216,8 +216,8 @@ class OveleonContaoCookiebarListener
         // support legacy path for bc
         $legacyTemplateName = '@Contao/oveleon_cookiebar/blocker/default.html.twig';
         if (
-            $this->twig->getLoader()->exists($legacyTemplateName) &&
-            !str_contains(
+            $this->twig->getLoader()->exists($legacyTemplateName)
+            && !str_contains(
                 $this->twig->getLoader()->getSourceContext($legacyTemplateName)->getPath(),
                 'heimrichhannot/contao-google-maps-bundle'
             )
@@ -241,10 +241,9 @@ class OveleonContaoCookiebarListener
         ]);
 
         return preg_replace(
-            '/(<div id="' . $map->getHtmlId() . '"[^>]*>)/',
-            '$1' . $blocker,
+            '/(<div id="'.$map->getHtmlId().'"[^>]*>)/',
+            '$1'.$blocker,
             $content
         );
     }
-
 }

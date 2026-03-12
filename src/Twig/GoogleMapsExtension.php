@@ -32,7 +32,9 @@ class GoogleMapsExtension extends AbstractExtension
             new TwigFunction(
                 'google_map',
                 [GoogleMapsRuntime::class, 'create'],
-                ['is_safe' => ['html']]
+                [
+                    'is_safe' => ['html'],
+                ]
             ),
         ];
 

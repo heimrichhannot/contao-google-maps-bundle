@@ -4,7 +4,6 @@ namespace HeimrichHannot\GoogleMapsBundle\MapBuilder;
 
 use HeimrichHannot\GoogleMapsBundle\Manager\MapManager;
 use HeimrichHannot\GoogleMapsBundle\Manager\OverlayManager;
-use HeimrichHannot\GoogleMapsBundle\MapBuilder\MapBuilder;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -15,7 +14,8 @@ class MapBuilderFactory
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly OverlayManager $overlayManager,
         private readonly RequestStack $requestStack,
-    ) {}
+    ) {
+    }
 
     public function build(): MapBuilder
     {

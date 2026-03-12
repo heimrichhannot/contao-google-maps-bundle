@@ -24,7 +24,10 @@ class MapCollection
 
     public function addMap(Map $map, ?int $mapConfigId): void
     {
-        $this->maps[] = ['map' => $map, 'id' => $mapConfigId];
+        $this->maps[] = [
+            'map' => $map,
+            'id' => $mapConfigId,
+        ];
     }
 
     /**

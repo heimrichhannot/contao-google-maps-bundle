@@ -10,32 +10,29 @@ declare(strict_types=1);
 
 namespace HeimrichHannot\GoogleMapsBundle\Service;
 
-use Ivory\GoogleMap\Service\Elevation\Request\ElevationRequestInterface;
-use Psr\Http\Client\ClientInterface;
 use Contao\Config;
 use Http\Message\MessageFactory\GuzzleMessageFactory;
 use Ivory\GoogleMap\Base\Coordinate;
 use Ivory\GoogleMap\Service\Base\Location\CoordinateLocation;
+use Ivory\GoogleMap\Service\Elevation\Request\ElevationRequestInterface;
 use Ivory\GoogleMap\Service\Elevation\Request\PathElevationRequest;
 use Ivory\GoogleMap\Service\Elevation\Request\PositionalElevationRequest;
 use Ivory\GoogleMap\Service\Elevation\Response\ElevationResult;
+use Psr\Http\Client\ClientInterface;
 
 class ElevationService
 {
-    const REQUEST_TYPE_PATH = 'path';
+    public const REQUEST_TYPE_PATH = 'path';
 
-    const REQUEST_TYPE_POSTITIONAL = 'positional';
+    public const REQUEST_TYPE_POSTITIONAL = 'positional';
 
-    const MAX_SAMPLES = 300;
+    public const MAX_SAMPLES = 300;
 
     /**
      * @var \Ivory\GoogleMap\Service\Elevation\ElevationService
      */
     protected $service;
 
-    /**
-     * ElevationService constructor.
-     */
     public function __construct(ClientInterface $httpClient)
     {
         $this->service = new \Ivory\GoogleMap\Service\Elevation\ElevationService($httpClient,

@@ -27,8 +27,11 @@ class GoogleMapsElementController extends AbstractContentElementController
 {
     public const TYPE = 'google_map';
 
-    public function __construct(private readonly ScopeMatcher $scopeMatcher, private readonly Utils $utils, protected MapManager $mapManager)
-    {
+    public function __construct(
+        private readonly ScopeMatcher $scopeMatcher,
+        private readonly Utils $utils,
+        protected MapManager $mapManager,
+    ) {
     }
 
     protected function getResponse(FragmentTemplate $template, ContentModel $model, Request $request): Response

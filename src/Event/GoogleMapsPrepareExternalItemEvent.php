@@ -19,9 +19,10 @@ class GoogleMapsPrepareExternalItemEvent extends Event
     public function __construct(
         public readonly array $itemData,
         /**
-         * The overlay model for the current item. Null if no marker should be added
+         * The overlay model for the current item. Null if no marker should be added.
          */
         public ?OverlayModel $overlayModel,
-        public Model|array|null $context = null
-    ) {}
+        public Model|array|null $context = null,
+    ) {
+    }
 }

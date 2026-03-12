@@ -22,23 +22,23 @@ use Ivory\GoogleMap\Overlay\Animation;
 
 class OverlayListener extends Backend
 {
-    const TYPE_MARKER = 'marker';
+    public const TYPE_MARKER = 'marker';
 
-    const TYPE_INFO_WINDOW = 'infowindow';
+    public const TYPE_INFO_WINDOW = 'infowindow';
 
-    const TYPE_POLYLINE = 'polyline';
+    public const TYPE_POLYLINE = 'polyline';
 
-    const TYPE_POLYGON = 'polygon';
+    public const TYPE_POLYGON = 'polygon';
 
-    const TYPE_CIRCLE = 'circle';
+    public const TYPE_CIRCLE = 'circle';
 
-    const TYPE_RECTANGLE = 'rectangle';
+    public const TYPE_RECTANGLE = 'rectangle';
 
-    const TYPE_GROUND_OVERLAY = 'ground_overlay';
+    public const TYPE_GROUND_OVERLAY = 'ground_overlay';
 
-    const TYPE_KML_LAYER = 'kml';
+    public const TYPE_KML_LAYER = 'kml';
 
-    const TYPES = [
+    public const TYPES = [
         self::TYPE_MARKER,
         self::TYPE_INFO_WINDOW,
         self::TYPE_POLYLINE,
@@ -49,49 +49,51 @@ class OverlayListener extends Backend
         self::TYPE_KML_LAYER,
     ];
 
-    const TITLE_MODE_TITLE_FIELD = 'title_field';
+    public const TITLE_MODE_TITLE_FIELD = 'title_field';
 
-    const TITLE_MODE_CUSTOM_TEXT = 'custom_text';
+    public const TITLE_MODE_CUSTOM_TEXT = 'custom_text';
 
-    const TITLE_MODES = [
+    public const TITLE_MODES = [
         self::TITLE_MODE_TITLE_FIELD,
         self::TITLE_MODE_CUSTOM_TEXT,
     ];
 
-    const MARKER_TYPE_SIMPLE = 'simple';
+    public const MARKER_TYPE_SIMPLE = 'simple';
 
-    const MARKER_TYPE_ICON = 'icon';
+    public const MARKER_TYPE_ICON = 'icon';
 
-    const MARKER_TYPES = [
+    public const MARKER_TYPES = [
         self::MARKER_TYPE_SIMPLE,
         self::MARKER_TYPE_ICON,
     ];
 
-    const CLICK_EVENT_LINK = 'link';
+    public const CLICK_EVENT_LINK = 'link';
 
-    const CLICK_EVENT_INFO_WINDOW = 'infowindow';
+    public const CLICK_EVENT_INFO_WINDOW = 'infowindow';
 
-    const CLICK_EVENTS = [
+    public const CLICK_EVENTS = [
         self::CLICK_EVENT_LINK,
         self::CLICK_EVENT_INFO_WINDOW,
     ];
 
-    const POSITIONING_MODE_COORDINATE = 'coordinate';
+    public const POSITIONING_MODE_COORDINATE = 'coordinate';
 
-    const POSITIONING_MODE_STATIC_ADDRESS = 'static_address';
+    public const POSITIONING_MODE_STATIC_ADDRESS = 'static_address';
 
-    const POSITIONING_MODES = [
+    public const POSITIONING_MODES = [
         self::POSITIONING_MODE_COORDINATE,
         self::POSITIONING_MODE_STATIC_ADDRESS,
     ];
 
-    const ANIMATIONS = [
+    public const ANIMATIONS = [
         Animation::BOUNCE,
         Animation::DROP,
     ];
 
-    public function __construct(protected ContaoFramework $framework, protected Utils $utils)
-    {
+    public function __construct(
+        protected ContaoFramework $framework,
+        protected Utils $utils,
+    ) {
         parent::__construct();
     }
 
