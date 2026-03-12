@@ -85,6 +85,14 @@ google_map_html | ID of the `tl_google_map` instance | {{google_map_html::1}}
 google_map_css | ID of the `tl_google_map` instance | {{google_map_css::1}}
 google_map_js | ID of the `tl_google_map` instance | {{google_map_js::1}}
 
+## Integrations
+
+### Oveleon Cookiebar
+
+This extension comes with a build in cookie type for the [Oveleon Cookiebar](https://packagist.org/packages/oveleon/contao-cookiebar) 
+that you can use to easily integrate the cookie bar with the google maps bundle. 
+Just create a cookie type of type "Google Maps (Google Maps Bundle)" and you're done.
+
 ## TODO
 
 - Overlay types:
