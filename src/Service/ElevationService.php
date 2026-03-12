@@ -80,14 +80,11 @@ class ElevationService
      */
     public function getRequest(array $locations, $type = self::REQUEST_TYPE_POSTITIONAL): ElevationRequestInterface
     {
-        switch ($type) {
-            case self::REQUEST_TYPE_POSTITIONAL:
-                return new PositionalElevationRequest($locations);
-            case self::REQUEST_TYPE_PATH:
-                return new PathElevationRequest([$locations[0], end($locations)]);
-        }
-
-        throw new \RuntimeException('Unsupported request type');
+        return match ($type) {
+            self::REQUEST_TYPE_POSTITIONAL => new PositionalElevationRequest($locations),
+            self::REQUEST_TYPE_PATH => new PathElevationRequest([$locations[0], end($locations)]),
+            default => throw new \RuntimeException('Unsupported request type'),
+        };
     }
 
     public function setService(\Ivory\GoogleMap\Service\Elevation\ElevationService $service): void
