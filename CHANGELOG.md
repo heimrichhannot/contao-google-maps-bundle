@@ -2,11 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 ## [3.0.0-beta4] - 2026-03-12
-- Changed: [Oveleon Cookiebar Integration] blocking now also supports custom map integration instead only content elements and frontend modules ([#35]https://github.com/heimrichhannot/contao-google-maps-bundle/pull/35)
-- Changed: [Oveleon Cookiebar Integration] moved template to google_maps/oveleon_cookiebar/blocker.html.twig (old template path is still supported but deprecated) ([#35]https://github.com/heimrichhannot/contao-google-maps-bundle/pull/35)
-- Changed: BeforeRenderMapEvent has now it's FQN as event name (old event name is still supported but deprecated) ([#35]https://github.com/heimrichhannot/contao-google-maps-bundle/pull/35)
-- Fixed: overlay trigger links not checking if google namespace is defined ([#35]https://github.com/heimrichhannot/contao-google-maps-bundle/pull/35)
-- Deprecated: getter and setter methods in BeforeRenderMapEvent (use the public properties instead) ([#35]https://github.com/heimrichhannot/contao-google-maps-bundle/pull/35)
+- Changed: [Oveleon Cookiebar Integration] blocking now also supports custom map integration instead only content elements and frontend modules ([#35](https://github.com/heimrichhannot/contao-google-maps-bundle/pull/35)
+- Changed: [Oveleon Cookiebar Integration] moved template to google_maps/oveleon_cookiebar/blocker.html.twig (old template path is still supported but deprecated) ([#35](https://github.com/heimrichhannot/contao-google-maps-bundle/pull/35)
+- Changed: BeforeRenderMapEvent has now it's FQN as event name (old event name is still supported but deprecated) ([#35](https://github.com/heimrichhannot/contao-google-maps-bundle/pull/35)
+- Fixed: overlay trigger links not checking if google namespace is defined ([#35](https://github.com/heimrichhannot/contao-google-maps-bundle/pull/35)
+- Deprecated: getter and setter methods in BeforeRenderMapEvent (use the public properties instead) ([#35](https://github.com/heimrichhannot/contao-google-maps-bundle/pull/35)
 
 ## [3.0.0-beta3] - 2026-02-11
 - Fixed: implicit nullable marking warning

@@ -33,7 +33,7 @@ This bundle adds google maps integration to [Contao](https://contao.org/de/). It
 
 1. Create a Google Map using the corresponding menu entry in Contao on the left.
 2. Optional: create markers with the created google map configuration (markers are child entities of a map)
-4. Now you can integrate the map in your website using one of the following build-in ways:
+3. Now you can integrate the map in your website using one of the following build-in ways:
     - Content element
     - Module
     - Insert tag (see below)
@@ -78,18 +78,18 @@ Migrating is as simple as running `vendor/bin/contao-console huh:google-maps:mig
 
 ## Insert Tags
 
-Name | Arguments | Example
----- | --------- | -------
-google_map | ID of the `tl_google_map` instance | {{google_map::1}}
-google_map_html | ID of the `tl_google_map` instance | {{google_map_html::1}}
-google_map_css | ID of the `tl_google_map` instance | {{google_map_css::1}}
-google_map_js | ID of the `tl_google_map` instance | {{google_map_js::1}}
+| Name            | Arguments                          | Example                |
+|-----------------|------------------------------------|------------------------|
+| google_map      | ID of the `tl_google_map` instance | {{google_map::1}}      |
+| google_map_html | ID of the `tl_google_map` instance | {{google_map_html::1}} |
+| google_map_css  | ID of the `tl_google_map` instance | {{google_map_css::1}}  |
+| google_map_js   | ID of the `tl_google_map` instance | {{google_map_js::1}}   |
 
 ## Integrations
 
 ### Oveleon Cookiebar
 
-This extension comes with a build in cookie type for the [Oveleon Cookiebar](https://packagist.org/packages/oveleon/contao-cookiebar) 
+This extension comes with a build-in cookie type for the [Oveleon Cookiebar](https://packagist.org/packages/oveleon/contao-cookiebar) 
 that you can use to easily integrate the cookie bar with the google maps bundle. 
 Just create a cookie type of type "Google Maps (Google Maps Bundle)" and you're done.
 
