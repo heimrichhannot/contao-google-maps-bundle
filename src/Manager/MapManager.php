@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-/*
- * Copyright (c) 2024 Heimrich & Hannot GmbH
+/**
+ * Copyright (c) 2024 Heimrich & Hannot GmbH.
  *
  * @license LGPL-3.0-or-later
  */
@@ -161,7 +161,8 @@ class MapManager
 
         if ($mapConfigModel) {
             $listener = new MapRendererListener($templateData['mapConfigModel'], $this, $mapHelper, $this->framework);
-            $mapHelper->getEventDispatcher()->addListener('map.stylesheet', [$listener, 'renderStylesheet']);
+            $mapHelper->getEventDispatcher()
+                ->addListener('map.stylesheet', [$listener, 'renderStylesheet']);
         }
 
         $templateData['mapHtml'] = $mapHelper->renderHtml($map);
@@ -229,7 +230,8 @@ class MapManager
         ;
 
         $listener = new ApiRenderListener($apiHelper, $this->eventDispatcher);
-        $apiHelper->getEventDispatcher()->addListener(ApiEvents::JAVASCRIPT, [$listener, 'onApiRender']);
+        $apiHelper->getEventDispatcher()
+            ->addListener(ApiEvents::JAVASCRIPT, [$listener, 'onApiRender']);
 
         $output = $apiHelper->render($this->mapCollection->getMaps());
 
@@ -287,7 +289,8 @@ class MapManager
 
         // clustering
         if ($mapConfig->addClusterer) {
-            $clusterer = $map->getOverlayManager()->getMarkerCluster();
+            $clusterer = $map->getOverlayManager()
+                ->getMarkerCluster();
             $clusterer->setType(MarkerClusterType::MARKER_CLUSTERER);
 
             if ($mapConfig->clustererImg) {
@@ -388,7 +391,8 @@ class MapManager
     {
         if ($mapConfig->staticMapNoscript) {
             $staticParams = [
-                'center' => $map->getCenter()->getLatitude().','.$map->getCenter()->getLongitude(),
+                'center' => $map->getCenter()
+                    ->getLatitude().','.$map->getCenter()->getLongitude(),
                 'zoom' => $map->getMapOption('zoom'),
                 'size' => $mapConfig->staticMapWidth.'x'.$mapConfig->staticMapHeight,
                 'maptype' => $map->getMapOption('mapTypeId'),
@@ -409,7 +413,8 @@ class MapManager
                 $mapConfig->mapTypeControlStyle,
             );
 
-            $map->getControlManager()->setMapTypeControl($control);
+            $map->getControlManager()
+                ->setMapTypeControl($control);
         } else {
             // Explicitly disable map type control when not enabled
             $map->setMapOption('mapTypeControl', false);
@@ -421,7 +426,8 @@ class MapManager
                 $mapConfig->zoomControlPos,
             );
 
-            $map->getControlManager()->setZoomControl($control);
+            $map->getControlManager()
+                ->setZoomControl($control);
         }
 
         // rotate
@@ -430,7 +436,8 @@ class MapManager
                 $mapConfig->rotateControlPos,
             );
 
-            $map->getControlManager()->setRotateControl($control);
+            $map->getControlManager()
+                ->setRotateControl($control);
         } else {
             // Explicitly disable rotate control when not enabled
             $map->setMapOption('rotateControl', false);
@@ -442,7 +449,8 @@ class MapManager
                 $mapConfig->streetViewControlPos,
             );
 
-            $map->getControlManager()->setStreetViewControl($control);
+            $map->getControlManager()
+                ->setStreetViewControl($control);
         } else {
             // Explicitly disable street view control when not enabled
             $map->setMapOption('streetViewControl', false);
@@ -454,7 +462,8 @@ class MapManager
                 $mapConfig->fullscreenControlPos,
             );
 
-            $map->getControlManager()->setFullscreenControl($control);
+            $map->getControlManager()
+                ->setFullscreenControl($control);
         } else {
             // Explicitly disable fullscreen control when not enabled
             $map->setMapOption('fullscreenControl', false);
@@ -464,7 +473,8 @@ class MapManager
         if ($mapConfig->addScaleControl) {
             $control = new ScaleControl();
 
-            $map->getControlManager()->setScaleControl($control);
+            $map->getControlManager()
+                ->setScaleControl($control);
         } else {
             // Explicitly disable scale control when not enabled
             $map->setMapOption('scaleControl', false);
