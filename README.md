@@ -11,6 +11,7 @@ This bundle adds google maps integration to [Contao](https://contao.org/de/). It
 - frontend module and content element
 - insert tag and twig function
 - easy contao command based migration tool for [delahaye/dlh_googlemaps](https://github.com/delahaye/dlh_googlemaps) (courtesy to delahaye!)
+- GeoJSON layer overlay type replacing the deprecated `KmlLayer`, including a command to convert existing KML files
 - responsive support (mobile first), provide responsive configurations that will update the map upon reaching the value (greater than breakpoint)
 - support for [hofff/contao-consent-bridge](https://github.com/hofff/contao-consent-bridge)
 - support for [Oveleon Cookiebar](https://packagist.org/packages/oveleon/contao-cookiebar)
@@ -69,6 +70,42 @@ To render your map in a twig template, use `google_map` function:
 ```
 
 
+
+## GeoJSON layers (replacing KML)
+
+Google's `KmlLayer` is deprecated: unavailable from Maps JavaScript API 3.66 (August 2026), removed in May 2027. The **GeoJSON layer**
+overlay type replaces it, built on `google.maps.Data`.
+
+Since GeoJSON has no style specification, styling comes from each feature's [simplestyle](https://github.com/mapbox/simplestyle-spec)
+properties (`stroke`, `stroke-width`, `fill`, `icon`, ...), falling back to the overlay's own style settings. Info windows are built from the
+remaining properties and use BEM classes (`.huh-geojson-infowindow`, `__text`, `__properties`) without any styling of their own, so style
+them in your project.
+
+### Converting existing KML files
+
+```bash
+vendor/bin/contao-console huh:google-maps:convert-kml files/maps --dry-run
+vendor/bin/contao-console huh:google-maps:convert-kml files/maps --force
+
+# rewrite absolute icon URLs to mirrored local files
+vendor/bin/contao-console huh:google-maps:convert-kml files/maps --force \
+  --icon-base=files/maps/ico --local-host=maps.example.com
+```
+
+Writes `<name>.geojson` next to each `<name>.kml` and leaves the sources untouched. Paths may be files or directories (scanned recursively),
+defaulting to the project root.
+
+| Option           | Description                                                                                                |
+|------------------|------------------------------------------------------------------------------------------------------------|
+| `--dry-run`      | Report what would be written without writing.                                                                |
+| `--force`        | Overwrite existing `.geojson` files.                                                                         |
+| `--icon-base`    | Project-relative base path for rewritten icon URLs. Without it, URLs stay untouched.                         |
+| `--local-host`   | Host whose icon URLs are rewritten below `--icon-base`. Repeatable.                                          |
+| `--keep-folders` | Keep the KML folder hierarchy as `folder`/`folderPath` properties, e.g. to drive a layer switcher.            |
+| `--precision`    | Coordinate decimal places (default `6`).                                                                     |
+
+Icons on `maps.google.com` are matched by file name below `<icon-base>/google/`. After each run, external URLs left alone and rewritten
+paths that do not exist are reported, so broken markers surface before they reach the map.
 
 ## Migrating from dlh_googlemaps
 

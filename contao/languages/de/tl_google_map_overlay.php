@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-/*
- * Copyright (c) 2024 Heimrich & Hannot GmbH
+/**
+ * Copyright (c) 2024 Heimrich & Hannot GmbH.
  *
  * @license LGPL-3.0-or-later
  */
@@ -108,10 +108,16 @@ $lang['reference'] = [
     OverlayListener::TYPE_CIRCLE => 'Kreis',
     OverlayListener::TYPE_RECTANGLE => 'Rechteck',
     OverlayListener::TYPE_GROUND_OVERLAY => 'Ground-Overlay',
-    OverlayListener::TYPE_KML_LAYER => 'KML-Layer',
+    OverlayListener::TYPE_KML_LAYER => 'KML-Layer (veraltet)',
+    OverlayListener::TYPE_GEOJSON_LAYER => 'GeoJSON-Layer',
     OverlayListener::MARKER_TYPE_SIMPLE => 'Standard',
     OverlayListener::MARKER_TYPE_ICON => 'Individuelles Bild',
     OverlayListener::CLICK_EVENT_LINK => 'Link',
+];
+
+$lang['reference']['geojsonSource'] = [
+    OverlayListener::GEOJSON_SOURCE_FILE => 'Datei aus der Dateiverwaltung',
+    OverlayListener::GEOJSON_SOURCE_URL => 'Externe URL',
 ];
 
 /*
@@ -119,6 +125,7 @@ $lang['reference'] = [
  */
 $lang['general_legend'] = 'Allgemeine Einstellungen';
 $lang['config_legend'] = 'Konfiguration';
+$lang['style_legend'] = 'Darstellung';
 $lang['publish_legend'] = 'Veröffentlichung';
 
 /*
@@ -144,3 +151,29 @@ $lang['kmlScreenOverlays'][0] = 'Overlays zeigen';
 $lang['kmlScreenOverlays'][1] = 'Die Overlays des Layers rendern.';
 $lang['kmlSuppressInfowindows'][0] = 'Infoblasen unterdrücken';
 $lang['kmlSuppressInfowindows'][1] = 'Unterdrückt die Anzeige von Infoblasen im Layer.';
+
+/*
+ * GeoJSON
+ */
+$lang['geojsonSource'][0] = 'Quelle';
+$lang['geojsonSource'][1] = 'Legen Sie fest, woher die GeoJSON-Daten geladen werden.';
+$lang['geojsonFile'][0] = 'GeoJSON-Datei';
+$lang['geojsonFile'][1] = 'Wählen Sie eine .geojson-Datei aus der Dateiverwaltung.';
+$lang['geojsonUrl'][0] = 'GeoJSON-URL';
+$lang['geojsonUrl'][1] = 'Geben Sie eine absolute URL zu einer .geojson-Datei ein.';
+$lang['geojsonClickable'][0] = 'Klickbar';
+$lang['geojsonClickable'][1] = 'Wenn aktiv, öffnet ein Klick auf ein Element eine Infoblase mit dessen Eigenschaften.';
+$lang['geojsonFitBounds'][0] = 'Auf Inhalt zoomen';
+$lang['geojsonFitBounds'][1] = 'Passt den Kartenausschnitt automatisch an die geladenen Daten an.';
+$lang['geojsonStrokeColor'][0] = 'Linienfarbe';
+$lang['geojsonStrokeColor'][1] = 'Fallback-Farbe für Linien und Umrisse, sofern das Element keine eigene Farbe mitbringt.';
+$lang['geojsonStrokeWeight'][0] = 'Linienstärke';
+$lang['geojsonStrokeWeight'][1] = 'Fallback-Linienstärke in Pixel.';
+$lang['geojsonStrokeOpacity'][0] = 'Linien-Deckkraft';
+$lang['geojsonStrokeOpacity'][1] = 'Fallback-Deckkraft der Linien zwischen 0 und 1.';
+$lang['geojsonFillColor'][0] = 'Füllfarbe';
+$lang['geojsonFillColor'][1] = 'Fallback-Füllfarbe für Flächen.';
+$lang['geojsonFillOpacity'][0] = 'Füll-Deckkraft';
+$lang['geojsonFillOpacity'][1] = 'Fallback-Deckkraft der Füllung zwischen 0 und 1.';
+$lang['geojsonStylePropertiesEnabled'][0] = 'Eigenschaften aus der Datei verwenden';
+$lang['geojsonStylePropertiesEnabled'][1] = 'Wertet die simplestyle-Eigenschaften (stroke, stroke-width, fill, icon, ...) der einzelnen Elemente aus. Die Angaben oben dienen dann nur als Fallback.';

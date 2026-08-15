@@ -5,7 +5,11 @@ services:
 
   HeimrichHannot\GoogleMapsBundle\:
     resource: '../src/{Command,Controller,EventListener,MapBuilder,Security,Twig,Util}/*'
-    exclude: '../src/EventListener/{MapRendererListener.php,ApiRenderListener.php}'
+    exclude: '../src/{EventListener/MapRendererListener.php,EventListener/ApiRenderListener.php,Util/KmlConverter.php}'
+
+  HeimrichHannot\GoogleMapsBundle\Command\ConvertKmlCommand:
+    arguments:
+      $projectDir: '%kernel.project_dir%'
 
   HeimrichHannot\GoogleMapsBundle\Manager\:
     resource: '../src/Manager/*'

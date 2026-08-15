@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-/*
- * Copyright (c) 2024 Heimrich & Hannot GmbH
+/**
+ * Copyright (c) 2024 Heimrich & Hannot GmbH.
  *
  * @license LGPL-3.0-or-later
  */
@@ -32,6 +32,12 @@ class ReplaceDynamicScriptTagsListener
 
         if (empty($mapApi)) {
             return $buffer;
+        }
+
+        // Registered here because maps render inside the body, by which point
+        // a TL_JAVASCRIPT entry would come too late for the head.
+        if ($this->mapManager->hasGeoJsonLayers()) {
+            $GLOBALS['TL_JAVASCRIPT']['huh_google_maps_geojson'] = 'bundles/heimrichhannotgooglemaps/js/google-maps-geojson.js|static';
         }
 
         // fix the code for the case more than 1 map is on the page and not the first one

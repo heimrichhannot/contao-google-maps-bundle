@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-/*
- * Copyright (c) 2024 Heimrich & Hannot GmbH
+/**
+ * Copyright (c) 2024 Heimrich & Hannot GmbH.
  *
  * @license LGPL-3.0-or-later
  */
@@ -60,6 +60,7 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
             'markerType',
             'clickEvent',
             'addRouting',
+            'geojsonSource',
             // CAUTION: type must be at this position, else a Contao palette error takes places!
             'type',
             'published',
@@ -69,8 +70,11 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
         OverlayListener::TYPE_INFO_WINDOW => '{general_legend},title,type;{config_legend},positioningMode,infoWindowWidth,infoWindowHeight,infoWindowText,addRouting,zIndex;{publish_legend},published;',
         OverlayListener::TYPE_KML_LAYER => '{general_legend},title,type;{config_legend},kmlUrl,kmlClickable,kmlPreserveViewport,kmlScreenOverlays,kmlSuppressInfowindows,zIndex;{publish_legend},published;',
         OverlayListener::TYPE_POLYGON => '{general_legend},title,type;{config_legend},pathCoordinates,strokeColor,strokeOpacity,fillColor,fillOpacity,strokeWeight,zIndex;{publish_legend},published;',
+        OverlayListener::TYPE_GEOJSON_LAYER => '{general_legend},title,type;{config_legend},geojsonSource,geojsonClickable,geojsonFitBounds,zIndex;{style_legend},geojsonStrokeColor,geojsonStrokeWeight,geojsonStrokeOpacity,geojsonFillColor,geojsonFillOpacity,geojsonStylePropertiesEnabled;{publish_legend},published;',
     ],
     'subpalettes' => [
+        'geojsonSource_'.OverlayListener::GEOJSON_SOURCE_FILE => 'geojsonFile',
+        'geojsonSource_'.OverlayListener::GEOJSON_SOURCE_URL => 'geojsonUrl',
         'titleMode_'.OverlayListener::TITLE_MODE_CUSTOM_TEXT => 'titleText',
         'positioningMode_'.OverlayListener::POSITIONING_MODE_COORDINATE => 'positioningLat,positioningLng',
         'positioningMode_'.OverlayListener::POSITIONING_MODE_STATIC_ADDRESS => 'positioningAddress',
@@ -476,6 +480,126 @@ $GLOBALS['TL_DCA']['tl_google_map_overlay'] = [
                 'tl_class' => 'm12',
             ],
             'sql' => "char(1) NOT NULL default ''",
+        ],
+        'geojsonSource' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['geojsonSource'],
+            'default' => OverlayListener::GEOJSON_SOURCE_FILE,
+            'inputType' => 'select',
+            'options' => OverlayListener::GEOJSON_SOURCES,
+            'reference' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['reference']['geojsonSource'],
+            'eval' => [
+                'submitOnChange' => true,
+                'mandatory' => true,
+                'tl_class' => 'w50',
+            ],
+            'sql' => "varchar(16) NOT NULL default ''",
+        ],
+        'geojsonFile' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['geojsonFile'],
+            'inputType' => 'fileTree',
+            'eval' => [
+                'fieldType' => 'radio',
+                'filesOnly' => true,
+                'extensions' => 'geojson,json',
+                'mandatory' => true,
+                'tl_class' => 'clr',
+            ],
+            'sql' => 'binary(16) NULL',
+        ],
+        'geojsonUrl' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['geojsonUrl'],
+            'search' => true,
+            'inputType' => 'text',
+            'eval' => [
+                'rgxp' => 'url',
+                'decodeEntities' => true,
+                'maxlength' => 255,
+                'mandatory' => true,
+                'tl_class' => 'clr w50',
+            ],
+            'sql' => "varchar(255) NOT NULL default ''",
+        ],
+        'geojsonClickable' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['geojsonClickable'],
+            'filter' => true,
+            'default' => true,
+            'inputType' => 'checkbox',
+            'eval' => [
+                'tl_class' => 'clr m12',
+            ],
+            'sql' => "char(1) NOT NULL default '1'",
+        ],
+        'geojsonFitBounds' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['geojsonFitBounds'],
+            'filter' => true,
+            'default' => false,
+            'inputType' => 'checkbox',
+            'eval' => [
+                'tl_class' => 'm12',
+            ],
+            'sql' => "char(1) NOT NULL default ''",
+        ],
+        'geojsonStrokeColor' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['geojsonStrokeColor'],
+            'inputType' => 'text',
+            'eval' => [
+                'maxlength' => 6,
+                'isHexColor' => true,
+                'colorpicker' => true,
+                'decodeEntities' => true,
+                'tl_class' => 'w50 wizard',
+            ],
+            'sql' => "varchar(6) NOT NULL default ''",
+        ],
+        'geojsonStrokeWeight' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['geojsonStrokeWeight'],
+            'inputType' => 'text',
+            'eval' => [
+                'rgxp' => 'natural',
+                'maxlength' => 3,
+                'tl_class' => 'w50',
+            ],
+            'sql' => "varchar(3) NOT NULL default ''",
+        ],
+        'geojsonStrokeOpacity' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['geojsonStrokeOpacity'],
+            'inputType' => 'text',
+            'eval' => [
+                'maxlength' => 3,
+                'tl_class' => 'w50',
+            ],
+            'sql' => "varchar(3) NOT NULL default ''",
+        ],
+        'geojsonFillColor' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['geojsonFillColor'],
+            'inputType' => 'text',
+            'eval' => [
+                'maxlength' => 6,
+                'isHexColor' => true,
+                'colorpicker' => true,
+                'decodeEntities' => true,
+                'tl_class' => 'w50 wizard',
+            ],
+            'sql' => "varchar(6) NOT NULL default ''",
+        ],
+        'geojsonFillOpacity' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['geojsonFillOpacity'],
+            'inputType' => 'text',
+            'eval' => [
+                'maxlength' => 3,
+                'tl_class' => 'w50',
+            ],
+            'sql' => "varchar(3) NOT NULL default ''",
+        ],
+        'geojsonStylePropertiesEnabled' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_google_map_overlay']['geojsonStylePropertiesEnabled'],
+            'filter' => true,
+            'default' => true,
+            'inputType' => 'checkbox',
+            'eval' => [
+                'tl_class' => 'clr m12',
+            ],
+            'sql' => "char(1) NOT NULL default '1'",
         ],
         'pathCoordinates' => [
             'inputType' => 'group',
