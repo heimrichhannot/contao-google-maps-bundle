@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-/*
- * Copyright (c) 2024 Heimrich & Hannot GmbH
+/**
+ * Copyright (c) 2024 Heimrich & Hannot GmbH.
  *
  * @license LGPL-3.0-or-later
  */
@@ -79,7 +79,8 @@ class MigrateDlhCommand extends Command
             $this->io->note('Dry run enabled.');
             $this->io->newLine();
         }
-        $this->io->getFormatter()->setStyle('userwarning', new OutputFormatterStyle('red', null));
+        $this->io->getFormatter()
+            ->setStyle('userwarning', new OutputFormatterStyle('red', null));
 
         $this->framework->initialize();
 

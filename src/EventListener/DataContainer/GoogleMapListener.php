@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-/*
- * Copyright (c) 2024 Heimrich & Hannot GmbH
+/**
+ * Copyright (c) 2024 Heimrich & Hannot GmbH.
  *
  * @license LGPL-3.0-or-later
  */
@@ -182,7 +182,8 @@ class GoogleMapListener
             return;
         }
 
-        $objSessionBag = $this->requestStack->getSession()->getBag('contao_backend');
+        $objSessionBag = $this->requestStack->getSession()
+            ->getBag('contao_backend');
         $newRecords = $objSessionBag->get('new_records');
 
         if (\is_array($newRecords['tl_google_map']) && \in_array($insertId, $newRecords['tl_google_map'], true)) {
@@ -218,7 +219,8 @@ class GoogleMapListener
                     ->from('tl_user')
                 ;
                 $qb->where($qb->expr()->eq('id', $user->id));
-                $userPermissions = $qb->executeQuery()->fetchAssociative();
+                $userPermissions = $qb->executeQuery()
+                    ->fetchAssociative();
 
                 $mapPermissions = StringUtil::deserialize($userPermissions['contao_google_maps_bundlep']);
 
