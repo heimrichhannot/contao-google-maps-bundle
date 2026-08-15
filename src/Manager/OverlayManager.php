@@ -24,6 +24,7 @@ use Ivory\GoogleMap\Base\Point;
 use Ivory\GoogleMap\Base\Size;
 use Ivory\GoogleMap\Event\Event;
 use Ivory\GoogleMap\Event\MouseEvent;
+use Ivory\GoogleMap\Layer\GeoJsonLayer;
 use Ivory\GoogleMap\Layer\KmlLayer;
 use Ivory\GoogleMap\Map;
 use Ivory\GoogleMap\Overlay\Icon;
@@ -91,6 +92,14 @@ class OverlayManager
 
                 $map->getLayerManager()
                     ->addKmlLayer($kmlLayer);
+
+                break;
+
+            case OverlayListener::TYPE_GEOJSON_LAYER:
+                if (null !== ($geoJsonLayer = $this->prepareGeoJsonLayer($overlayConfig))) {
+                    $map->getLayerManager()
+                        ->addGeoJsonLayer($geoJsonLayer);
+                }
 
                 break;
 
@@ -344,6 +353,55 @@ class OverlayManager
         }
 
         return $kmlLayer;
+    }
+
+    /**
+     * Builds the data layer replacing the deprecated KmlLayer.
+     *
+     * GeoJSON has no style specification, so the styling options travel as
+     * layer options and are applied by the frontend script.
+     */
+    protected function prepareGeoJsonLayer(OverlayModel $overlayConfig): ?GeoJsonLayer
+    {
+        if (null === ($url = $this->getGeoJsonUrl($overlayConfig))) {
+            return null;
+        }
+
+        $geoJsonLayer = new GeoJsonLayer($url);
+
+        $style = array_filter([
+            'strokeColor' => $overlayConfig->geojsonStrokeColor ? '#'.ltrim($overlayConfig->geojsonStrokeColor, '#') : null,
+            'strokeWeight' => '' !== (string) $overlayConfig->geojsonStrokeWeight ? (int) $overlayConfig->geojsonStrokeWeight : null,
+            'strokeOpacity' => '' !== (string) $overlayConfig->geojsonStrokeOpacity ? (float) $overlayConfig->geojsonStrokeOpacity : null,
+            'fillColor' => $overlayConfig->geojsonFillColor ? '#'.ltrim($overlayConfig->geojsonFillColor, '#') : null,
+            'fillOpacity' => '' !== (string) $overlayConfig->geojsonFillOpacity ? (float) $overlayConfig->geojsonFillOpacity : null,
+            'zIndex' => $overlayConfig->zIndex ? (int) $overlayConfig->zIndex : null,
+        ], static fn ($value) => null !== $value);
+
+        // Namespaced so the options are not mistaken for loadGeoJson() ones.
+        // Booleans are kept verbatim; filtering would drop an explicit "off".
+        $geoJsonLayer->setOption('huhOverlay', [
+            'id' => (int) $overlayConfig->id,
+            'style' => (object) $style,
+            'useFeatureStyles' => (bool) $overlayConfig->geojsonStylePropertiesEnabled,
+            'clickable' => (bool) $overlayConfig->geojsonClickable,
+            'fitBounds' => (bool) $overlayConfig->geojsonFitBounds,
+        ]);
+
+        return $geoJsonLayer;
+    }
+
+    /**
+     * Resolves the configured source to a URL the browser can fetch, or null
+     * when a file reference no longer resolves.
+     */
+    protected function getGeoJsonUrl(OverlayModel $overlayConfig): ?string
+    {
+        if (OverlayListener::GEOJSON_SOURCE_URL === $overlayConfig->geojsonSource) {
+            return $overlayConfig->geojsonUrl ?: null;
+        }
+
+        return $this->fileUtil->getPathFromUuid($overlayConfig->geojsonFile) ?: null;
     }
 
     protected function preparePolygon(OverlayModel $overlayConfig)

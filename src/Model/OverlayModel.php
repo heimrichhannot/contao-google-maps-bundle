@@ -48,6 +48,17 @@ use Contao\Model;
  * @property string $kmlPreserveViewport
  * @property string $kmlScreenOverlays
  * @property string $kmlSuppressInfowindows
+ * @property string $geojsonSource
+ * @property string $geojsonFile
+ * @property string $geojsonUrl
+ * @property string $geojsonClickable
+ * @property string $geojsonFitBounds
+ * @property string $geojsonStrokeColor
+ * @property string $geojsonStrokeWeight
+ * @property string $geojsonStrokeOpacity
+ * @property string $geojsonFillColor
+ * @property string $geojsonFillOpacity
+ * @property string $geojsonStylePropertiesEnabled
  * @property string $pathCoordinates
  * @property string $strokeWeight
  * @property string $strokeColor

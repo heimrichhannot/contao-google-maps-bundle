@@ -35,6 +35,7 @@ use Ivory\GoogleMap\Control\RotateControl;
 use Ivory\GoogleMap\Control\ScaleControl;
 use Ivory\GoogleMap\Control\StreetViewControl;
 use Ivory\GoogleMap\Control\ZoomControl;
+use Ivory\GoogleMap\Event\Event;
 use Ivory\GoogleMap\Helper\ApiHelper;
 use Ivory\GoogleMap\Helper\Builder\ApiHelperBuilder;
 use Ivory\GoogleMap\Helper\Builder\MapHelperBuilder;
@@ -127,6 +128,8 @@ class MapManager
             }
         }
 
+        $this->addGeoJsonInitialization($map);
+
         $templateData['mapModel'] = $map;
         $templateData['mapConfig'] = $mapConfig->row();
         $templateData['mapConfigModel'] = $mapConfig;
@@ -182,6 +185,68 @@ class MapManager
         return $template->parse();
     }
 
+    /**
+     * Registers the data layer initialization as a map event.
+     *
+     * Registered as an event because Ivory renders those inside the map's
+     * own init callback, where the map variable is guaranteed to exist.
+     */
+    protected function addGeoJsonInitialization(Map $map): void
+    {
+        if (!$map->getLayerManager()->hasGeoJsonLayers()) {
+            return;
+        }
+
+        // One data layer is shared by all GeoJSON overlays of a map.
+        $merged = [
+            'style' => [],
+            'useFeatureStyles' => false,
+            'clickable' => false,
+            'fitBounds' => false,
+        ];
+
+        $found = false;
+
+        foreach ($map->getLayerManager()->getGeoJsonLayers() as $layer) {
+            $options = $layer->getOptions();
+
+            if (!isset($options['huhOverlay'])) {
+                continue;
+            }
+
+            $found = true;
+            $config = (array) $options['huhOverlay'];
+
+            $merged['style'] = array_merge($merged['style'], (array) ($config['style'] ?? []));
+            $merged['useFeatureStyles'] = $merged['useFeatureStyles'] || !empty($config['useFeatureStyles']);
+            $merged['clickable'] = $merged['clickable'] || !empty($config['clickable']);
+            $merged['fitBounds'] = $merged['fitBounds'] || !empty($config['fitBounds']);
+        }
+
+        if (!$found) {
+            return;
+        }
+
+        // An empty style must serialize as an object, not an array.
+        $merged['style'] = (object) $merged['style'];
+
+        // "idle" repeats on every viewport change, so the handler detaches
+        // itself after the first run.
+        $event = new Event(
+            $map->getVariable(),
+            'idle',
+            \sprintf(
+                'function(){HuhGoogleMaps.initGeoJsonLayer(%s,%s);google.maps.event.clearListeners(%s,"idle");}',
+                $map->getVariable(),
+                json_encode($merged, \JSON_THROW_ON_ERROR),
+                $map->getVariable()
+            )
+        );
+
+        $map->getEventManager()
+            ->addDomEvent($event);
+    }
+
     public function renderHtml(int $mapId, array $config = [])
     {
         $config['skipCss'] = true;
@@ -204,6 +269,20 @@ class MapManager
         $config['skipCss'] = true;
 
         return $this->render($mapId, $config);
+    }
+
+    /**
+     * Whether any rendered map on this page holds a GeoJSON layer.
+     */
+    public function hasGeoJsonLayers(): bool
+    {
+        foreach ($this->mapCollection->getMaps() as $map) {
+            if ($map->getLayerManager()->hasGeoJsonLayers()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

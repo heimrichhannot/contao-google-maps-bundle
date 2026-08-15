@@ -38,6 +38,8 @@ class OverlayListener extends Backend
 
     public const TYPE_KML_LAYER = 'kml';
 
+    public const TYPE_GEOJSON_LAYER = 'geojson';
+
     public const TYPES = [
         self::TYPE_MARKER,
         self::TYPE_INFO_WINDOW,
@@ -47,6 +49,16 @@ class OverlayListener extends Backend
         self::TYPE_RECTANGLE,
         self::TYPE_GROUND_OVERLAY,
         self::TYPE_KML_LAYER,
+        self::TYPE_GEOJSON_LAYER,
+    ];
+
+    public const GEOJSON_SOURCE_FILE = 'file';
+
+    public const GEOJSON_SOURCE_URL = 'url';
+
+    public const GEOJSON_SOURCES = [
+        self::GEOJSON_SOURCE_FILE,
+        self::GEOJSON_SOURCE_URL,
     ];
 
     public const TITLE_MODE_TITLE_FIELD = 'title_field';
