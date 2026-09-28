@@ -38,7 +38,9 @@ class ReplaceDynamicScriptTagsListener
         // is clicked and add to body variable
         $GLOBALS['TL_BODY']['huhGoogleMaps'] = preg_replace(
             '@(ivory_google_map_init_requirement\()(ivory_google_map_map_[^,]+)@i',
-            'typeof $2 !== \'undefined\' && $1$2', $mapApi);
+            'typeof $2 !== \'undefined\' && $1$2',
+            $mapApi
+        );
 
         return $buffer;
     }

@@ -43,7 +43,7 @@ class UtilsBundleEntityFinderFindEventListener
             new Element(
                 id: $overlay->id,
                 table: OverlayModel::getTable(),
-                description: 'Google Maps Overlay: '.$overlay->title.' (ID: '.$overlay->id.')',
+                description: 'Google Maps Overlay: ' . $overlay->title . ' (ID: ' . $overlay->id . ')',
                 parents: (function () use ($overlay): \Generator {
                     yield [
                         'table' => GoogleMapModel::getTable(),
@@ -65,7 +65,7 @@ class UtilsBundleEntityFinderFindEventListener
             new Element(
                 id: $model->id,
                 table: GoogleMapModel::getTable(),
-                description: 'Google Maps: '.$model->title.' (ID: '.$model->id.')',
+                description: 'Google Maps: ' . $model->title . ' (ID: ' . $model->id . ')',
                 parents: (function () use ($model): \Generator {
                     $contentElements = ContentModel::findBy(['googlemaps_map=?'], [$model->id]) ?? [];
 

@@ -51,13 +51,13 @@ class MapRendererListener
 
             $this->manager->setVisualization($responsiveMap, $responsiveMapModel);
 
-            $event->addCode(preg_replace('/(<\s*style[^>]*>)(.*?)(<\s*\/\s*style>)/i', '$1@media (min-width:'.$responsiveSetting['breakpoint'].'px){$2}$3', $this->mapHelper->renderStylesheet($responsiveMap)));
+            $event->addCode(preg_replace('/(<\s*style[^>]*>)(.*?)(<\s*\/\s*style>)/i', '$1@media (min-width:' . $responsiveSetting['breakpoint'] . 'px){$2}$3', $this->mapHelper->renderStylesheet($responsiveMap)));
         }
 
         $resizeEvent = new Event('window', 'resize', 'function(){
-            var center = '.$event->getMap()->getVariable().'.getCenter();
-            google.maps.event.trigger('.$event->getMap()->getVariable().', "resize");
-            '.$event->getMap()->getVariable().'.setCenter(center);
+            var center = ' . $event->getMap()->getVariable() . '.getCenter();
+            google.maps.event.trigger(' . $event->getMap()->getVariable() . ', "resize");
+            ' . $event->getMap()->getVariable() . '.setCenter(center);
         }');
 
         $event->getMap()

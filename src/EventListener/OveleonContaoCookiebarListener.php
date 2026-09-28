@@ -175,7 +175,7 @@ class OveleonContaoCookiebarListener
     private function maskScript(string $script, int $configId, ?string $ident = null): string
     {
         if (!$ident) {
-            $ident = 'gmap_load_'.ByteString::fromRandom(4, '0123456789')->toString();
+            $ident = 'gmap_load_' . ByteString::fromRandom(4, '0123456789')->toString();
         }
 
         return <<< SCRIPT
@@ -206,7 +206,7 @@ class OveleonContaoCookiebarListener
     private function addScriptToGlobals(string $script): void
     {
         $nonce = ByteString::fromRandom(4, '0123456789')->toString();
-        $GLOBALS['TL_BODY']['huhGoogleMaps_'.$nonce] = $script;
+        $GLOBALS['TL_BODY']['huhGoogleMaps_' . $nonce] = $script;
     }
 
     private function parseHtml(string $content, Map $map, Request $request, CookieModel $configModel): string|array|bool|null
@@ -248,8 +248,8 @@ class OveleonContaoCookiebarListener
         ]);
 
         return preg_replace(
-            '/(<div id="'.$map->getHtmlId().'"[^>]*>)/',
-            '$1'.$blocker,
+            '/(<div id="' . $map->getHtmlId() . '"[^>]*>)/',
+            '$1' . $blocker,
             $content
         );
     }

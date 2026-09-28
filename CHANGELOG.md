@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-beta5] - 2026-09-28
+- Changed: allow symfony 7 ([#37](https://github.com/heimrichhannot/contao-google-maps-bundle/pull/37), thanks to [@rabauss](https://github.com/rabauss))
+
 ## [3.0.0-beta4] - 2026-03-12
 - Changed: [Oveleon Cookiebar Integration] blocking now also supports custom map integration instead only content elements and frontend modules ([#35](https://github.com/heimrichhannot/contao-google-maps-bundle/pull/35)
 - Changed: [Oveleon Cookiebar Integration] moved template to google_maps/oveleon_cookiebar/blocker.html.twig (old template path is still supported but deprecated) ([#35](https://github.com/heimrichhannot/contao-google-maps-bundle/pull/35)

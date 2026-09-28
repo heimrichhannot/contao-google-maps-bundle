@@ -100,8 +100,8 @@ class OverlayListener extends Backend
     #[AsCallback(table: 'tl_google_map_overlay', target: 'list.sorting.child_record')]
     public function listChildren($arrRow)
     {
-        return '<div class="tl_content_left">'.($arrRow['title'] ?: $arrRow['id']).' <span style="color:#b3b3b3; padding-left:3px">['.
-            Date::parse(Config::get('datimFormat'), $arrRow['dateAdded']).']</span></div>';
+        return '<div class="tl_content_left">' . ($arrRow['title'] ?: $arrRow['id']) . ' <span style="color:#b3b3b3; padding-left:3px">[' .
+            Date::parse(Config::get('datimFormat'), $arrRow['dateAdded']) . ']</span></div>';
     }
 
     #[AsCallback(table: 'tl_google_map_overlay', target: 'config.onload')]

@@ -96,15 +96,15 @@ class MapManager
         static::$apiKey = $this->computeApiKey($mapConfig);
 
         if (!static::$apiKey) {
-            throw new \Exception('No api key has been defined for the google map with config ID '.$mapConfig->id.'.');
+            throw new \Exception('No api key has been defined for the google map with config ID ' . $mapConfig->id . '.');
         }
 
         $templateData = $config;
         $map = new Map();
-        $map->setVariable('map_'.$mapId.'_'.substr(md5(time().$mapId), 0, 8));
+        $map->setVariable('map_' . $mapId . '_' . substr(md5(time() . $mapId), 0, 8));
 
         // apply map config
-        $htmlId = $mapConfig->htmlId ?: 'map_canvas_'.uniqid();
+        $htmlId = $mapConfig->htmlId ?: 'map_canvas_' . uniqid();
         $map->setHtmlId($htmlId);
 
         $this->setVisualization($map, $mapConfig);
@@ -114,12 +114,10 @@ class MapManager
         $this->addStaticMap($map, $mapConfig, $templateData);
 
         // add overlays
-        if (null === $overlays) {
-            $overlays = OverlayModel::findBy(
-                ['tl_google_map_overlay.pid=?', 'tl_google_map_overlay.published=?'],
-                [$mapConfig->id, true]
-            );
-        }
+        $overlays ??= OverlayModel::findBy(
+            ['tl_google_map_overlay.pid=?', 'tl_google_map_overlay.published=?'],
+            [$mapConfig->id, true]
+        );
 
         if (null !== $overlays) {
             foreach ($overlays as $overlay) {
@@ -255,7 +253,7 @@ class MapManager
                     [
                         'width' => '100%',
                         'height' => '100%',
-                        'padding-bottom' => (100 * (int) $mapConfig->aspectRatioY / (int) $mapConfig->aspectRatioX).'%',
+                        'padding-bottom' => (100 * (int) $mapConfig->aspectRatioY / (int) $mapConfig->aspectRatioX) . '%',
                     ],
                 );
 
@@ -268,8 +266,8 @@ class MapManager
                 if (isset($width['value'], $width['unit'], $height['value'], $height['unit'])) {
                     $map->setStylesheetOptions(
                         [
-                            'width' => $width['value'].$width['unit'],
-                            'height' => $height['value'].$height['unit'],
+                            'width' => $width['value'] . $width['unit'],
+                            'height' => $height['value'] . $height['unit'],
                         ],
                     );
                 }
@@ -359,7 +357,7 @@ class MapManager
 
             case GoogleMapListener::CENTER_MODE_STATIC_ADDRESS:
                 $coordinates = $this->cache->get(
-                    static::CACHE_KEY_PREFIX.$mapConfig->centerAddress,
+                    static::CACHE_KEY_PREFIX . $mapConfig->centerAddress,
                     function (ItemInterface $item) use ($mapConfig) {
                         $item->expiresAfter(static::CACHE_TIME);
 
@@ -392,14 +390,14 @@ class MapManager
         if ($mapConfig->staticMapNoscript) {
             $staticParams = [
                 'center' => $map->getCenter()
-                    ->getLatitude().','.$map->getCenter()->getLongitude(),
+                    ->getLatitude() . ',' . $map->getCenter()->getLongitude(),
                 'zoom' => $map->getMapOption('zoom'),
-                'size' => $mapConfig->staticMapWidth.'x'.$mapConfig->staticMapHeight,
+                'size' => $mapConfig->staticMapWidth . 'x' . $mapConfig->staticMapHeight,
                 'maptype' => $map->getMapOption('mapTypeId'),
                 'key' => static::$apiKey,
             ];
 
-            $templateData['staticMapUrl'] = static::GOOGLE_MAPS_STATIC_URL.'?'.http_build_query($staticParams);
+            $templateData['staticMapUrl'] = static::GOOGLE_MAPS_STATIC_URL . '?' . http_build_query($staticParams);
         }
     }
 

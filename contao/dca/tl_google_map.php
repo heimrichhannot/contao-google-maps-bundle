@@ -69,31 +69,31 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
             'overrideLanguage',
         ],
         'default' => '{general_legend},type,title,htmlId,overrideGooglemaps_apiKey;'
-            .'{visualization_legend},mapType,sizeMode,addClusterer,styles;'
-            .'{behavior_legend},disableDoubleClickZoom,draggable,scrollwheel,staticMapNoscript;'
-            .'{positioning_legend},positioningMode;'
-            .'{control_legend},mapTypesAvailable,addMapTypeControl,addZoomControl,addRotateControl,addFullscreenControl,addStreetViewControl,addScaleControl;'
-            .'{language_legend},overrideLanguage;'
-            .'{responsive_legend},responsive;'
-            .'{template_legend},template;',
+            . '{visualization_legend},mapType,sizeMode,addClusterer,styles;'
+            . '{behavior_legend},disableDoubleClickZoom,draggable,scrollwheel,staticMapNoscript;'
+            . '{positioning_legend},positioningMode;'
+            . '{control_legend},mapTypesAvailable,addMapTypeControl,addZoomControl,addRotateControl,addFullscreenControl,addStreetViewControl,addScaleControl;'
+            . '{language_legend},overrideLanguage;'
+            . '{responsive_legend},responsive;'
+            . '{template_legend},template;',
         'responsive' => '{general_legend},type,title;'
-            .'{visualization_legend},sizeMode;',
+            . '{visualization_legend},sizeMode;',
     ],
     'subpalettes' => [
         // visualization
-        'sizeMode_'.GoogleMapListener::SIZE_MODE_ASPECT_RATIO => 'aspectRatioX,aspectRatioY',
-        'sizeMode_'.GoogleMapListener::SIZE_MODE_STATIC => 'width,height',
+        'sizeMode_' . GoogleMapListener::SIZE_MODE_ASPECT_RATIO => 'aspectRatioX,aspectRatioY',
+        'sizeMode_' . GoogleMapListener::SIZE_MODE_STATIC => 'width,height',
         'addClusterer' => 'clustererImg',
         // behavior
         'staticMapNoscript' => 'staticMapWidth,staticMapHeight',
         // positioning
-        'positioningMode_'.GoogleMapListener::POSITIONING_MODE_STANDARD => 'centerMode,zoom',
-        'positioningMode_'.GoogleMapListener::POSITIONING_MODE_BOUND => 'boundMode',
+        'positioningMode_' . GoogleMapListener::POSITIONING_MODE_STANDARD => 'centerMode,zoom',
+        'positioningMode_' . GoogleMapListener::POSITIONING_MODE_BOUND => 'boundMode',
         'boundMode_'
-        .GoogleMapListener::BOUND_MODE_COORDINATES => 'boundNorthEastLat,boundNorthEastLng,boundSouthWestLat,boundSouthWestLng',
-        'boundMode_'.GoogleMapListener::BOUND_MODE_AUTOMATIC => '',
-        'centerMode_'.GoogleMapListener::CENTER_MODE_COORDINATE => 'centerLat,centerLng',
-        'centerMode_'.GoogleMapListener::CENTER_MODE_STATIC_ADDRESS => 'centerAddress',
+        . GoogleMapListener::BOUND_MODE_COORDINATES => 'boundNorthEastLat,boundNorthEastLng,boundSouthWestLat,boundSouthWestLng',
+        'boundMode_' . GoogleMapListener::BOUND_MODE_AUTOMATIC => '',
+        'centerMode_' . GoogleMapListener::CENTER_MODE_COORDINATE => 'centerLat,centerLng',
+        'centerMode_' . GoogleMapListener::CENTER_MODE_STATIC_ADDRESS => 'centerAddress',
         // controls
         'addMapTypeControl' => 'mapTypeControlPos,mapTypeControlStyle',
         'addZoomControl' => 'zoomControlPos',
@@ -174,7 +174,7 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
                 'mandatory' => true,
                 'includeBlankOption' => true,
             ],
-            'sql' => "varchar(64) NOT NULL default '".MapTypeId::ROADMAP."'",
+            'sql' => "varchar(64) NOT NULL default '" . MapTypeId::ROADMAP . "'",
         ],
         'sizeMode' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['sizeMode'],
@@ -188,7 +188,7 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
                 'includeBlankOption' => true,
                 'submitOnChange' => true,
             ],
-            'sql' => "varchar(64) NOT NULL default '".GoogleMapListener::SIZE_MODE_ASPECT_RATIO."'",
+            'sql' => "varchar(64) NOT NULL default '" . GoogleMapListener::SIZE_MODE_ASPECT_RATIO . "'",
         ],
         'width' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['width'],
@@ -485,7 +485,7 @@ $GLOBALS['TL_DCA']['tl_google_map'] = [
                 'multiple' => true,
                 'tl_class' => 'w50 autoheight',
             ],
-            'sql' => "varchar(255) NOT NULL default '".serialize(GoogleMapListener::TYPES)."'",
+            'sql' => "varchar(255) NOT NULL default '" . serialize(GoogleMapListener::TYPES) . "'",
         ],
         'addMapTypeControl' => [
             'label' => &$GLOBALS['TL_LANG']['tl_google_map']['addMapTypeControl'],

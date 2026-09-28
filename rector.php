@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Contao\Rector\Set\ContaoLevelSetList;
 use Contao\Rector\Set\ContaoSetList;
 use Rector\Config\RectorConfig;
 use Rector\Php81\Rector\Array_\ArrayToFirstClassCallableRector;
@@ -36,7 +35,11 @@ return RectorConfig::configure()
     )
     ->withSets([
         LevelSetList::UP_TO_PHP_81,
-        ContaoLevelSetList::UP_TO_CONTAO_53,
+        ContaoSetList::CONTAO_49,
+        ContaoSetList::CONTAO_413,
+        ContaoSetList::CONTAO_50,
+        ContaoSetList::CONTAO_51,
+        ContaoSetList::CONTAO_53,
         ContaoSetList::FQCN,
         ContaoSetList::ANNOTATIONS_TO_ATTRIBUTES,
     ])

@@ -72,7 +72,7 @@ class DcaUtil
 
         foreach ($fields as $field) {
             // add override boolean field
-            $overrideFieldname = 'override'.ucfirst((string) $field);
+            $overrideFieldname = 'override' . ucfirst((string) $field);
 
             $destinationDca['fields'][$overrideFieldname] = [
                 'label' => &$GLOBALS['TL_LANG'][$destinationTable][$overrideFieldname],
@@ -143,7 +143,7 @@ class DcaUtil
         }
 
         foreach ($preparedInstances as $i => $preparedInstance) {
-            if (0 === $i || $preparedInstance->{'override'.ucfirst($property)}) {
+            if (0 === $i || $preparedInstance->{'override' . ucfirst($property)}) {
                 $result = $preparedInstance->{$property};
             }
         }

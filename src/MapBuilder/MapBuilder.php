@@ -15,9 +15,11 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 class MapBuilder implements \Stringable
 {
     private array|Collection $overlays;
+
     private int $mapId;
 
     private bool $prepared = false;
+
     private array $mapTemplateData;
 
     public function __construct(

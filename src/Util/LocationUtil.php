@@ -44,9 +44,9 @@ class LocationUtil
 
         $urlUtils = System::getContainer()->get(Utils::class)->url();
         if ($apiKey) {
-            $url = $urlUtils->addQueryStringParameterToUrl('key='.$apiKey, $url);
+            $url = $urlUtils->addQueryStringParameterToUrl('key=' . $apiKey, $url);
         } elseif (Config::get('utilsGoogleApiKey')) {
-            $url = $urlUtils->addQueryStringParameterToUrl('key='.Config::get('utilsGoogleApiKey'), $url);
+            $url = $urlUtils->addQueryStringParameterToUrl('key=' . Config::get('utilsGoogleApiKey'), $url);
         }
 
         try {

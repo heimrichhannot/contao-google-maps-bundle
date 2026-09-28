@@ -35,8 +35,10 @@ class ElevationService
 
     public function __construct(ClientInterface $httpClient)
     {
-        $this->service = new \Ivory\GoogleMap\Service\Elevation\ElevationService($httpClient,
-            new GuzzleMessageFactory());
+        $this->service = new \Ivory\GoogleMap\Service\Elevation\ElevationService(
+            $httpClient,
+            new GuzzleMessageFactory()
+        );
     }
 
     /**

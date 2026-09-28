@@ -122,7 +122,7 @@ class OverlayManager
             ]);
 
             $routing = $template->parse();
-            $infoWindow->setContent($infoWindow->getContent().$routing);
+            $infoWindow->setContent($infoWindow->getContent() . $routing);
         }
     }
 
@@ -141,7 +141,7 @@ class OverlayManager
 
             case OverlayListener::POSITIONING_MODE_STATIC_ADDRESS:
                 $coordinates = $this->cache->get(
-                    static::CACHE_KEY_PREFIX.$overlayConfig->positioningAddress,
+                    static::CACHE_KEY_PREFIX . $overlayConfig->positioningAddress,
                     function (ItemInterface $item) use ($overlayConfig) {
                         $item->expiresAfter(static::CACHE_TIME);
 
@@ -182,7 +182,7 @@ class OverlayManager
     public static function checkHex(string $hex): string
     {
         if ('' === trim($hex, '0..9A..Fa..f')) {
-            return '#'.$hex;
+            return '#' . $hex;
         }
 
         return '#000000';
@@ -220,7 +220,7 @@ class OverlayManager
                 if ($width['value'] && $height['value']) {
                     $icon->setScaledSize(new Size($width['value'], $height['value'], $width['unit'], $height['unit']));
                 } else {
-                    throw new \Exception('The overlay ID '.$overlayConfig->id.' doesn\'t have a icon width and height set.');
+                    throw new \Exception('The overlay ID ' . $overlayConfig->id . ' doesn\'t have a icon width and height set.');
                 }
 
                 $marker->setIcon($icon);
@@ -263,7 +263,7 @@ class OverlayManager
                         $marker->getVariable(),
                         'click',
                         "function() {
-                            var win = window.open('".$url."', '".($overlayConfig->target ? '_blank' : '_self')."');
+                            var win = window.open('" . $url . "', '" . ($overlayConfig->target ? '_blank' : '_self') . "');
                         }",
                     );
 
@@ -299,16 +299,16 @@ class OverlayManager
         $sizing = [];
 
         if (isset($width['value']) && $width['value']) {
-            $sizing[] = 'width: '.$width['value'].$width['unit'].';';
+            $sizing[] = 'width: ' . $width['value'] . $width['unit'] . ';';
         }
 
         if (isset($height['value']) && $height['value']) {
-            $sizing[] = 'height: '.$height['value'].$height['unit'].';';
+            $sizing[] = 'height: ' . $height['value'] . $height['unit'] . ';';
         }
 
         if (!empty($sizing)) {
             $infoWindow->setContent(
-                '<div class="wrapper" style="'.implode(' ', $sizing).'">'.$infoWindow->getContent().'</div>',
+                '<div class="wrapper" style="' . implode(' ', $sizing) . '">' . $infoWindow->getContent() . '</div>',
             );
         }
 

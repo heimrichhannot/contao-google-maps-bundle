@@ -51,13 +51,13 @@ class GoogleMapsElementController extends AbstractContentElementController
     protected function getBackendWildcard(FragmentTemplate $template, ContentModel $model): Response
     {
         $wilcardTemplate = new BackendTemplate('be_wildcard');
-        $wilcardTemplate->wildcard = '### '.mb_strtoupper((string) $GLOBALS['TL_LANG']['CTE'][$model->type][0]).' ###';
+        $wilcardTemplate->wildcard = '### ' . mb_strtoupper((string) $GLOBALS['TL_LANG']['CTE'][$model->type][0]) . ' ###';
         $wilcardTemplate->title = $template->headline;
 
         if (null !== ($map = $this->utils->model()->findModelInstanceByPk('tl_google_map', $model->googlemaps_map))) {
             $wilcardTemplate->id = $map->id;
             $wilcardTemplate->link = $map->title;
-            $wilcardTemplate->href = 'contao?do=google_maps&amp;table=tl_google_map&amp;act=edit&amp;id='.$map->id;
+            $wilcardTemplate->href = 'contao?do=google_maps&amp;table=tl_google_map&amp;act=edit&amp;id=' . $map->id;
         }
 
         return $wilcardTemplate->getResponse();
