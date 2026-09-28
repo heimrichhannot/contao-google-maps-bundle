@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-/*
- * Copyright (c) 2024 Heimrich & Hannot GmbH
+/**
+ * Copyright (c) 2024 Heimrich & Hannot GmbH.
  *
  * @license LGPL-3.0-or-later
  */
@@ -34,7 +34,8 @@ class InsertTagsListener implements InsertTagResolverNestedResolvedInterface
     {
         $this->framework->initialize();
 
-        $mapId = (int) $insertTag->getParameters()->get(0);
+        $mapId = (int) $insertTag->getParameters()
+            ->get(0);
 
         return match ($insertTag->getName()) {
             'google_map' => new InsertTagResult(

@@ -66,7 +66,9 @@ class OveleonContaoCookiebarListener
             return;
         }
 
-        $listeners = $event->getApiHelper()->getEventDispatcher()->getListeners(ApiEvents::JAVASCRIPT);
+        $listeners = $event->getApiHelper()
+            ->getEventDispatcher()
+            ->getListeners(ApiEvents::JAVASCRIPT);
         $apiSubscriber = null;
 
         foreach ($listeners as $listener) {
@@ -84,7 +86,8 @@ class OveleonContaoCookiebarListener
         }
 
         $apiRenderer = $apiSubscriber->getApiRenderer();
-        $source = $apiRenderer->getLoaderRenderer()->renderSource('ivory_google_map_init', $event->getApiEvent()->getLibraries());
+        $source = $apiRenderer->getLoaderRenderer()
+            ->renderSource('ivory_google_map_init', $event->getApiEvent()->getLibraries());
 
         $this->addScriptToGlobals($this->maskExternalResource($source, $config['id'], 'gmap_library'));
 
@@ -150,7 +153,8 @@ class OveleonContaoCookiebarListener
             return null;
         }
 
-        $rootPage = $this->utils->request()->getCurrentRootPageModel();
+        $rootPage = $this->utils->request()
+            ->getCurrentRootPageModel();
         if (null === $rootPage) {
             return null;
         }
@@ -216,9 +220,12 @@ class OveleonContaoCookiebarListener
         // support legacy path for bc
         $legacyTemplateName = '@Contao/oveleon_cookiebar/blocker/default.html.twig';
         if (
-            $this->twig->getLoader()->exists($legacyTemplateName)
+            $this->twig->getLoader()
+                ->exists($legacyTemplateName)
             && !str_contains(
-                $this->twig->getLoader()->getSourceContext($legacyTemplateName)->getPath(),
+                $this->twig->getLoader()
+                    ->getSourceContext($legacyTemplateName)
+                    ->getPath(),
                 'heimrichhannot/contao-google-maps-bundle'
             )
         ) {

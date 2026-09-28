@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-/*
- * Copyright (c) 2024 Heimrich & Hannot GmbH
+/**
+ * Copyright (c) 2024 Heimrich & Hannot GmbH.
  *
  * @license LGPL-3.0-or-later
  */
@@ -31,7 +31,8 @@ class MapRendererListener
 
     public function renderStylesheet(MapEvent $event, string $eventName, EventDispatcherInterface $dispatcher): void
     {
-        $this->mapHelper->getEventDispatcher()->removeListener('map.stylesheet', [$this, 'renderStylesheet']);
+        $this->mapHelper->getEventDispatcher()
+            ->removeListener('map.stylesheet', [$this, 'renderStylesheet']);
 
         $responsiveSettings = StringUtil::deserialize($this->model->responsive, true);
 
@@ -59,7 +60,9 @@ class MapRendererListener
             '.$event->getMap()->getVariable().'.setCenter(center);
         }');
 
-        $event->getMap()->getEventManager()->addDomEvent($resizeEvent);
+        $event->getMap()
+            ->getEventManager()
+            ->addDomEvent($resizeEvent);
     }
 
     public function getManager(): MapManager

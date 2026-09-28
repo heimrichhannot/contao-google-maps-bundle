@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-/*
- * Copyright (c) 2024 Heimrich & Hannot GmbH
+/**
+ * Copyright (c) 2024 Heimrich & Hannot GmbH.
  *
  * @license LGPL-3.0-or-later
  */
@@ -67,10 +67,12 @@ class OverlayManager
             case OverlayListener::TYPE_MARKER:
                 [$marker, $events] = $this->prepareMarker($overlayConfig, $map);
 
-                $map->getOverlayManager()->addMarker($marker);
+                $map->getOverlayManager()
+                    ->addMarker($marker);
 
                 foreach ($events as $event) {
-                    $map->getEventManager()->addDomEvent($event);
+                    $map->getEventManager()
+                        ->addDomEvent($event);
                 }
 
                 break;
@@ -79,21 +81,24 @@ class OverlayManager
                 $infoWindow = $this->prepareInfoWindow($overlayConfig);
                 $infoWindow->setOpen(true);
 
-                $map->getOverlayManager()->addInfoWindow($infoWindow);
+                $map->getOverlayManager()
+                    ->addInfoWindow($infoWindow);
 
                 break;
 
             case OverlayListener::TYPE_KML_LAYER:
                 $kmlLayer = $this->prepareKmlLayer($overlayConfig);
 
-                $map->getLayerManager()->addKmlLayer($kmlLayer);
+                $map->getLayerManager()
+                    ->addKmlLayer($kmlLayer);
 
                 break;
 
             case OverlayListener::TYPE_POLYGON:
                 $polygon = $this->preparePolygon($overlayConfig);
 
-                $map->getOverlayManager()->addPolygon($polygon);
+                $map->getOverlayManager()
+                    ->addPolygon($polygon);
 
                 break;
 
